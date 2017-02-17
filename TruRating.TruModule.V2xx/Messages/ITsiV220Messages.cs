@@ -27,7 +27,7 @@ namespace TruRating.TruModule.V2xx.Messages
     public interface ITsiV220Messages : ITsiV210Messages
     {
         Response SendRequestLookup();
-        Response SendRequestQuery();
+        Response SendRequestQuery(bool forceQuery);
         Response SendRequestActivate();
     }
 }

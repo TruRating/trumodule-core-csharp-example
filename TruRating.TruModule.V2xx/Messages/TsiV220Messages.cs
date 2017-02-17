@@ -33,13 +33,13 @@ namespace TruRating.TruModule.V2xx.Messages
         {
         }
 
-        public Response SendRequestQuery()
+        public Response SendRequestQuery(bool forceQuery)
         {
             var request = CreateBlankRequest(Guid.NewGuid().ToString());
 
             request.Item = new RequestQuery
             {
-                Force = true,
+                Force = forceQuery,
                 ForceSpecified = true,
                 Language = CreateRequestLanguage(),
                 Device = CreateRequestDevice(),

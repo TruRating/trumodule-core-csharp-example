@@ -34,7 +34,7 @@ namespace TruRating.TruModule.V2xx.Scenarios
         private readonly V200Exemplar _v200Exemplar;
         private readonly V210PosEventListExemplar _v210PosEventListExemplar;
         private readonly V210PosEventsExemplar _v210PosEventsExemplar;
-
+        private Boolean _forceQuery = true;
 
         public V220Exemplar(ILogger logger, ISettings settings, IDevice device, ITsiV220Messages tsiV220Messages,
             V200Exemplar v200Exemplar, V210PosEventsExemplar v210PosEventsExemplar,
@@ -80,6 +80,8 @@ namespace TruRating.TruModule.V2xx.Scenarios
 
         private void Lookups()
         {
+            if (Settings.RegistrationCode)
+                return;
             var status = _tsiV220Messages.SendRequestLookup();
             var responseStatus = status.Item as ResponseLookup;
             if (responseStatus != null)
@@ -122,10 +124,14 @@ namespace TruRating.TruModule.V2xx.Scenarios
             {
                 return Settings.IsActivated;
             }
-            var status = _tsiV220Messages.SendRequestQuery();
+            var status = _tsiV220Messages.SendRequestQuery(_forceQuery);
             var responseStatus = status.Item as ResponseStatus;
             if (responseStatus != null)
             {
+                if (_forceQuery)
+                {
+                    _forceQuery = false;
+                }
                 Settings.ActivationRecheck = DateTime.UtcNow.AddSeconds(responseStatus.TimeToLive);
                 Settings.IsActivated = responseStatus.IsActive;
             }
