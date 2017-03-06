@@ -57,14 +57,14 @@ namespace TruRating.TruModule.V2xx.Scenarios
                 var rating = CaptureRating(response, language);
                 if (rating != null)
                 {
-                    Logger.Write(ConsoleColor.Green, "Had question to ask, rating captured as {0}, sending rating",
+                    Logger.WriteLine(ConsoleColor.Green, "LOGIC : Had question to ask, rating captured as {0}, sending rating",
                         rating.Value);
                     _tsiV200Messages.SendRequestRating(sessionId, rating);
                     _tsiV200Messages.SendRequestTransaction(sessionId);
                     return;
                 }
             }
-            Logger.Write(ConsoleColor.Green, "No question to ask, continuing");
+            Logger.WriteLine(ConsoleColor.Green, "LOGIC : No question to ask, continuing");
             _tsiV200Messages.SendRequestTransaction(sessionId);
         }
 

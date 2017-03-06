@@ -38,7 +38,6 @@ namespace TruRating.TruModule.V2xx.Environment
         bool Verbose { get; set; }
         string TerminalId { get; set; }
         string Version { get; set; }
-        bool Automatic { get; set; }
         string TransportKey { get; set; }
         bool RegistrationCode { get; set; }
         DateTime ActivationRecheck { get; set; }
@@ -55,12 +54,12 @@ namespace TruRating.TruModule.V2xx.Environment
             _logger = logger;
             TerminalId = System.Environment.MachineName;
             Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            logger.Write(ConsoleColor.Yellow, "TruModule version : {0}", Version);
-            logger.Write(ConsoleColor.Yellow,
+            logger.WriteLine(ConsoleColor.Yellow, "TruModule version : {0}", Version);
+            logger.WriteLine(ConsoleColor.Yellow,
                 " Settings ".PadRight((Console.WindowWidth)/2, '=').PadLeft((Console.WindowWidth) - 1, '='));
-            logger.Write(ConsoleColor.Yellow,
+            logger.WriteLine(ConsoleColor.Yellow,
                 System.Environment.NewLine + "Override any of these settings from the configuration file");
-            logger.Write(ConsoleColor.Yellow,
+            logger.WriteLine(ConsoleColor.Yellow,
                 "Press 's' anytime after the scenario has started print all settings." + System.Environment.NewLine);
             var errors = new List<string>();
             foreach (var prop in GetType().GetProperties())
@@ -79,11 +78,11 @@ namespace TruRating.TruModule.V2xx.Environment
             var endpoints = Endpoint.Split(',');
             if (endpoints.Length > 1)
             {
-                logger.Write(ConsoleColor.Red, "Multiple TruService endpoints detected, please choose: ");
+                logger.WriteLine(ConsoleColor.Red, "Multiple TruService endpoints detected, please choose: ");
                 var i = 1;
                 foreach (var endpoint in endpoints)
                 {
-                    logger.Write(ConsoleColor.Gray, i + ". " + endpoint);
+                    logger.WriteLine(ConsoleColor.Gray, i + ". " + endpoint);
                     i++;
                 }
                 while (true)
@@ -95,13 +94,13 @@ namespace TruRating.TruModule.V2xx.Environment
                         if (option >= 1 && option - 1 < endpoints.Length)
                         {
                             Endpoint = endpoints[option - 1];
-                            logger.Write(ConsoleColor.Green, "Chosen " + Endpoint);
+                            logger.WriteLine(ConsoleColor.Green, "Chosen " + Endpoint);
                             break;
                         }
                     }
                 }
             }
-            logger.Write(ConsoleColor.Yellow, "".PadRight(Console.WindowWidth - 1, '='));
+            logger.WriteLine(ConsoleColor.Yellow, "".PadRight(Console.WindowWidth - 1, '='));
             KeyPressReader.OnInputOverride += PrintSettings;
         }
 
@@ -190,7 +189,7 @@ namespace TruRating.TruModule.V2xx.Environment
         {
             if (key == 's')
             {
-                _logger.Write(ConsoleColor.Yellow,
+                _logger.WriteLine(ConsoleColor.Yellow,
                     " Settings ".PadRight((Console.WindowWidth)/2, '=').PadLeft((Console.WindowWidth) - 1, '='));
                 foreach (var prop in GetType().GetProperties())
                 {
@@ -198,7 +197,7 @@ namespace TruRating.TruModule.V2xx.Environment
                     var hasValue = PropHasValue(prop, value);
                     LogSetting(prop, hasValue);
                 }
-                _logger.Write(ConsoleColor.Yellow, "".PadRight(Console.WindowWidth - 1, '='));
+                _logger.WriteLine(ConsoleColor.Yellow, "".PadRight(Console.WindowWidth - 1, '='));
                 return true;
             }
             return false;

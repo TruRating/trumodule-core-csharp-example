@@ -32,6 +32,7 @@ namespace TruRating.TruModule.V2xx.Environment
         private static readonly Thread inputThread;
         private static volatile AutoResetEvent getInput, gotInput;
         private static ConsoleKeyInfo input;
+        private static volatile bool _intercept;
 
         static KeyPressReader()
         {
@@ -51,7 +52,7 @@ namespace TruRating.TruModule.V2xx.Environment
             {
                 if (!delegated)
                     getInput.WaitOne();
-                input = Console.ReadKey(true);
+                input = Console.ReadKey(_intercept);
                 var invoke = false;
                 if (OnInputOverride != null)
                 {
@@ -71,16 +72,25 @@ namespace TruRating.TruModule.V2xx.Environment
 
         public static ConsoleKeyInfo ReadKey()
         {
-            return ReadKey(Timeout.Infinite);
+            return ReadKey(Timeout.Infinite,true);
         }
 
-        public static ConsoleKeyInfo ReadKey(int timeOutMillisecs)
+        public static ConsoleKeyInfo ReadKey(int timeOutMillisecs, bool intercept)
         {
-            getInput.Set();
-            var success = gotInput.WaitOne(timeOutMillisecs);
-            if (success)
-                return input;
-            throw new TimeoutException("User did not provide input within the timelimit.");
+            try
+            {
+                _intercept = intercept;
+                getInput.Set();
+                var success = gotInput.WaitOne(timeOutMillisecs);
+                if (success)
+                    return input;
+                throw new TimeoutException("User did not provide input within the timelimit.");
+            }
+            finally
+            {
+                if (!intercept)
+                    Console.Write(System.Environment.NewLine);
+            }
         }
     }
 }

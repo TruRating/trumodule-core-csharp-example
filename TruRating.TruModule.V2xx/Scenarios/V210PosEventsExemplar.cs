@@ -60,7 +60,7 @@ namespace TruRating.TruModule.V2xx.Scenarios
                 var item = response.Item as ResponseEvent;
                 if (item != null)
                 {
-                    Logger.Write(ConsoleColor.Green, "Received an event"); //Debug
+                    Logger.WriteLine(ConsoleColor.Green, "LOGIC : Received an event"); //Debug
                     var question = item.Item as ResponseEventQuestion;
                     if (question != null)
                     {
@@ -71,14 +71,14 @@ namespace TruRating.TruModule.V2xx.Scenarios
                             var rating = CaptureRating(response, language);
                             if (rating != null)
                             {
-                                Logger.Write(ConsoleColor.Green,
-                                    "Had question to ask, rating captured as {0}, sending rating", rating.Value);
+                                Logger.WriteLine(ConsoleColor.Green,
+                                    "LOGIC : Had question to ask, rating captured as {0}, sending rating", rating.Value);
                                 _tsiV210Messages.SendRequestRating(sessionId, rating);
                             }
                         }
                         else
                         {
-                            Logger.Write(ConsoleColor.Green, "No question to ask, continuing");
+                            Logger.WriteLine(ConsoleColor.Green, "LOGIC : No question to ask, continuing");
                         }
                     }
                 }

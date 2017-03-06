@@ -35,27 +35,20 @@ namespace TruRating.TruModule.V2xx.Environment
 
         public void PrintScreen(string value)
         {
-            _logger.Write(ConsoleColor.White, "SCREEN :" + value);
+            _logger.WriteLine(ConsoleColor.White, "SCREEN : " + value);
         }
 
         public void PrintReceipt(string value)
         {
-            _logger.Write(ConsoleColor.Magenta, "RECEIPT:" + value);
+            _logger.WriteLine(ConsoleColor.Magenta, "RECEIPT: " + value);
         }
 
-        public void Log(string value, params object[] vars)
+        public char _1AQ1KR(string value, int timeoutMilliseconds)
         {
-            _logger.Write(ConsoleColor.DarkGray, "LOG    :" + value, vars);
-        }
-
-        public void Error(string value, params object[] vars)
-        {
-            _logger.Write(ConsoleColor.Red, "LOG    :" + value, vars);
-        }
-
-        public char ReadKey(int timeoutMilliseconds)
-        {
-            return KeyPressReader.ReadKey(timeoutMilliseconds).KeyChar;
+            _logger.WriteLine(ConsoleColor.Cyan, "1AQ1KR : " + value);
+            _logger.WriteLine(ConsoleColor.Gray, "1AQ1KR : waiting {0} ms",timeoutMilliseconds);
+            _logger.Write(ConsoleColor.Cyan, "1AQ1KR : ");
+            return KeyPressReader.ReadKey(timeoutMilliseconds,false).KeyChar;
         }
     }
 }

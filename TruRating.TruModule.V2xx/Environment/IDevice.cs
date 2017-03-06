@@ -25,8 +25,6 @@ namespace TruRating.TruModule.V2xx.Environment
     {
         void PrintScreen(string value);
         void PrintReceipt(string value);
-        void Log(string value, params object[] vars);
-        void Error(string value, params object[] vars);
-        char ReadKey(int timeoutMilliseconds);
+        char _1AQ1KR(string value, int timeoutMilliseconds);
     }
 }
