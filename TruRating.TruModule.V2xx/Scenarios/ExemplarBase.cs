@@ -168,7 +168,7 @@ namespace TruRating.TruModule.V2xx.Scenarios
             {
                 if (responseReceipt.When == when)
                 {
-                    Device.PrintReceipt(responseReceipt.Value);
+                    Device.AppendReceipt(responseReceipt.Value);
                     break;
                 }
             }

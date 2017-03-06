@@ -68,7 +68,7 @@ namespace TruRating.TruModule.V2xx.Environment
                 return -4; // Couldn't ask a question or capture the response
             }
         }
-        public void PrintReceipt(string value)
+        public void AppendReceipt(string value)
         {
             _logger.WriteLine(ConsoleColor.Magenta, "RECEIPT: " + value);
         }
