@@ -105,7 +105,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Scenarios
             MockOf<ISettings>().Languages = new[] {"en-GB"};
             MockOf<IDevice>()
                 .Stub(x => x.Display1AQ1KR(Arg<string>.Is.Anything, Arg<int>.Is.Anything))
-                .Return('5');
+                .Return(5);
             MockOf<ITsiV200Messages>()
                 .Stub(
                     x =>
@@ -118,14 +118,15 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Scenarios
                 .AssertWasCalled(x => x.SendRequestRating(Arg<string>.Is.Anything, Arg<RequestRating>.Is.Anything));
             MockOf<ITsiV200Messages>().AssertWasCalled(x => x.SendRequestTransaction(Arg<string>.Is.Anything));
             MockOf<IDevice>().AssertWasCalled(x => x.Display1AQ1KR("Hello World",500));
-            MockOf<IDevice>().AssertWasCalled(x => x.Display1AQ1KR("Thanks for rating",1));
-            MockOf<IDevice>().AssertWasCalled(x => x.PrintReceipt("Thanks for rating"));
+            MockOf<IDevice>().AssertWasCalled(x => x.DisplayMessage("Thanks for rating",1));
+            MockOf<IDevice>().AssertWasCalled(x => x.AppendReceipt("Thanks for rating"));
         }
 
         [TestMethod]
         public void ShouldCaptureRatingWhenQuestionAvailableAndUserSkips()
         {
             MockOf<ISettings>().Languages = new[] {"en-GB"};
+            MockOf<IDevice>().Stub(x => x.Display1AQ1KR(Arg<string>.Is.Anything, Arg<int>.Is.Anything)).Return(-1);
             MockOf<ITsiV200Messages>()
                 .Stub(
                     x =>
@@ -138,15 +139,15 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Scenarios
                 .AssertWasCalled(x => x.SendRequestRating(Arg<string>.Is.Anything, Arg<RequestRating>.Is.Anything));
             MockOf<ITsiV200Messages>().AssertWasCalled(x => x.SendRequestTransaction(Arg<string>.Is.Anything));
             MockOf<IDevice>().AssertWasCalled(x => x.Display1AQ1KR("Hello World",500));
-            MockOf<IDevice>().AssertWasCalled(x => x.Display1AQ1KR("Sorry you didn't rate",1));
-            MockOf<IDevice>().AssertWasCalled(x => x.PrintReceipt("Sorry you didn't rate"));
+            MockOf<IDevice>().AssertWasCalled(x => x.DisplayMessage("Sorry you didn't rate",1));
+            MockOf<IDevice>().AssertWasCalled(x => x.AppendReceipt("Sorry you didn't rate"));
         }
 
         [TestMethod]
         public void ShouldCaptureRatingWhenQuestionAvailableAndUserTimesOut()
         {
             MockOf<ISettings>().Languages = new[] {"en-GB"};
-            MockOf<IDevice>().Stub(x => x.Display1AQ1KR(Arg<string>.Is.Anything, Arg<int>.Is.Anything)).Throw(new TimeoutException());
+            MockOf<IDevice>().Stub(x => x.Display1AQ1KR(Arg<string>.Is.Anything, Arg<int>.Is.Anything)).Return(-2);
             MockOf<ITsiV200Messages>()
                 .Stub(
                     x =>
@@ -158,8 +159,8 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Scenarios
                 .AssertWasCalled(x => x.SendRequestRating(Arg<string>.Is.Anything, Arg<RequestRating>.Is.Anything));
             MockOf<ITsiV200Messages>().AssertWasCalled(x => x.SendRequestTransaction(Arg<string>.Is.Anything));
             MockOf<IDevice>().AssertWasCalled(x => x.Display1AQ1KR("Hello World",500));
-            MockOf<IDevice>().AssertWasCalled(x => x.Display1AQ1KR("Sorry you didn't rate",1));
-            MockOf<IDevice>().AssertWasCalled(x => x.PrintReceipt("Sorry you didn't rate"));
+            MockOf<IDevice>().AssertWasCalled(x => x.DisplayMessage("Sorry you didn't rate",1));
+            MockOf<IDevice>().AssertWasCalled(x => x.AppendReceipt("Sorry you didn't rate"));
         }
 
         [TestMethod]
@@ -179,7 +180,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Scenarios
             MockOf<ITsiV200Messages>().AssertWasCalled(x => x.SendRequestTransaction(Arg<string>.Is.Anything));
             MockOf<IDevice>().AssertWasNotCalled(x => x.DisplayMessage(Arg<string>.Is.Anything));
             MockOf<IDevice>().AssertWasNotCalled(x => x.DisplayMessage(Arg<string>.Is.Anything));
-            MockOf<IDevice>().AssertWasNotCalled(x => x.PrintReceipt(Arg<string>.Is.Anything));
+            MockOf<IDevice>().AssertWasNotCalled(x => x.AppendReceipt(Arg<string>.Is.Anything));
         }
     }
 }
