@@ -22,6 +22,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Environment;
@@ -129,10 +130,10 @@ namespace TruRating.TruModule.V2xx.Scenarios
                             //Wait for the user input for the specified period
                             sw.Stop();
                             rating.ResponseTimeMs = (int) sw.ElapsedMilliseconds; //Set the response time
-
-                            if (IsZeroToNineKeyPressed(keypress.Key))
+                            short result;
+                            if(short.TryParse(keypress.ToString(), out result))
                             {
-                                rating.Value = short.Parse(keypress.KeyChar.ToString());
+                                rating.Value = result;
                             }
                             else
                             {
@@ -163,21 +164,6 @@ namespace TruRating.TruModule.V2xx.Scenarios
                 }
             }
             return rating;
-        }
-
-        private bool IsZeroToNineKeyPressed(ConsoleKey keypress)
-        {
-            if (keypress >= ConsoleKey.D0 && keypress <= ConsoleKey.D9)
-            {
-                return true;
-            }
-
-            if (keypress >= ConsoleKey.NumPad0 && keypress <= ConsoleKey.NumPad9)
-            {
-                return true;
-            }
-
-            return false;
         }
 
         private bool HasQuestionInCurrentLanguage(ResponseQuestion responseQuestion, string language)

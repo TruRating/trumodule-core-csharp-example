@@ -105,7 +105,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Scenarios
             MockOf<ISettings>().Languages = new[] {"en-GB"};
             MockOf<IDevice>()
                 .Stub(x => x.ReadKey(Arg<int>.Is.Anything))
-                .Return(new ConsoleKeyInfo('5', ConsoleKey.NumPad5, false, false, false));
+                .Return('5');
             MockOf<ITsiV200Messages>()
                 .Stub(
                     x =>

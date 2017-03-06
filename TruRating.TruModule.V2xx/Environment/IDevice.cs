@@ -19,43 +19,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
-using System;
-
 namespace TruRating.TruModule.V2xx.Environment
 {
-    public class ConsoleDevice : IDevice
+    public interface IDevice
     {
-        private readonly ILogger _logger;
-
-        public ConsoleDevice(ILogger logger)
-        {
-            _logger = logger;
-        }
-
-        public void PrintScreen(string value)
-        {
-            _logger.Write(ConsoleColor.White, "SCREEN :" + value);
-        }
-
-        public void PrintReceipt(string value)
-        {
-            _logger.Write(ConsoleColor.Magenta, "RECEIPT:" + value);
-        }
-
-        public void Log(string value, params object[] vars)
-        {
-            _logger.Write(ConsoleColor.DarkGray, "LOG    :" + value, vars);
-        }
-
-        public void Error(string value, params object[] vars)
-        {
-            _logger.Write(ConsoleColor.Red, "LOG    :" + value, vars);
-        }
-
-        public char ReadKey(int timeoutMilliseconds)
-        {
-            return KeyPressReader.ReadKey(timeoutMilliseconds).KeyChar;
-        }
+        void PrintScreen(string value);
+        void PrintReceipt(string value);
+        void Log(string value, params object[] vars);
+        void Error(string value, params object[] vars);
+        char ReadKey(int timeoutMilliseconds);
     }
 }
