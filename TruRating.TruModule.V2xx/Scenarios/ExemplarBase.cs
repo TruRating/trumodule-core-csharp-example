@@ -22,8 +22,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Globalization;
-using System.Threading;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Environment;
 
@@ -104,43 +102,23 @@ namespace TruRating.TruModule.V2xx.Scenarios
                 else
                 {
                     Settings.LastQuestionDateTime = DateTime.UtcNow;
-                    try
-                    {
-                        var sw = new Stopwatch();
-                        sw.Start();
-                        var keypress = Device._1AQ1KR(question.Value, question.TimeoutMs);
-                        //Wait for the user input for the specified period
-                        sw.Stop();
-                        rating.ResponseTimeMs = (int) sw.ElapsedMilliseconds; //Set the response time
-                        short result;
-                        if(short.TryParse(keypress.ToString(), out result))
-                        {
-                            rating.Value = result;
-                        }
-                        else
-                        {
-                            rating.Value = -1; //User didn't press a number
-                        }
-
-                        if (rating.Value == -1)
-                        {
-                            //Show the not rated text
-                            WriteResponseReceipt(receipts, When.NOTRATED);
-                            WaitResponseScreen(screens, When.NOTRATED);
-                        }
-                        else
-                        {
-                            //Show the rated text
-                            WriteResponseReceipt(receipts, When.RATED);
-                            WaitResponseScreen(screens, When.RATED);
-                        }
-                    }
-                    catch (TimeoutException) //Timer expired
+                    var sw = new Stopwatch();
+                    sw.Start();
+                    rating.Value = Device.Display1AQ1KR(question.Value, question.TimeoutMs);
+                    //Wait for the user input for the specified period
+                    sw.Stop();
+                    rating.ResponseTimeMs = (int) sw.ElapsedMilliseconds; //Set the response time
+                    if (rating.Value < 0 )
                     {
                         //Show the not rated text
-                        rating.Value = -2;
                         WriteResponseReceipt(receipts, When.NOTRATED);
                         WaitResponseScreen(screens, When.NOTRATED);
+                    }
+                    else
+                    {
+                        //Show the rated text
+                        WriteResponseReceipt(receipts, When.RATED);
+                        WaitResponseScreen(screens, When.RATED);
                     }
                 }
             }
@@ -206,7 +184,7 @@ namespace TruRating.TruModule.V2xx.Scenarios
                 {
                     try
                     {
-                        Device._1AQ1KR(responseScreen.Value, responseScreen.TimeoutMs);
+                        Device.DisplayMessage(responseScreen.Value, responseScreen.TimeoutMs);
                     }
                     catch (TimeoutException)
                     {

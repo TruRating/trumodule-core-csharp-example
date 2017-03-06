@@ -33,22 +33,44 @@ namespace TruRating.TruModule.V2xx.Environment
             _logger = logger;
         }
 
-        public void PrintScreen(string value)
+        public void DisplayMessage(string value)
         {
-            _logger.WriteLine(ConsoleColor.White, "SCREEN : " + value);
+            _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
         }
 
+        public void DisplayMessage(string value, int timeoutMilliseconds)
+        {
+            _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
+            _logger.WriteLine(ConsoleColor.Gray, "DISPLAY: waiting {0} ms", timeoutMilliseconds);
+            KeyPressReader.ReadKey(timeoutMilliseconds, true);
+        }
+
+        public short Display1AQ1KR(string value, int timeoutMilliseconds)
+        {
+            try
+            {
+                _logger.WriteLine(ConsoleColor.Cyan, "1AQ1KR : " + value);
+                _logger.WriteLine(ConsoleColor.Gray, "1AQ1KR : waiting {0} ms", timeoutMilliseconds);
+                _logger.Write(ConsoleColor.Cyan, "1AQ1KR : ");
+                short result;
+                if (short.TryParse(KeyPressReader.ReadKey(timeoutMilliseconds, false).KeyChar.ToString(), out result))
+                {
+                    return result;
+                }
+                return -1; //User didn't press a number
+            }
+            catch (TimeoutException)
+            {
+                return -2; //User timed out
+            }
+            catch (Exception)
+            {
+                return -4; // Couldn't ask a question or capture the response
+            }
+        }
         public void PrintReceipt(string value)
         {
             _logger.WriteLine(ConsoleColor.Magenta, "RECEIPT: " + value);
-        }
-
-        public char _1AQ1KR(string value, int timeoutMilliseconds)
-        {
-            _logger.WriteLine(ConsoleColor.Cyan, "1AQ1KR : " + value);
-            _logger.WriteLine(ConsoleColor.Gray, "1AQ1KR : waiting {0} ms",timeoutMilliseconds);
-            _logger.Write(ConsoleColor.Cyan, "1AQ1KR : ");
-            return KeyPressReader.ReadKey(timeoutMilliseconds,false).KeyChar;
         }
     }
 }

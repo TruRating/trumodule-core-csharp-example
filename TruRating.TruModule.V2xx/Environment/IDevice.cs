@@ -23,8 +23,9 @@ namespace TruRating.TruModule.V2xx.Environment
 {
     public interface IDevice
     {
-        void PrintScreen(string value);
+        void DisplayMessage(string value);
+        void DisplayMessage(string value, int timeoutMilliseconds);
+        short Display1AQ1KR(string value, int timeoutMilliseconds);
         void PrintReceipt(string value);
-        char _1AQ1KR(string value, int timeoutMilliseconds);
     }
 }
