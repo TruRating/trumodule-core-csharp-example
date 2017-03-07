@@ -125,8 +125,6 @@ namespace TruRating.TruModule.V2xx.Environment
         public string TerminalId { get; set; }
 
         public string Version { get; set; }
-        public bool Automatic { get; set; }
-
         [Required]
         public string TransportKey { get; set; }
 
