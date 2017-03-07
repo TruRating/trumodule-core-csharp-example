@@ -24,15 +24,6 @@ using System;
 
 namespace TruRating.TruModule.V2xx.Environment
 {
-    public interface IDevice
-    {
-        void PrintScreen(string value);
-        void PrintReceipt(string value);
-        void Log(string value, params object[] vars);
-        void Error(string value, params object[] vars);
-        ConsoleKeyInfo ReadKey(int timeoutMilliseconds);
-    }
-
     public class ConsoleDevice : IDevice
     {
         private readonly ILogger _logger;
@@ -42,29 +33,44 @@ namespace TruRating.TruModule.V2xx.Environment
             _logger = logger;
         }
 
-        public void PrintScreen(string value)
+        public void DisplayMessage(string value)
         {
-            _logger.Write(ConsoleColor.White, "SCREEN :" + value);
+            _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
         }
 
-        public void PrintReceipt(string value)
+        public void DisplayMessage(string value, int timeoutMilliseconds)
         {
-            _logger.Write(ConsoleColor.Magenta, "RECEIPT:" + value);
+            _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
+            _logger.WriteLine(ConsoleColor.Gray, "DISPLAY: waiting {0} ms", timeoutMilliseconds);
+            KeyPressReader.ReadKey(timeoutMilliseconds, true);
         }
 
-        public void Log(string value, params object[] vars)
+        public short Display1AQ1KR(string value, int timeoutMilliseconds)
         {
-            _logger.Write(ConsoleColor.DarkGray, "LOG    :" + value, vars);
+            try
+            {
+                _logger.WriteLine(ConsoleColor.Cyan, "1AQ1KR : " + value);
+                _logger.WriteLine(ConsoleColor.Gray, "1AQ1KR : waiting {0} ms", timeoutMilliseconds);
+                _logger.Write(ConsoleColor.Cyan, "1AQ1KR : ");
+                short result;
+                if (short.TryParse(KeyPressReader.ReadKey(timeoutMilliseconds, false).KeyChar.ToString(), out result))
+                {
+                    return result;
+                }
+                return -1; //User didn't press a number
+            }
+            catch (TimeoutException)
+            {
+                return -2; //User timed out
+            }
+            catch (Exception)
+            {
+                return -4; // Couldn't ask a question or capture the response
+            }
         }
-
-        public void Error(string value, params object[] vars)
+        public void AppendReceipt(string value)
         {
-            _logger.Write(ConsoleColor.Red, "LOG    :" + value, vars);
-        }
-
-        public ConsoleKeyInfo ReadKey(int timeoutMilliseconds)
-        {
-            return KeyPressReader.ReadKey(timeoutMilliseconds);
+            _logger.WriteLine(ConsoleColor.Magenta, "RECEIPT: " + value);
         }
     }
 }

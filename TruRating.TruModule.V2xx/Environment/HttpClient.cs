@@ -82,7 +82,7 @@ namespace TruRating.TruModule.V2xx.Environment
                 }
                 catch (Exception)
                 {
-                    _logger.Write(ConsoleColor.DarkRed, "Invalid TransportKey");
+                    _logger.WriteLine(ConsoleColor.Red, "HttpClient : Invalid TransportKey");
                 }
             }
             _logger.WriteDebug(string.Format("POST {0} HTTP/1.1", _settings.Endpoint), ConsoleColor.Yellow);
@@ -109,7 +109,7 @@ namespace TruRating.TruModule.V2xx.Environment
             }
             if (WebClient.ResponseHeaders.Get("x-tru-api-diagnostic") != null)
             {
-                _logger.Write(ConsoleColor.Red, WebClient.ResponseHeaders.Get("x-tru-api-diagnostic"));
+                _logger.WriteLine(ConsoleColor.Red, "HttpClient : {0}", WebClient.ResponseHeaders.Get("x-tru-api-diagnostic"));
             }
             _logger.WriteDebug(responseBody);
             _logger.WriteDebug("");

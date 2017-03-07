@@ -34,7 +34,7 @@ namespace TruRating.TruModule.V2xx.Scenarios
         private readonly V200Exemplar _v200Exemplar;
         private readonly V210PosEventListExemplar _v210PosEventListExemplar;
         private readonly V210PosEventsExemplar _v210PosEventsExemplar;
-        private Boolean _forceQuery = true;
+        private bool _forceQuery = true;
 
         public V220Exemplar(ILogger logger, ISettings settings, IDevice device, ITsiV220Messages tsiV220Messages,
             V200Exemplar v200Exemplar, V210PosEventsExemplar v210PosEventsExemplar,
@@ -99,7 +99,7 @@ namespace TruRating.TruModule.V2xx.Scenarios
 
         private void PrintLookups(LookupOption lookupOption, int depth)
         {
-            _device.PrintScreen("".PadLeft(depth, ' ') + lookupOption.Text + " (" + lookupOption.Value + ")");
+            _device.DisplayMessage("".PadLeft(depth, ' ') + lookupOption.Text + " (" + lookupOption.Value + ")");
             if (lookupOption.Option != null)
                 foreach (var option in lookupOption.Option)
                 {

@@ -56,8 +56,8 @@ namespace TruRating.TruModule.V2xx
             }
             catch (Exception e)
             {
-                logger.Write(ConsoleColor.Red, e.Message);
-                logger.Write(ConsoleColor.Red, "Press enter to exit");
+                logger.WriteLine(ConsoleColor.Red, e.Message);
+                logger.WriteLine(ConsoleColor.Red, "Press enter to exit");
                 KeyPressReader.ReadKey();
             }
         }

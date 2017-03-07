@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Environment\ExtensionMethods.cs" />
     <Compile Include="Environment\HttpClient.cs" />
+    <Compile Include="Environment\IDevice.cs" />
     <Compile Include="Environment\RequiredAttribute.cs" />
     <Compile Include="Messages\TsiMessages.cs" />
     <Compile Include="Environment\ConsoleDevice.cs" />

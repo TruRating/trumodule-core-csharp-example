@@ -22,7 +22,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Threading;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Environment;
 
@@ -51,7 +50,7 @@ namespace TruRating.TruModule.V2xx.Scenarios
 
         public void RunLoop()
         {
-            Logger.Write(ConsoleColor.Green, "Press any key to start");
+            Logger.WriteLine(ConsoleColor.Red, "Press any key to start");
             KeyPressReader.ReadKey();
             while (true) //Endless loop
             {
@@ -61,22 +60,15 @@ namespace TruRating.TruModule.V2xx.Scenarios
                 }
                 catch (Exception e)
                 {
-                    Logger.Write(ConsoleColor.DarkYellow, "Error {0}", e);
+                    Logger.WriteLine(ConsoleColor.DarkYellow, "Error {0}", e);
                 }
                 finally
                 {
-                    if (!Settings.Automatic)
-                    {
-                        var endOfRunPressAKeyToReset = " End of run. Press a key to reset. ";
-                        Logger.Write(ConsoleColor.DarkGray,
-                            endOfRunPressAKeyToReset.PadLeft(Console.WindowWidth - 1, '='));
-                        Logger.Write(ConsoleColor.DarkGray, "");
-                        KeyPressReader.ReadKey();
-                    }
-                    else
-                    {
-                        Thread.Sleep(1000);
-                    }
+                    var endOfRunPressAKeyToReset = " End of run. Press a key to reset. ";
+                    Logger.WriteLine(ConsoleColor.DarkGray,
+                        endOfRunPressAKeyToReset.PadLeft(Console.WindowWidth - 1, '='));
+                    Logger.WriteLine(ConsoleColor.DarkGray, "");
+                    KeyPressReader.ReadKey();
                 }
             }
         }
@@ -110,81 +102,33 @@ namespace TruRating.TruModule.V2xx.Scenarios
                 else
                 {
                     Settings.LastQuestionDateTime = DateTime.UtcNow;
-                    Device.PrintScreen(question.Value); //Show the question
-                    try
-                    {
-                        var sw = new Stopwatch();
-                        sw.Start();
-                        Device.Log("waiting {0} ms", question.TimeoutMs);
-
-                        if (Settings.Automatic)
-                        {
-                            var rand = new Random();
-                            Thread.Sleep(rand.Next(500, 2000));
-                            rating.Value = (short) rand.Next(-1, 9);
-                        }
-                        else
-                        {
-                            var keypress = Device.ReadKey(question.TimeoutMs);
-                            //Wait for the user input for the specified period
-                            sw.Stop();
-                            rating.ResponseTimeMs = (int) sw.ElapsedMilliseconds; //Set the response time
-
-                            if (IsZeroToNineKeyPressed(keypress.Key))
-                            {
-                                rating.Value = short.Parse(keypress.KeyChar.ToString());
-                            }
-                            else
-                            {
-                                rating.Value = -1; //User didn't press a number
-                            }
-                        }
-
-                        if (rating.Value == -1)
-                        {
-                            //Show the not rated text
-                            WriteResponseReceipt(receipts, When.NOTRATED);
-                            WaitResponseScreen(screens, When.NOTRATED);
-                        }
-                        else
-                        {
-                            //Show the rated text
-                            WriteResponseReceipt(receipts, When.RATED);
-                            WaitResponseScreen(screens, When.RATED);
-                        }
-                    }
-                    catch (TimeoutException) //Timer expired
+                    var sw = new Stopwatch();
+                    sw.Start();
+                    rating.Value = Device.Display1AQ1KR(question.Value, question.TimeoutMs);
+                    //Wait for the user input for the specified period
+                    sw.Stop();
+                    rating.ResponseTimeMs = (int) sw.ElapsedMilliseconds; //Set the response time
+                    if (rating.Value < 0 )
                     {
                         //Show the not rated text
-                        rating.Value = -2;
                         WriteResponseReceipt(receipts, When.NOTRATED);
                         WaitResponseScreen(screens, When.NOTRATED);
+                    }
+                    else
+                    {
+                        //Show the rated text
+                        WriteResponseReceipt(receipts, When.RATED);
+                        WaitResponseScreen(screens, When.RATED);
                     }
                 }
             }
             return rating;
         }
 
-        private bool IsZeroToNineKeyPressed(ConsoleKey keypress)
-        {
-            if (keypress >= ConsoleKey.D0 && keypress <= ConsoleKey.D9)
-            {
-                return true;
-            }
-
-            if (keypress >= ConsoleKey.NumPad0 && keypress <= ConsoleKey.NumPad9)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         private bool HasQuestionInCurrentLanguage(ResponseQuestion responseQuestion, string language)
         {
             if (responseQuestion == null)
             {
-                Device.Error("Can't ask a question because transaction conducted in {0}", language);
                 return false;
             }
             return true;
@@ -224,7 +168,7 @@ namespace TruRating.TruModule.V2xx.Scenarios
             {
                 if (responseReceipt.When == when)
                 {
-                    Device.PrintReceipt(responseReceipt.Value);
+                    Device.AppendReceipt(responseReceipt.Value);
                     break;
                 }
             }
@@ -238,18 +182,9 @@ namespace TruRating.TruModule.V2xx.Scenarios
             {
                 if (responseScreen.When == whenToDisplay) //If this response element matches the state of the screen.
                 {
-                    Device.PrintScreen(responseScreen.Value);
                     try
                     {
-                        if (!Settings.Automatic)
-                        {
-                            Device.Log("waiting {0} ms", responseScreen.TimeoutMs);
-                            Device.ReadKey(responseScreen.TimeoutMs);
-                        }
-                        else
-                        {
-                            Thread.Sleep(500);
-                        }
+                        Device.DisplayMessage(responseScreen.Value, responseScreen.TimeoutMs);
                     }
                     catch (TimeoutException)
                     {

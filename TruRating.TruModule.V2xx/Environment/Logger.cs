@@ -27,6 +27,7 @@ namespace TruRating.TruModule.V2xx.Environment
     public interface ILogger
     {
         void Write(ConsoleColor color, string value, params object[] vars);
+        void WriteLine(ConsoleColor color, string value, params object[] vars);
         void WriteDebug(string value, params object[] vars);
         void WriteDebug(string value, ConsoleColor color, params object[] vars);
     }
@@ -40,10 +41,16 @@ namespace TruRating.TruModule.V2xx.Environment
             _debugOnly = debugOnly;
         }
 
-        public void Write(ConsoleColor color, string value, params object[] vars)
+        public void WriteLine(ConsoleColor color, string value, params object[] vars)
         {
             Console.ForegroundColor = color;
             Console.WriteLine(value, vars);
+            Console.ResetColor();
+        }
+        public void Write(ConsoleColor color, string value, params object[] vars)
+        {
+            Console.ForegroundColor = color;
+            Console.Write(value, vars);
             Console.ResetColor();
         }
 
