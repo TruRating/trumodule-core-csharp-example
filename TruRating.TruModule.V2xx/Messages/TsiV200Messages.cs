@@ -43,7 +43,7 @@ namespace TruRating.TruModule.V2xx.Messages
 
         public Response SendRequestQuestion(List<RequestLanguage> languages, string sessionId, Trigger trigger)
         {
-            Logger.Write(ConsoleColor.Green, "Requesting question"); //Debug
+            Logger.WriteLine(ConsoleColor.Green, "LOGIC : Requesting question"); //Debug
             var request = CreateBlankRequest(sessionId);
             request.Item = new RequestQuestion
             {
