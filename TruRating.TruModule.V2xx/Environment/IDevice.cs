@@ -27,5 +27,6 @@ namespace TruRating.TruModule.V2xx.Environment
         void DisplayMessage(string value, int timeoutMilliseconds);
         short Display1AQ1KR(string value, int timeoutMilliseconds);
         void AppendReceipt(string value);
+        string ReadLine(string value);
     }
 }

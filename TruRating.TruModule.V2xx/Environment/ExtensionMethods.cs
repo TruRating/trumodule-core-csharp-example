@@ -21,13 +21,37 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using TruRating.Dto.TruService.V2xx;
 
 namespace TruRating.TruModule.V2xx.Environment
 {
     public class ExtensionMethods
     {
+        public static Dictionary<TKey, TElement> ToDictionary<TSource, TKey, TElement>(IEnumerable<TSource> source, Memoizer.Func<TSource, TKey> keySelector, Memoizer.Func<TSource, TElement> elementSelector)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+            if (keySelector == null)
+            {
+                throw new ArgumentNullException("keySelector");
+            }
+            if (elementSelector == null)
+            {
+                throw new ArgumentNullException("elementSelector");
+            }
+
+            var dictionary = new Dictionary<TKey, TElement>();
+            foreach (TSource current in source)
+            {
+                dictionary.Add(keySelector(current), elementSelector(current));
+            }
+            return dictionary;
+        }
         public static string GetLocalIpAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());

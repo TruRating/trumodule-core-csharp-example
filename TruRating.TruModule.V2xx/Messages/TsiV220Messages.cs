@@ -48,13 +48,13 @@ namespace TruRating.TruModule.V2xx.Messages
             return HttpClient.Send(request);
         }
 
-        public Response SendRequestLookup()
+        public Response SendRequestLookup(LookupName lookupName)
         {
             var request = CreateBlankRequest(Guid.NewGuid().ToString());
 
             request.Item = new RequestLookup
             {
-                Name = LookupName.SECTORNODE,
+                Name = lookupName,
                 Language = CreateRequestLanguage(),
                 Device = CreateRequestDevice(),
                 Server = CreateRequestServer()
@@ -62,38 +62,48 @@ namespace TruRating.TruModule.V2xx.Messages
             return HttpClient.Send(request);
         }
 
-        public Response SendRequestActivate()
+        public Response SendRequestActivate(int sectorNode,
+            string timeZone, PaymentInstant paymentInstant,
+            string emailAddress, string password, string address, string mobileNumber, string merchantName, string businessName)
         {
             var request = CreateBlankRequest(Guid.NewGuid().ToString());
+            
+            var requestActivate = new RequestActivate
+            {
+                Language = CreateRequestLanguage(),
+                Device = CreateRequestDevice(),
+                Server = CreateRequestServer(),
+                Item = new RequestRegistrationForm
+                {
+                    BusinessAddress = address,
+                    BusinessName = businessName,
+                    MerchantEmailAddress = emailAddress,
+                    MerchantMobileNumber = mobileNumber,
+                    MerchantName = merchantName,
+                    MerchantPassword = password,
+                    PaymentInstant = paymentInstant,
+                    SectorNode = sectorNode,
+                    TimeZone = timeZone
+                }
+            };
+            request.Item = requestActivate;
+            return HttpClient.Send(request);
+        }
 
+        public Response SendRequestActivate(string registrationCode)
+        {
+            var request = CreateBlankRequest(Guid.NewGuid().ToString());
             var requestActivate = new RequestActivate
             {
                 Language = CreateRequestLanguage(),
                 Device = CreateRequestDevice(),
                 Server = CreateRequestServer()
             };
-            if (Settings.RegistrationCode)
+            if (!string.IsNullOrEmpty(registrationCode))
             {
-                requestActivate.Item = System.Environment.MachineName;
-            }
-            else
-            {
-                requestActivate.Item = new RequestRegistrationForm
-                {
-                    BusinessAddress = "Bankside House, 107 Leadenhall St, London EC3A 4AF",
-                    BusinessName =
-                        string.Format("{0} @ {1}", System.Environment.MachineName, ExtensionMethods.GetLocalIpAddress()),
-                    MerchantEmailAddress = "developers@trurating.com",
-                    MerchantMobileNumber = "0330 123 1310",
-                    MerchantName = "TruRating Developers",
-                    MerchantPassword = "password",
-                    PaymentInstant = PaymentInstant.PAYBEFORE,
-                    SectorNode = 137,
-                    TimeZone = "Europe/London"
-                };
+                requestActivate.Item = registrationCode;
             }
             request.Item = requestActivate;
-
             return HttpClient.Send(request);
         }
     }

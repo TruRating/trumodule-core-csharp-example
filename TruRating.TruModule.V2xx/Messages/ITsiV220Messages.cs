@@ -26,8 +26,10 @@ namespace TruRating.TruModule.V2xx.Messages
 {
     public interface ITsiV220Messages : ITsiV210Messages
     {
-        Response SendRequestLookup();
+        Response SendRequestLookup(LookupName lookupName);
         Response SendRequestQuery(bool forceQuery);
-        Response SendRequestActivate();
+        Response SendRequestActivate(string registrationcode);
+        Response SendRequestActivate(int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress,
+            string password, string address, string mobileNumber, string merchantName, string businessName);
     }
 }

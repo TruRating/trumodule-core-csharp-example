@@ -29,7 +29,7 @@ namespace TruRating.TruModule.V2xx.Environment
 
     internal class KeyPressReader
     {
-        private static readonly Thread inputThread;
+        private static Thread inputThread;
         private static volatile AutoResetEvent getInput, gotInput;
         private static ConsoleKeyInfo input;
         private static volatile bool _intercept;
@@ -38,11 +38,18 @@ namespace TruRating.TruModule.V2xx.Environment
         {
             getInput = new AutoResetEvent(false);
             gotInput = new AutoResetEvent(false);
+            Start();
+        }
+        public static void Stop()
+        {
+            inputThread.Abort();
+        }
+        public static void Start()
+        {
             inputThread = new Thread(reader);
             inputThread.IsBackground = true;
             inputThread.Start();
         }
-
         public static event KeyPressEvenHandler OnInputOverride;
 
         private static void reader()

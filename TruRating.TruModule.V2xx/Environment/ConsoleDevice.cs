@@ -32,12 +32,19 @@ namespace TruRating.TruModule.V2xx.Environment
         {
             _logger = logger;
         }
-
         public void DisplayMessage(string value)
         {
             _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
         }
 
+        public string ReadLine(string value)
+        {
+            KeyPressReader.Stop();
+            _logger.Write(ConsoleColor.Green, "CAPTURE: " + value + ": ");
+            var readLine = Console.ReadLine();
+            KeyPressReader.Start();
+            return readLine;
+        }
         public void DisplayMessage(string value, int timeoutMilliseconds)
         {
             _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
@@ -72,5 +79,7 @@ namespace TruRating.TruModule.V2xx.Environment
         {
             _logger.WriteLine(ConsoleColor.Magenta, "RECEIPT: " + value);
         }
+
+       
     }
 }

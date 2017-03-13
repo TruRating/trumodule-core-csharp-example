@@ -39,7 +39,6 @@ namespace TruRating.TruModule.V2xx.Environment
         string TerminalId { get; set; }
         string Version { get; set; }
         string TransportKey { get; set; }
-        bool RegistrationCode { get; set; }
         DateTime ActivationRecheck { get; set; }
         bool IsActivated { get; set; }
         TsiVersion TsiVersion { get; set; }
@@ -58,19 +57,24 @@ namespace TruRating.TruModule.V2xx.Environment
             logger.WriteLine(ConsoleColor.Yellow,
                 " Settings ".PadRight((Console.WindowWidth)/2, '=').PadLeft((Console.WindowWidth) - 1, '='));
             logger.WriteLine(ConsoleColor.Yellow,
-                System.Environment.NewLine + "Override any of these settings from the configuration file");
+                System.Environment.NewLine + "Override any of these settings from the configuration file - required settings will require user input");
             logger.WriteLine(ConsoleColor.Yellow,
                 "Press 's' anytime after the scenario has started print all settings." + System.Environment.NewLine);
             var errors = new List<string>();
+            KeyPressReader.Stop();
             foreach (var prop in GetType().GetProperties())
             {
                 var hasValue = LoadSetting(prop);
-                if (!hasValue)
+                //if (!hasValue)
+                //{
+                    //errors.Add(prop.Name);
+                //}
+                while (!LogSetting(prop, hasValue))
                 {
-                    errors.Add(prop.Name);
                 }
-                LogSetting(prop, hasValue);
+                //LogSetting(prop, hasValue);
             }
+            KeyPressReader.Start();
             if (errors.Count > 0)
             {
                 throw new Exception("Please edit the config file and add your " + string.Join(", ", errors.ToArray()));
@@ -128,7 +132,6 @@ namespace TruRating.TruModule.V2xx.Environment
         [Required]
         public string TransportKey { get; set; }
 
-        public bool RegistrationCode { get; set; }
         public DateTime ActivationRecheck { get; set; }
         public bool IsActivated { get; set; }
 
@@ -185,7 +188,7 @@ namespace TruRating.TruModule.V2xx.Environment
 
         private bool PrintSettings(char key)
         {
-            if (key == 's')
+            if (key == 's' || key == 'S')
             {
                 _logger.WriteLine(ConsoleColor.Yellow,
                     " Settings ".PadRight((Console.WindowWidth)/2, '=').PadLeft((Console.WindowWidth) - 1, '='));
@@ -202,7 +205,7 @@ namespace TruRating.TruModule.V2xx.Environment
         }
 
 
-        private void LogSetting(PropertyInfo propertyInfo, bool hasValue)
+        private bool LogSetting(PropertyInfo propertyInfo, bool hasValue)
         {
             var required = propertyInfo.GetCustomAttributes(typeof (RequiredAttribute), true).Length > 0;
             var value = propertyInfo.GetValue(this, null);
@@ -211,20 +214,24 @@ namespace TruRating.TruModule.V2xx.Environment
             if (required && !hasValue)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("MISSING");
+
+                var typedValue = Console.ReadLine();
+                if (string.IsNullOrEmpty(typedValue))
+                {
+                    return false;
+                }
+                return LoadSetting(propertyInfo, typedValue);
+            }
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            if (IsArrayOf<string>(propertyInfo.PropertyType))
+            {
+                Console.WriteLine(string.Join(",", ((string[]) value)));
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                if (IsArrayOf<string>(propertyInfo.PropertyType))
-                {
-                    Console.WriteLine(string.Join(",", ((string[]) value)));
-                }
-                else
-                {
-                    Console.WriteLine(value);
-                }
+                Console.WriteLine(value);
             }
+            return true;
         }
 
         public static bool IsArrayOf<T>(Type type)
@@ -232,6 +239,18 @@ namespace TruRating.TruModule.V2xx.Environment
             return type == typeof (T[]);
         }
 
+        private bool LoadSetting(PropertyInfo propertyInfo, string value)
+        {
+            try
+            {
+                propertyInfo.SetValue(this, value, null);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         private bool LoadSetting(PropertyInfo propertyInfo)
         {
             try
