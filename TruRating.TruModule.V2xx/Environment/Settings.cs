@@ -42,6 +42,7 @@ namespace TruRating.TruModule.V2xx.Environment
         DateTime ActivationRecheck { get; set; }
         bool IsActivated { get; set; }
         TsiVersion TsiVersion { get; set; }
+        bool AllowRegistration { get; set; }
     }
 
     public class Settings : ISettings
@@ -137,6 +138,8 @@ namespace TruRating.TruModule.V2xx.Environment
 
         [Required]
         public TsiVersion TsiVersion { get; set; }
+
+        public bool AllowRegistration { get; set; }
 
         public static string GetValues<T>()
         {

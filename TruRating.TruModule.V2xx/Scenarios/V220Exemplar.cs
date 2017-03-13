@@ -146,6 +146,11 @@ namespace TruRating.TruModule.V2xx.Scenarios
         private void Activate()
         {
             _device.DisplayMessage("This device is not registered!");
+            if (!Settings.AllowRegistration)
+            {
+                _device.DisplayMessage("Registration is not enabled in config file, please change AllowRegistration setting");
+                return;
+            }
             var registrationCode = _device.ReadLine("Type your registration code, or press enter to register with form data");
             Response status;
             if (string.IsNullOrEmpty(registrationCode))
@@ -198,6 +203,7 @@ namespace TruRating.TruModule.V2xx.Scenarios
         {
             if (Settings.ActivationRecheck > DateTime.UtcNow)
             {
+                _logger.WriteLine(ConsoleColor.Gray, "Not checking TruService, next check at {0}", Settings.ActivationRecheck);
                 return Settings.IsActivated;
             }
             var status = _tsiV220Messages.SendRequestQuery(_forceQuery);
