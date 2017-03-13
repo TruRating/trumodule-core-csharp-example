@@ -26,6 +26,7 @@ using System.Net;
 using System.Text;
 using TruRating.Dto.TruService.V220;
 using TruRating.Dto.TruService.V2xx;
+using TruRating.Dto.TruService.V2xx.Serialization;
 
 namespace TruRating.TruModule.V2xx.Environment
 {

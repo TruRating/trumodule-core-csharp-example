@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using TruRating.Dto.TruService.V2xx;
+using TruRating.Dto.TruService.V2xx.Serialization;
 
 namespace TruRating.TruModule.V2xx.Environment
 {
