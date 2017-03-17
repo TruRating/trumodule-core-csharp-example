@@ -1,4 +1,4 @@
-﻿// The MIT License
+// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -20,30 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TruRating.TruModule.V2xx.Security;
+using TruRating.Dto.TruService.V2xx.Serialization;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.Enviroment
+namespace TruRating.TruModule.V2xx.Serialization
 {
-    [TestClass]
-    public class MacSignatureCalculatorTests : MsTestsContext<MacSignatureCalculator>
+    internal class DefaultSerializer : ISerializer
     {
-        [TestInitialize]
-        public void Setup()
+        public byte[] Serialize<T>(T value)
         {
-            RegisterFake("000001002051431059683111");
+            return Serializer.SerializeBytes(value);
         }
-        [TestMethod]
-        public void ShouldCalculateMacForKnownMessage()
+
+        public T Deserialize<T>(byte[] value)
         {
-            var result = Sut.Calculate(Encoding.UTF8.GetBytes("Super secret message")) =="E133185A2953E98B978535CB9CEC1A691BCE247D5ABF17DCCC758E99A458AD780141F192E25B9BDD";
-            Assert.IsTrue(result);
-        }
-        [TestMethod]
-        public void ShouldBeEncryptionSchemeThree()
-        {
-            Assert.IsTrue(Sut.EncryptionScheme == "3");
+            return Serializer.Deserialize<T>(value);
         }
     }
 }

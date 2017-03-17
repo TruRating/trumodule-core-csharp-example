@@ -20,30 +20,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TruRating.TruModule.V2xx.Security;
+using System.Collections.Generic;
+using TruRating.TruModule.V2xx.ConsoleRunner.Environment;
+using TruRating.TruModule.V2xx.Device;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.Enviroment
+namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
 {
-    [TestClass]
-    public class MacSignatureCalculatorTests : MsTestsContext<MacSignatureCalculator>
+    public class UseCaseFactory
     {
-        [TestInitialize]
-        public void Setup()
+        internal static List<IUseCase> Get(ConsoleWriter consoleWriter, ConsoleSettings consoleSettings, IDevice device)
         {
-            RegisterFake("000001002051431059683111");
-        }
-        [TestMethod]
-        public void ShouldCalculateMacForKnownMessage()
-        {
-            var result = Sut.Calculate(Encoding.UTF8.GetBytes("Super secret message")) =="E133185A2953E98B978535CB9CEC1A691BCE247D5ABF17DCCC758E99A458AD780141F192E25B9BDD";
-            Assert.IsTrue(result);
-        }
-        [TestMethod]
-        public void ShouldBeEncryptionSchemeThree()
-        {
-            Assert.IsTrue(Sut.EncryptionScheme == "3");
+            var standaloneUseCase = new StandaloneUseCase(consoleWriter, consoleSettings, device);
+            var integratedPosEventUseCase = new IntegratedPosEventUseCase(consoleWriter, consoleSettings, device);
+            var integratedPosEventListUseCase = new IntegratedPosEventListUseCase(consoleWriter, consoleSettings, device);
+
+            var modules = new List<IUseCase>
+            {
+                standaloneUseCase,
+                integratedPosEventUseCase,
+                integratedPosEventListUseCase
+            };
+            return modules;
         }
     }
 }

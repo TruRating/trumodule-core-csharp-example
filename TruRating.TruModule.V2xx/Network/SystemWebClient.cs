@@ -1,4 +1,4 @@
-﻿// The MIT License
+// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -20,30 +20,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TruRating.TruModule.V2xx.Security;
+using System;
+using System.Net;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.Enviroment
+namespace TruRating.TruModule.V2xx.Network
 {
-    [TestClass]
-    public class MacSignatureCalculatorTests : MsTestsContext<MacSignatureCalculator>
+    public class SystemWebClient : WebClient, IWebClient
     {
-        [TestInitialize]
-        public void Setup()
+        private readonly int _httpTimeoutMs;
+
+        public SystemWebClient(int httpTimeoutMs)
         {
-            RegisterFake("000001002051431059683111");
+            _httpTimeoutMs = httpTimeoutMs;
         }
-        [TestMethod]
-        public void ShouldCalculateMacForKnownMessage()
+
+        protected override WebRequest GetWebRequest(Uri address)
         {
-            var result = Sut.Calculate(Encoding.UTF8.GetBytes("Super secret message")) =="E133185A2953E98B978535CB9CEC1A691BCE247D5ABF17DCCC758E99A458AD780141F192E25B9BDD";
-            Assert.IsTrue(result);
-        }
-        [TestMethod]
-        public void ShouldBeEncryptionSchemeThree()
-        {
-            Assert.IsTrue(Sut.EncryptionScheme == "3");
+            var webRequest = base.GetWebRequest(address);
+            if (webRequest != null)
+            {
+                webRequest.Timeout = _httpTimeoutMs;
+                return webRequest;
+            }
+            return null;
         }
     }
 }

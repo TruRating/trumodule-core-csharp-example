@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B16ABFEC-FEA4-42B7-B3CC-0200518DF896}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TruRating.TruModule.V2xx</RootNamespace>
     <AssemblyName>TruRating.TruModule.V2xx</AssemblyName>
@@ -37,58 +37,53 @@
     <SlowCheetah_NuGetImportPath Condition=" '$(SlowCheetah_NuGetImportPath)'=='' ">$([System.IO.Path]::GetFullPath( $(MSBuildProjectDirectory)\Properties\SlowCheetah\SlowCheetah.Transforms.targets ))</SlowCheetah_NuGetImportPath>
     <SlowCheetahTargets Condition=" '$(SlowCheetah_EnableImportFromNuGet)'=='true' and Exists('$(SlowCheetah_NuGetImportPath)') ">$(SlowCheetah_NuGetImportPath)</SlowCheetahTargets>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TruRating.Dto.TruService.V2xx, Version=2.2.4.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TruRating.Dto.TruService.V2xx.2.2.4.1\lib\net20\TruRating.Dto.TruService.V2xx.dll</HintPath>
+    <Reference Include="TruRating.Dto.TruService.V2xx, Version=2.2.4.11, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TruRating.Dto.TruService.V2xx.2.2.4.11\lib\net20\TruRating.Dto.TruService.V2xx.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Environment\ExtensionMethods.cs" />
-    <Compile Include="Environment\HttpClient.cs" />
-    <Compile Include="Environment\IDevice.cs" />
-    <Compile Include="Environment\RequiredAttribute.cs" />
-    <Compile Include="Messages\TsiMessages.cs" />
-    <Compile Include="Environment\ConsoleDevice.cs" />
-    <Compile Include="Scenarios\V210NoPosIntegrationExemplar.cs" />
-    <Compile Include="Scenarios\ExemplarFactory.cs" />
-    <Compile Include="Environment\KeyPressReader.cs" />
-    <Compile Include="Environment\Logger.cs" />
-    <Compile Include="Environment\MacSignatureCalculator.cs" />
-    <Compile Include="Environment\PosIntegration.cs" />
-    <Compile Include="Messages\ITsiV200Messages.cs" />
-    <Compile Include="Messages\ITsiV210Messages.cs" />
-    <Compile Include="Messages\ITsiV220Messages.cs" />
-    <Compile Include="Scenarios\ExemplarBase.cs" />
-    <Compile Include="Messages\TsiV220Messages.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Device\IPeripheralCapabilities.cs" />
+    <Compile Include="Device\ILogger.cs" />
+    <Compile Include="Helpers\DateTimeProvider.cs" />
+    <Compile Include="Helpers\ExtensionMethods.cs" />
+    <Compile Include="Helpers\TaskHelpers.cs" />
+    <Compile Include="Settings\ISettings.cs" />
+    <Compile Include="Module\ITruModuleIntegrated.cs" />
+    <Compile Include="Module\ITruModuleStandalone.cs" />
+    <Compile Include="Serialization\ITruServiceMessageFactory.cs" />
+    <Compile Include="Network\ITruServiceClient.cs" />
+    <Compile Include="Module\PosParams.cs" />
+    <Compile Include="Serialization\DefaultSerializer.cs" />
+    <Compile Include="Device\IDevice.cs" />
+    <Compile Include="Security\IMacSignatureCalculator.cs" />
+    <Compile Include="Serialization\ISerializer.cs" />
+    <Compile Include="Network\IWebClient.cs" />
+    <Compile Include="Security\MacSignatureCalculator.cs" />
+    <Compile Include="Network\SystemWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Network\TruServiceClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Environment\Settings.cs" />
-    <Compile Include="Messages\TsiV200Messages.cs" />
-    <Compile Include="Messages\TsiV210Messages.cs" />
-    <Compile Include="Environment\TsiVersion.cs" />
-    <Compile Include="Scenarios\V200Exemplar.cs" />
-    <Compile Include="Scenarios\V210PosEventListExemplar.cs" />
-    <Compile Include="Scenarios\V210PosEventsExemplar.cs" />
-    <Compile Include="Scenarios\V220Exemplar.cs" />
+    <Compile Include="Module\TruModule.cs" />
+    <Compile Include="Module\TruModuleIntegrated.cs" />
+    <Compile Include="Module\TruModuleStandalone.cs" />
+    <Compile Include="Serialization\TruServiceMessageFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\readme.md">
-      <Link>readme.md</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="License.txt" />
-    <None Include="App.config">
-      <TransformOnBuild>true</TransformOnBuild>
-      <SubType>Designer</SubType>
-    </None>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" Label="SlowCheetah" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
