@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using TruRating.Dto.TruService.V220;
+using TruRating.Dto.TruService.V2xx;
 using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Module;
 
@@ -28,7 +29,7 @@ namespace TruRating.TruModule.V2xx.Serialization
 {
     public class TruServiceMessageFactory : ITruServiceMessageFactory
     {
-        public Request AssemblyQueryRequest(IDevice device,
+        public Request AssemblyRequestQuery(IDevice device,
             string partnerId,
             string merchantId,
             string terminalId,
@@ -53,7 +54,20 @@ namespace TruRating.TruModule.V2xx.Serialization
             return result;
         }
 
-        public Request AssembleQuestionRequest(
+        public Request AssembleRatingRequest(IServiceMessage request, RequestRating rating)
+        {
+            var result = new Request
+            {
+                PartnerId = request.PartnerId,
+                MerchantId = request.MerchantId,
+                TerminalId = request.TerminalId,
+                SessionId = request.SessionId,
+                Item = rating
+            };
+            return result;
+        }
+
+        public Request AssembleRequestQuestion(
             IDevice device,
             string partnerId,
             string merchantId,
@@ -78,7 +92,7 @@ namespace TruRating.TruModule.V2xx.Serialization
             return result;
         }
 
-        public Request AssembleTransactionRequest(string partnerId, string sessionId, string merchantId,
+        public Request AssembleRequestTransaction(string partnerId, string sessionId, string merchantId,
             string terminalId, RequestTransaction requestTransaction)
         {
             var result = new Request
@@ -92,7 +106,7 @@ namespace TruRating.TruModule.V2xx.Serialization
             return result;
         }
 
-        public Request AssemblePosEventRequest(PosParams posParams, RequestPosEvent requestPosEvent)
+        public Request AssembleRequestPosEvent(PosParams posParams, RequestPosEvent requestPosEvent)
         {
             var result = new Request
             {
@@ -105,7 +119,7 @@ namespace TruRating.TruModule.V2xx.Serialization
             return result;
         }
 
-        public Request AssemblePosEventRequest(PosParams posParams, RequestPosEventList requestPosEventList)
+        public Request AssembleRequestPosEvent(PosParams posParams, RequestPosEventList requestPosEventList)
         {
             var result = new Request
             {
@@ -189,5 +203,7 @@ namespace TruRating.TruModule.V2xx.Serialization
             };
             return result;
         }
+
+        
     }
 }

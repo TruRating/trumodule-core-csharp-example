@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using TruRating.Dto.TruService.V220;
+using TruRating.Dto.TruService.V2xx;
 using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Module;
 
@@ -28,25 +29,25 @@ namespace TruRating.TruModule.V2xx.Serialization
 {
     public interface ITruServiceMessageFactory
     {
-        Request AssemblyQueryRequest(IDevice device,
+        Request AssemblyRequestQuery(IDevice device,
             string partnerId,
             string merchantId,
             string terminalId,
             string sessionId,
             bool force);
 
-        Request AssembleQuestionRequest(IDevice device,
+        Request AssembleRequestQuestion(IDevice device,
             string partnerId,
             string merchantId,
             string terminalId,
             string sessionId,
             Trigger trigger);
 
-        Request AssembleTransactionRequest(string partnerId, string sessionId, string merchantId, string terminalId,
+        Request AssembleRequestTransaction(string partnerId, string sessionId, string merchantId, string terminalId,
             RequestTransaction requestTransaction);
 
-        Request AssemblePosEventRequest(PosParams posParams, RequestPosEvent requestPosEvent);
-        Request AssemblePosEventRequest(PosParams posParams, RequestPosEventList requestPosEventList);
+        Request AssembleRequestPosEvent(PosParams posParams, RequestPosEvent requestPosEvent);
+        Request AssembleRequestPosEvent(PosParams posParams, RequestPosEventList requestPosEventList);
 
         Request AssembleRequestLookup(IDevice device, string partnerId, string merchantId, string terminalId,
             string sessionId, LookupName lookupName);
@@ -57,5 +58,7 @@ namespace TruRating.TruModule.V2xx.Serialization
 
         Request AssembleRequestActivate(IDevice device, string partnerId, string merchantId, string terminalId,
             string sessionId, string registrationCode);
+
+        Request AssembleRatingRequest(IServiceMessage serviceMessage, RequestRating rating);
     }
 }

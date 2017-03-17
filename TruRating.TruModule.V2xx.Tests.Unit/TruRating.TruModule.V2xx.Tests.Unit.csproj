@@ -63,11 +63,15 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Network\FakeWebClient.cs" />
+    <Compile Include="Network\TruServiceClientTests.cs" />
     <Compile Include="RhinoMockingContainer.cs" />
-    <Compile Include="Enviroment\MacSignatureCalculatorTests.cs" />
+    <Compile Include="Security\MacSignatureCalculatorTests.cs" />
     <Compile Include="MsTestsContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenarios\V200ExemplarTests.cs" />
+    <Compile Include="Serialization\DefaultSerializerTests.cs" />
+    <Compile Include="Serialization\TruServiceMessageFactoryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
@@ -83,6 +87,7 @@
   <ItemGroup>
     <Content Include="License.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

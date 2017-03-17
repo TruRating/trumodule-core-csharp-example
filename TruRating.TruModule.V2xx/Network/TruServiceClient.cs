@@ -51,11 +51,9 @@ namespace TruRating.TruModule.V2xx.Network
             _webClientFactory = webClientFactory;
         }
 
-        public TruServiceClient(int timeout, string endpoint, IMacSignatureCalculator macSignatureCalculator,
-            ILogger logger)
-            : this(
-                endpoint, macSignatureCalculator, new DefaultSerializer(), logger, new SystemWebClientFactory(timeout))
+        public static ITruServiceClient<TRequest, TResponse> CreateDefault(int timeout, string endpoint, ILogger logger, IMacSignatureCalculator macSignatureCalculator)
         {
+            return new TruServiceClient<TRequest, TResponse>(endpoint,macSignatureCalculator,new DefaultSerializer(),logger, new SystemWebClientFactory(timeout));
         }
 
         public TResponse Send(TRequest request)

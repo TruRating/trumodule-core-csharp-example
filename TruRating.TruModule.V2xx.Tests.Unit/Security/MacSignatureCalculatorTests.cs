@@ -19,15 +19,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TruRating.TruModule.V2xx.Security;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.Enviroment
+namespace TruRating.TruModule.V2xx.Tests.Unit.Security
 {
     [TestClass]
-    public class MacSignatureCalculatorTests : MsTestsContext<MacSignatureCalculator>
+    public class WhenTestingCalculatorWithValidTransportKey : MsTestsContext<MacSignatureCalculator>
     {
         [TestInitialize]
         public void Setup()
@@ -45,5 +44,21 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Enviroment
         {
             Assert.IsTrue(Sut.EncryptionScheme == "3");
         }
+
+    }
+    [TestClass]
+    public class WhenTestingCalculatorWithInvalidTransportKey : MsTestsContext<MacSignatureCalculator>
+    {
+        [TestInitialize]
+        public void Setup()
+        {
+            RegisterFake("1224");
+        }
+        [TestMethod]
+        public void ShouldReturnNull()
+        {
+            Assert.IsNull(Sut.Calculate(Encoding.UTF8.GetBytes("Super secret message")));
+        }
+
     }
 }

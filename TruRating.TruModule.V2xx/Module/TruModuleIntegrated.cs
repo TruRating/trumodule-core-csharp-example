@@ -41,7 +41,7 @@ namespace TruRating.TruModule.V2xx.Module
         {
             if (IsActivated(false))
             {
-                var request = TruServiceMessageFactory.AssembleTransactionRequest(posParams.PartnerId,
+                var request = TruServiceMessageFactory.AssembleRequestTransaction(posParams.PartnerId,
                     posParams.SessionId, posParams.MerchantId, posParams.TerminalId, requestTransaction);
                 SendRequest(request);
             }
@@ -53,7 +53,7 @@ namespace TruRating.TruModule.V2xx.Module
             {
                 TaskHelpers.BeginTask(() =>
                 {
-                    var request = TruServiceMessageFactory.AssemblePosEventRequest(posParams, requestPosEvent);
+                    var request = TruServiceMessageFactory.AssembleRequestPosEvent(posParams, requestPosEvent);
                     var response = SendRequest(request);
                     var item = response != null && response.Item is ResponseEvent
                         ? ((ResponseEvent) response.Item).Item
@@ -63,7 +63,7 @@ namespace TruRating.TruModule.V2xx.Module
                         Trigger = (item as ResponseEventQuestion).Trigger;
                         if (Trigger == Trigger.DWELLTIME || Trigger == Trigger.DWELLTIMEEXTEND)
                         {
-                            var questionRequest = TruServiceMessageFactory.AssembleQuestionRequest(Device,
+                            var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(Device,
                                 posParams.PartnerId, posParams.MerchantId, posParams.TerminalId, posParams.SessionId,
                                 Trigger);
                             DoRating(questionRequest);
@@ -84,7 +84,7 @@ namespace TruRating.TruModule.V2xx.Module
             {
                 TaskHelpers.BeginTask(() =>
                 {
-                    var request = TruServiceMessageFactory.AssemblePosEventRequest(posParams, requestPosEventList);
+                    var request = TruServiceMessageFactory.AssembleRequestPosEvent(posParams, requestPosEventList);
                     SendRequest(request);
                     return 1;
                 });
@@ -97,7 +97,7 @@ namespace TruRating.TruModule.V2xx.Module
             {
                 if (Trigger == Trigger.PAYMENTREQUEST)
                 {
-                    var questionRequest = TruServiceMessageFactory.AssembleQuestionRequest(Device, posParams.PartnerId,
+                    var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(Device, posParams.PartnerId,
                         posParams.MerchantId, posParams.TerminalId, posParams.SessionId, Trigger);
                     DoRating(questionRequest);
                 }

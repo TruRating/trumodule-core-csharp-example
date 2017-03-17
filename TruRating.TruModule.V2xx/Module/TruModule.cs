@@ -23,7 +23,6 @@
 using System.Diagnostics;
 using System.Threading;
 using TruRating.Dto.TruService.V220;
-using TruRating.Dto.TruService.V2xx;
 using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Helpers;
 using TruRating.TruModule.V2xx.Network;
@@ -105,7 +104,7 @@ namespace TruRating.TruModule.V2xx.Module
                 return Settings.IsActivated;
             }
             var status =
-                _truServiceClient.Send(TruServiceMessageFactory.AssemblyQueryRequest(Device, Settings.PartnerId,
+                _truServiceClient.Send(TruServiceMessageFactory.AssemblyRequestQuery(Device, Settings.PartnerId,
                     Settings.MerchantId, Settings.TerminalId, SessionId, force));
 
             var responseStatus = status != null ? status.Item as ResponseStatus : null;
@@ -188,7 +187,7 @@ namespace TruRating.TruModule.V2xx.Module
                 _dwellTimeExtendAutoResetEvent.Reset();
                 sw.Stop();
                 rating.ResponseTimeMs = (int) sw.ElapsedMilliseconds; //Set the response time
-                _truServiceClient.Send(AssembleRatingRequest(request, rating));
+                _truServiceClient.Send(TruServiceMessageFactory.AssembleRatingRequest(request, rating));
                 var responseReceipt = GetResponseReceipt(receipts, rating.Value < 0 ? When.NOTRATED : When.RATED);
                 var responseScreen = GetResponseScreen(screens, rating.Value < 0 ? When.NOTRATED : When.RATED);
                 Device.AppendReceipt(responseReceipt);
@@ -199,18 +198,7 @@ namespace TruRating.TruModule.V2xx.Module
             }
         }
 
-        private static Request AssembleRatingRequest(IServiceMessage request, RequestRating rating)
-        {
-            var result = new Request
-            {
-                PartnerId = request.PartnerId,
-                MerchantId = request.MerchantId,
-                TerminalId = request.TerminalId,
-                SessionId = request.SessionId,
-                Item = rating
-            };
-            return result;
-        }
+        
 
         private static bool QuestionAvailable(Response response, string language, out ResponseQuestion responseQuestion,
             out ResponseReceipt[] responseReceipts, out ResponseScreen[] responseScreens)

@@ -44,7 +44,7 @@ namespace TruRating.TruModule.V2xx.Module
             SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
             if (IsActivated(false))
             {
-                var request = TruServiceMessageFactory.AssembleQuestionRequest(Device, Settings.PartnerId,
+                var request = TruServiceMessageFactory.AssembleRequestQuestion(Device, Settings.PartnerId,
                     Settings.MerchantId, Settings.TerminalId, SessionId, Trigger.PAYMENTREQUEST);
                 DoRating(request);
             }
@@ -54,7 +54,7 @@ namespace TruRating.TruModule.V2xx.Module
         {
             if (IsActivated(false))
             {
-                var request = TruServiceMessageFactory.AssembleTransactionRequest(Settings.PartnerId, SessionId,
+                var request = TruServiceMessageFactory.AssembleRequestTransaction(Settings.PartnerId, SessionId,
                     Settings.MerchantId, Settings.TerminalId, requestTransaction);
                 SendRequest(request);
             }

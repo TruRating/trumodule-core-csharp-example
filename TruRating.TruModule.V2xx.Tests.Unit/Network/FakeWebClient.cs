@@ -1,4 +1,4 @@
-﻿// The MIT License
+// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -19,3 +19,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using System.Net;
+using TruRating.TruModule.V2xx.Network;
+
+namespace TruRating.TruModule.V2xx.Tests.Unit.Network
+{
+    class FakeWebClient : IWebClient
+    {
+        private WebHeaderCollection _responseHeaders = new WebHeaderCollection();
+        private WebHeaderCollection _headers = new WebHeaderCollection();
+
+        public void Dispose()
+        {
+            
+        }
+
+        public WebHeaderCollection ResponseHeaders
+        {
+            get { return _responseHeaders; }
+        }
+
+        public WebHeaderCollection Headers
+        {
+            get { return _headers; }
+            set { _headers = value; }
+        }
+
+        public byte[] UploadData(string endpoint, string post, byte[] serializeBytes)
+        {
+            return serializeBytes;
+        }
+    }
+}

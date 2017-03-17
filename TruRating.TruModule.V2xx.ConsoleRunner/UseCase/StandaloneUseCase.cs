@@ -46,9 +46,9 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
 
         public override void Init()
         {
-            var truServiceClient = new TruServiceClient<Request, Response>(_consoleSettings.HttpTimeoutMs,
-                _consoleSettings.TruServiceUrl,
-                new MacSignatureCalculator(_consoleSettings.TransportKey, _consoleWriter), _consoleWriter);
+            var truServiceClient = TruServiceClient<Request, Response>.CreateDefault(_consoleSettings.HttpTimeoutMs,
+                _consoleSettings.TruServiceUrl, _consoleWriter,
+                new MacSignatureCalculator(_consoleSettings.TransportKey, _consoleWriter));
             _truModule = new TruModuleStandalone(Device, truServiceClient, _consoleWriter,
                 new TruServiceMessageFactory(), _consoleSettings);
             if (!_truModule.IsActivated())
