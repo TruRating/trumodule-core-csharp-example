@@ -97,7 +97,7 @@ namespace TruRating.TruModule.V2xx.Module
 
         public bool IsActivated(bool force)
         {
-            if (Settings.ActivationRecheck > DateTimeProvider.UtcNow)
+            if (Settings.ActivationRecheck > DateTimeProvider.UtcNow && !force)
             {
                 _logger.Debug("Not querying TruService status, next check at {0}. IsActive is {1}",
                     Settings.ActivationRecheck, Settings.IsActivated);
