@@ -32,9 +32,9 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.Device
     public class ConsoleDevice : IPinPad, IPrinter
     {
         private readonly IConsoleSettings _consoleSettings;
-        private readonly IConsoleWriter _logger;
+        private readonly IConsoleIo _logger;
 
-        public ConsoleDevice(IConsoleWriter logger, IConsoleSettings consoleSettings)
+        public ConsoleDevice(IConsoleIo logger, IConsoleSettings consoleSettings)
         {
             _logger = logger;
             _consoleSettings = consoleSettings;
@@ -45,14 +45,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.Device
             _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
         }
 
-        public string ReadLine(string value)
-        {
-            KeyPressReader.Stop();
-            _logger.Write(ConsoleColor.Green, "CAPTURE: " + value + ": ");
-            var readLine = Console.ReadLine();
-            KeyPressReader.Start();
-            return readLine;
-        }
+        
 
         public RequestPeripheral GetScreenCapabilities()
         {

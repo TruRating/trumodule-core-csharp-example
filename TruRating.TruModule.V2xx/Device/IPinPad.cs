@@ -30,8 +30,6 @@ namespace TruRating.TruModule.V2xx.Device
         void DisplayMessage(string value, int timeoutMilliseconds);
         short Display1AQ1KR(string value, int timeoutMilliseconds);
         void ResetDisplay();
-
-
         RequestPeripheral GetScreenCapabilities();
         SkipInstruction GetSkipInstruction();
         string GetName();
@@ -39,6 +37,5 @@ namespace TruRating.TruModule.V2xx.Device
         RequestLanguage[] GetLanguages();
         string GetCurrentLanguage();
         RequestServer GetServer();
-        string ReadLine(string value);
     }
 }

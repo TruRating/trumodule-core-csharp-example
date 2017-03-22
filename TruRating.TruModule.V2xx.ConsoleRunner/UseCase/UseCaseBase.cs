@@ -31,12 +31,12 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
     {
         protected static readonly Random Rand = new Random();
         protected readonly IConsoleSettings ConsoleSettings;
-        protected readonly IConsoleWriter ConsoleWriter;
+        protected readonly IConsoleIo ConsoleIo;
         protected readonly IPinPad PinPad;
         protected readonly IPrinter Printer;
-        protected UseCaseBase(IConsoleWriter consoleWriter, IConsoleSettings consoleSettings, IPinPad pinPad, IPrinter printer)
+        protected UseCaseBase(IConsoleIo consoleIo, IConsoleSettings consoleSettings, IPinPad pinPad, IPrinter printer)
         {
-            ConsoleWriter = consoleWriter;
+            ConsoleIo = consoleIo;
             ConsoleSettings = consoleSettings;
             PinPad = pinPad;
             Printer = printer;
@@ -44,7 +44,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
 
         public void MainLoop()
         {
-            ConsoleWriter.WriteLine(ConsoleColor.Red, "Press any key to start");
+            ConsoleIo.WriteLine(ConsoleColor.Red, "Press any key to start");
             KeyPressReader.ReadKey();
             Init();
             while (true) //Endless loop
@@ -55,17 +55,17 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
                 }
                 catch (Exception e)
                 {
-                    ConsoleWriter.WriteLine(ConsoleColor.DarkYellow, "Error {0}", e);
+                    ConsoleIo.WriteLine(ConsoleColor.DarkYellow, "Error {0}", e);
                 }
                 finally
                 {
-                    ConsoleWriter.WriteLine(ConsoleColor.DarkGray, "");
-                    ConsoleWriter.WriteLine(ConsoleColor.DarkGray, "Waiting 1 second to finish");
+                    ConsoleIo.WriteLine(ConsoleColor.DarkGray, "");
+                    ConsoleIo.WriteLine(ConsoleColor.DarkGray, "Waiting 1 second to finish");
                     Thread.Sleep(1000); //Wait for threads to join in TruModule
                     var endOfRunPressAKeyToReset = " End of run. Press a key to reset. ";
-                    ConsoleWriter.WriteLine(ConsoleColor.DarkGray,
+                    ConsoleIo.WriteLine(ConsoleColor.DarkGray,
                         endOfRunPressAKeyToReset.PadLeft(Console.WindowWidth - 1, '='));
-                    ConsoleWriter.WriteLine(ConsoleColor.DarkGray, "");
+                    ConsoleIo.WriteLine(ConsoleColor.DarkGray, "");
                     KeyPressReader.ReadKey();
                 }
             }

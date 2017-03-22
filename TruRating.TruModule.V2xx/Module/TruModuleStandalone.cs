@@ -60,7 +60,7 @@ namespace TruRating.TruModule.V2xx.Module
             }
         }
 
-        private Dictionary<int, string> GetLookupResponse(LookupName lookupName)
+        public Dictionary<int, string> GetLookups(LookupName lookupName)
         {
             var result = new List<KeyValuePair<int, string>>();
 
@@ -113,88 +113,31 @@ namespace TruRating.TruModule.V2xx.Module
             return result;
         }
 
-        private string Lookup(LookupName lookupName)
+        public bool Activate(int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress, string password, string address, string mobileNumber, string merchantName, string businessName)
         {
-            var options = GetLookupResponse(lookupName);
-            while (true)
-            {
-                var selectedOption = PinPad.ReadLine("Please pick a numbered " + lookupName);
-                int selectedOptionNumber;
-                if (int.TryParse(selectedOption, out selectedOptionNumber))
-                {
-                    if (options.ContainsKey(selectedOptionNumber))
-                    {
-                        return options[selectedOptionNumber];
-                    }
-                    PinPad.DisplayMessage("Invalid option");
-                }
-            }
-        }
-
-        public void Activate()
-        {
-            if (Settings.IsActivated)
-                return;
-            PinPad.DisplayMessage("This device is not registered!");
-            var registrationCode =
-                PinPad.ReadLine(
-                    "Type your registration code, Press ENTER to register via form input or type SKIP to skip registration");
-            Response status;
-            if (string.IsNullOrEmpty(registrationCode))
-            {
-                var sectorNode = int.Parse(Lookup(LookupName.SECTORNODE));
-                var timeZone = Lookup(LookupName.TIMEZONE);
-                string emailAddress = null;
-                string password = null;
-                string address = null;
-                string mobileNumber = null;
-                string businessName = null;
-                string merchantName = null;
-
-                while (string.IsNullOrEmpty(emailAddress))
-                    emailAddress = PinPad.ReadLine("Enter your email address (required)");
-                while (string.IsNullOrEmpty(password))
-                    password = PinPad.ReadLine("Enter a password (required)");
-                while (string.IsNullOrEmpty(address))
-                    address = PinPad.ReadLine("Enter your postal address");
-                while (string.IsNullOrEmpty(mobileNumber))
-                    mobileNumber = PinPad.ReadLine("Enter your mobile number, e.g. +44 (1234) 787123");
-                while (string.IsNullOrEmpty(businessName))
-                    businessName = PinPad.ReadLine("Enter your business name, e.g. McDonalds");
-                while (string.IsNullOrEmpty(merchantName))
-                    merchantName = PinPad.ReadLine("Enter your outlet name, e.g. McDonalds Fleet Street");
-                status =
-                    SendRequest(TruServiceMessageFactory.AssembleRequestActivate(PinPad,Printer, Settings.PartnerId, SessionId,
+            var status =SendRequest(TruServiceMessageFactory.AssembleRequestActivate(PinPad, Printer, Settings.PartnerId, SessionId,
                         Settings.MerchantId, Settings.TerminalId, sectorNode, timeZone, PaymentInstant.PAYBEFORE,
                         emailAddress, password, address, mobileNumber, merchantName, businessName));
-            }
-            else if (registrationCode.Equals("SKIP", StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-            else
-            {
-                status =
-                    SendRequest(TruServiceMessageFactory.AssembleRequestActivate(PinPad,Printer, Settings.PartnerId, SessionId,
-                        Settings.MerchantId, Settings.TerminalId, registrationCode));
-            }
-
             var responseStatus = status.Item as ResponseStatus;
             if (responseStatus != null)
             {
                 Settings.ActivationRecheck = DateTime.UtcNow.AddMinutes(responseStatus.TimeToLive);
                 Settings.IsActivated = responseStatus.IsActive;
-                if (Settings.IsActivated)
-                {
-                    PinPad.DisplayMessage("This device is activated");
-                }
-                else
-                {
-                    PinPad.DisplayMessage("This device is not activated");
-                }
             }
+            return Settings.IsActivated;
         }
-
+        public bool Activate(string registrationCode)
+        {
+            var status = SendRequest(TruServiceMessageFactory.AssembleRequestActivate(PinPad, Printer, Settings.PartnerId, SessionId,
+                       Settings.MerchantId, Settings.TerminalId, registrationCode));
+            var responseStatus = status.Item as ResponseStatus;
+            if (responseStatus != null)
+            {
+                Settings.ActivationRecheck = DateTime.UtcNow.AddMinutes(responseStatus.TimeToLive);
+                Settings.IsActivated = responseStatus.IsActive;
+            }
+            return Settings.IsActivated;
+        }
         public bool IsActivated()
         {
             return Settings.IsActivated;

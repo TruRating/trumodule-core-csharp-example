@@ -25,16 +25,24 @@ using TruRating.TruModule.V2xx.Device;
 
 namespace TruRating.TruModule.V2xx.ConsoleRunner.Environment
 {
-    public interface IConsoleWriter : ILogger
+    public interface IConsoleIo : ILogger
     {
         void Write(ConsoleColor color, string value, params object[] vars);
         void WriteLine(ConsoleColor color, string value, params object[] vars);
+        string ReadLine(string value);
     }
 
-    public class ConsoleWriter : IConsoleWriter
+    public class ConsoleIo : IConsoleIo
     {
         private readonly object _consoleLock = new object();
-
+        public string ReadLine(string value)
+        {
+            KeyPressReader.Stop();
+            Write(ConsoleColor.Green, "CAPTURE: " + value + ": ");
+            var readLine = Console.ReadLine();
+            KeyPressReader.Start();
+            return readLine;
+        }
         public void WriteLine(ConsoleColor color, string value, params object[] vars)
         {
             lock (_consoleLock)

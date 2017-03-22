@@ -29,9 +29,9 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.Environment
 {
     public class ConsoleSettings : IConsoleSettings
     {
-        private readonly IConsoleWriter _logger;
+        private readonly IConsoleIo _logger;
 
-        public ConsoleSettings(IConsoleWriter logger)
+        public ConsoleSettings(IConsoleIo logger)
         {
             _logger = logger;
             TerminalId = System.Environment.MachineName;

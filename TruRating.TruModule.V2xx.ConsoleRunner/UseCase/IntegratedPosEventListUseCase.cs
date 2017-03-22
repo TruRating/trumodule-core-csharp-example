@@ -35,22 +35,22 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
     public class IntegratedPosEventListUseCase : UseCaseBase
     {
         private readonly IConsoleSettings _consoleSettings;
-        private readonly IConsoleWriter _consoleWriter;
+        private readonly IConsoleIo _consoleIo;
         private TruModuleIntegrated _truModule;
 
-        public IntegratedPosEventListUseCase(IConsoleWriter consoleWriter, IConsoleSettings consoleSettings,
-            IPinPad pinPad, IPrinter printer) : base(consoleWriter, consoleSettings, pinPad, printer)
+        public IntegratedPosEventListUseCase(IConsoleIo consoleIo, IConsoleSettings consoleSettings,
+            IPinPad pinPad, IPrinter printer) : base(consoleIo, consoleSettings, pinPad, printer)
         {
-            _consoleWriter = consoleWriter;
+            _consoleIo = consoleIo;
             _consoleSettings = consoleSettings;
         }
 
         public override void Init()
         {
             var truServiceClient = TruServiceClient<Request, Response>.CreateDefault(_consoleSettings.HttpTimeoutMs,
-                _consoleSettings.TruServiceUrl,_consoleWriter,
-                new MacSignatureCalculator(_consoleSettings.TransportKey, _consoleWriter));
-            _truModule = new TruModuleIntegrated(PinPad, Printer,truServiceClient, _consoleWriter,
+                _consoleSettings.TruServiceUrl,_consoleIo,
+                new MacSignatureCalculator(_consoleSettings.TransportKey, _consoleIo));
+            _truModule = new TruModuleIntegrated(PinPad, Printer,truServiceClient, _consoleIo,
                 new TruServiceMessageFactory(), _consoleSettings);
         }
 
@@ -65,7 +65,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
                 TerminalId = _consoleSettings.TerminalId,
                 Url = _consoleSettings.TruServiceUrl
             };
-            _consoleWriter.WriteLine(ConsoleColor.Gray, "Pos Application: About to make a payment");
+            _consoleIo.WriteLine(ConsoleColor.Gray, "Pos Application: About to make a payment");
             _truModule.InitiatePayment(posParams);
             _truModule.SendTransaction(posParams, new RequestTransaction
             {

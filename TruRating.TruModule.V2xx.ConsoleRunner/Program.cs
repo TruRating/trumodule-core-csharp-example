@@ -31,7 +31,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner
     {
         private static void Main(string[] args)
         {
-            var logger = new ConsoleWriter();
+            var logger = new ConsoleIo();
             try
             {
                 var settings = new ConsoleSettings(logger);
