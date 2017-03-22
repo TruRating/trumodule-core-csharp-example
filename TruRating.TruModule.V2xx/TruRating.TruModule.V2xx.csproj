@@ -51,12 +51,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Device\IPeripheralCapabilities.cs" />
     <Compile Include="Device\ILogger.cs" />
     <Compile Include="Device\IPrinter.cs" />
     <Compile Include="Helpers\DateTimeProvider.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
+    <Compile Include="Helpers\Func.cs" />
     <Compile Include="Helpers\TaskHelpers.cs" />
+    <Compile Include="Network\IWebClientFactory.cs" />
+    <Compile Include="Network\SystemWebClientFactory.cs" />
     <Compile Include="Settings\ISettings.cs" />
     <Compile Include="Module\ITruModuleIntegrated.cs" />
     <Compile Include="Module\ITruModuleStandalone.cs" />

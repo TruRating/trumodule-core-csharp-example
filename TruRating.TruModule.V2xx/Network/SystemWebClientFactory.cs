@@ -1,4 +1,4 @@
-﻿// The MIT License
+// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -19,53 +19,26 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using System.Text;
 
-using TruRating.Dto.TruService.V220;
-
-namespace TruRating.TruModule.V2xx.Device
+namespace TruRating.TruModule.V2xx.Network
 {
-    public interface IPeripheralCapabilities
+    public class SystemWebClientFactory : IWebClientFactory
     {
-        /**
-         * Gets font.
-         *
-         * @return the font
-         */
-        Font GetFont();
+        #region IWebClientFactory implementation
 
-        /**
-         * Gets format.
-         *
-         * @return the format
-         */
-        Format GetFormat();
+        private readonly int _httpTimeoutMs;
 
-        /**
-         * Gets height.
-         *
-         * @return the height
-         */
-        short GetHeight();
+        public SystemWebClientFactory(int httpTimeoutMs)
+        {
+            _httpTimeoutMs = httpTimeoutMs;
+        }
 
-        /**
-         * Gets unit.
-         *
-         * @return the unit
-         */
-        UnitDimension GetUnit();
+        public IWebClient Create()
+        {
+            return new SystemWebClient(_httpTimeoutMs) {Encoding = Encoding.UTF8};
+        }
 
-        /**
-         * Gets separator.
-         *
-         * @return the separator
-         */
-        string GetSeparator();
-
-        /**
-         * Gets width.
-         *
-         * @return the width
-         */
-        short GetWidth();
+        #endregion
     }
 }

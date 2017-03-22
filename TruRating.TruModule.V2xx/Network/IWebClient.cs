@@ -19,37 +19,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using System.Net;
-using System.Text;
 
 namespace TruRating.TruModule.V2xx.Network
 {
-    public interface IWebClientFactory
-    {
-        IWebClient Create();
-    }
-
-    public class SystemWebClientFactory : IWebClientFactory
-    {
-        #region IWebClientFactory implementation
-
-        private readonly int _httpTimeoutMs;
-
-        public SystemWebClientFactory(int httpTimeoutMs)
-        {
-            _httpTimeoutMs = httpTimeoutMs;
-        }
-
-        public IWebClient Create()
-        {
-            return new SystemWebClient(_httpTimeoutMs) {Encoding = Encoding.UTF8};
-        }
-
-        #endregion
-    }
-
     public interface IWebClient : IDisposable
     {
         WebHeaderCollection ResponseHeaders { get; }

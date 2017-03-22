@@ -19,21 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-
 namespace TruRating.TruModule.V2xx.Helpers
 {
-    public static class DateTimeProvider
-    {
-        private static Func<DateTime> _nowFunc = () => DateTime.UtcNow;
-
-        /// <summary>
-        ///     The current representation of UtcNow
-        /// </summary>
-        public static DateTime UtcNow
-        {
-            get { return _nowFunc(); }
-            set { _nowFunc = () => value; }
-        }
-    }
+    public delegate T Func<T>();
 }
