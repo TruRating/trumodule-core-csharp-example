@@ -23,18 +23,71 @@ using TruRating.Dto.TruService.V220;
 
 namespace TruRating.TruModule.V2xx.Device
 {
+    /// <summary>
+    /// Represents a logical PinPad that can display text and capture basic key input
+    /// </summary>
     public interface IPinPad
     {
+        /// <summary>
+        /// Displays an arbitrary message on screen that can be removed at any time and can be removed at any time
+        /// </summary>
+        /// <param name="value">The text to display</param>
         void DisplayMessage(string value);
+        /// <summary>
+        /// Displays an arbitrary message on screen that should be removed after the specified timeout
+        /// </summary>
+        /// <param name="value">The text to display</param>
+        /// <param name="timeoutMilliseconds">The length of time the text should appear</param>
         void DisplayMessage(string value, int timeoutMilliseconds);
+        /// <summary>
+        /// Displays a question on screen that should capture a key press and should be removed after the specified timeout
+        /// Valid pinpad values are 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+        /// -1 should be used for any other key input
+        /// -2 should be used if the timeout is reached
+        /// -4 should be used if the question cannot be displayed
+        /// </summary>
+        /// <param name="value">The text to display</param>
+        /// <param name="timeoutMilliseconds">The length of time the text should appear</param>
+        /// <returns>Valid pinpad values are 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -1 should be used for any other key input,  -2 should be used if the timeout is reached, -4 should be used if the question cannot be displayed</returns>
         short Display1AQ1KR(string value, int timeoutMilliseconds);
+        /// <summary>
+        /// Remove any message on screen and cancel any 1AQ1KR routine and reset to default state.
+        /// </summary>
         void ResetDisplay();
+        /// <summary>
+        /// Returns the capabilites of the Screen
+        /// </summary>
+        /// <returns>RequestPeripheral</returns>
         RequestPeripheral GetScreenCapabilities();
+        /// <summary>
+        /// Returns any hardcoded skip instruction on the display
+        /// </summary>
+        /// <returns></returns>
         SkipInstruction GetSkipInstruction();
+        /// <summary>
+        /// Gets the manufacturer's device model name, e.g. IPP350
+        /// </summary>
+        /// <returns></returns>
         string GetName();
+        /// <summary>
+        /// Gets the manufacturer's firmware version, e.g. RAM0973
+        /// </summary>
+        /// <returns></returns>
         string GetFirmware();
+        /// <summary>
+        /// Get all languages that can be used by the pinpad
+        /// </summary>
+        /// <returns></returns>
         RequestLanguage[] GetLanguages();
+        /// <summary>
+        /// Gets the current language of the pinpad
+        /// </summary>
+        /// <returns></returns>
         string GetCurrentLanguage();
+        /// <summary>
+        /// Gets any server that is proxying requests on behalf of the pinpad.
+        /// </summary>
+        /// <returns></returns>
         RequestServer GetServer();
     }
 }

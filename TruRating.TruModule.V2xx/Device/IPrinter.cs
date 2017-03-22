@@ -23,9 +23,20 @@ using TruRating.Dto.TruService.V220;
 
 namespace TruRating.TruModule.V2xx.Device
 {
+    /// <summary>
+    /// Represents a logical Printer
+    /// </summary>
     public interface IPrinter
     {
+        /// <summary>
+        /// Returns the capabilites of the Printer
+        /// </summary>
+        /// <returns>RequestPeripheral</returns>
         RequestPeripheral GetReceiptCapabilities();
+        /// <summary>
+        /// Appends text to the customer's receipt
+        /// </summary>
+        /// <param name="value"></param>
         void AppendReceipt(string value);
     }
 }
