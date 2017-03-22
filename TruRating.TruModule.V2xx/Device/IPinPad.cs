@@ -24,14 +24,18 @@ using TruRating.Dto.TruService.V220;
 
 namespace TruRating.TruModule.V2xx.Device
 {
-    public interface IDevice
+    public interface IPinPad
     {
         void DisplayMessage(string value);
         void DisplayMessage(string value, int timeoutMilliseconds);
         short Display1AQ1KR(string value, int timeoutMilliseconds);
-        void AppendReceipt(string value);
-        RequestDevice GetRequestDevice();
         void ResetDisplay();
+
+
+        RequestPeripheral GetScreenCapabilities();
+        SkipInstruction GetSkipInstruction();
+        string GetName();
+        string GetFirmware();
         RequestLanguage[] GetLanguages();
         string GetCurrentLanguage();
         RequestServer GetServer();

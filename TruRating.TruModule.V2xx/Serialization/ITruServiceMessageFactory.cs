@@ -29,14 +29,14 @@ namespace TruRating.TruModule.V2xx.Serialization
 {
     public interface ITruServiceMessageFactory
     {
-        Request AssemblyRequestQuery(IDevice device,
+        Request AssemblyRequestQuery(IPinPad pinPad, IPrinter printer,
             string partnerId,
             string merchantId,
             string terminalId,
             string sessionId,
             bool force);
 
-        Request AssembleRequestQuestion(IDevice device,
+        Request AssembleRequestQuestion(IPinPad pinPad, IPrinter printer,
             string partnerId,
             string merchantId,
             string terminalId,
@@ -49,14 +49,14 @@ namespace TruRating.TruModule.V2xx.Serialization
         Request AssembleRequestPosEvent(PosParams posParams, RequestPosEvent requestPosEvent);
         Request AssembleRequestPosEvent(PosParams posParams, RequestPosEventList requestPosEventList);
 
-        Request AssembleRequestLookup(IDevice device, string partnerId, string merchantId, string terminalId,
+        Request AssembleRequestLookup(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
             string sessionId, LookupName lookupName);
 
-        Request AssembleRequestActivate(IDevice device, string partnerId, string merchantId, string terminalId,
+        Request AssembleRequestActivate(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
             string sessionId, int sectorNode, string timeZone, PaymentInstant paybefore, string emailAddress,
             string password, string address, string mobileNumber, string merchantName, string businessName);
 
-        Request AssembleRequestActivate(IDevice device, string partnerId, string merchantId, string terminalId,
+        Request AssembleRequestActivate(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
             string sessionId, string registrationCode);
 
         Request AssembleRatingRequest(IServiceMessage serviceMessage, RequestRating rating);

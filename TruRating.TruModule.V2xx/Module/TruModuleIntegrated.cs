@@ -31,9 +31,9 @@ namespace TruRating.TruModule.V2xx.Module
 {
     public class TruModuleIntegrated : TruModule, ITruModuleIntegrated
     {
-        public TruModuleIntegrated(IDevice device, ITruServiceClient<Request, Response> truServiceClient, ILogger logger,
+        public TruModuleIntegrated(IPinPad pinPad, IPrinter printer, ITruServiceClient<Request, Response> truServiceClient, ILogger logger,
             ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
-            : base(device, truServiceClient, logger, truServiceMessageFactory, settings)
+            : base(pinPad,printer, truServiceClient, logger, truServiceMessageFactory, settings)
         {
         }
 
@@ -63,7 +63,7 @@ namespace TruRating.TruModule.V2xx.Module
                         Trigger = (item as ResponseEventQuestion).Trigger;
                         if (Trigger == Trigger.DWELLTIME || Trigger == Trigger.DWELLTIMEEXTEND)
                         {
-                            var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(Device,
+                            var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(PinPad,Printer,
                                 posParams.PartnerId, posParams.MerchantId, posParams.TerminalId, posParams.SessionId,
                                 Trigger);
                             DoRating(questionRequest);
@@ -97,7 +97,7 @@ namespace TruRating.TruModule.V2xx.Module
             {
                 if (Trigger == Trigger.PAYMENTREQUEST)
                 {
-                    var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(Device, posParams.PartnerId,
+                    var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(PinPad,Printer, posParams.PartnerId,
                         posParams.MerchantId, posParams.TerminalId, posParams.SessionId, Trigger);
                     DoRating(questionRequest);
                 }

@@ -35,10 +35,10 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner
             try
             {
                 var settings = new ConsoleSettings(logger);
-                var device = new ConsoleDevice(logger, settings);
+                var consoleDevice = new ConsoleDevice(logger, settings);
 
                 IUseCase module = null;
-                foreach (var truModule in UseCaseFactory.Get(logger, settings, device))
+                foreach (var truModule in UseCaseFactory.Get(logger, settings, consoleDevice, consoleDevice))
                 {
                     if (truModule.IsApplicable())
                     {

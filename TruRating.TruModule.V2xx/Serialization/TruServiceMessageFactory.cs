@@ -29,7 +29,7 @@ namespace TruRating.TruModule.V2xx.Serialization
 {
     public class TruServiceMessageFactory : ITruServiceMessageFactory
     {
-        public Request AssemblyRequestQuery(IDevice device,
+        public Request AssemblyRequestQuery(IPinPad pinPad, IPrinter printer,
             string partnerId,
             string merchantId,
             string terminalId,
@@ -44,9 +44,17 @@ namespace TruRating.TruModule.V2xx.Serialization
                 SessionId = sessionId,
                 Item = new RequestQuery
                 {
-                    Device = device.GetRequestDevice(),
-                    Language = device.GetLanguages(),
-                    Server = device.GetServer(),
+                    Device = new RequestDevice
+                    {
+                        Name = pinPad.GetName(),
+                        Firmware = pinPad.GetFirmware(),
+                        Screen = pinPad.GetScreenCapabilities(),
+                        SkipInstruction = pinPad.GetSkipInstruction(),
+                        SkipInstructionSpecified = true,
+                        Receipt = printer.GetReceiptCapabilities(),
+                    },
+                    Language = pinPad.GetLanguages(),
+                    Server = pinPad.GetServer(),
                     ForceSpecified = true,
                     Force = force
                 }
@@ -68,7 +76,7 @@ namespace TruRating.TruModule.V2xx.Serialization
         }
 
         public Request AssembleRequestQuestion(
-            IDevice device,
+            IPinPad pinPad, IPrinter printer,
             string partnerId,
             string merchantId,
             string terminalId,
@@ -84,9 +92,17 @@ namespace TruRating.TruModule.V2xx.Serialization
                 Item = new RequestQuestion
                 {
                     Trigger = trigger,
-                    Device = device.GetRequestDevice(),
-                    Language = device.GetLanguages(),
-                    Server = device.GetServer()
+                    Device = new RequestDevice
+                    {
+                        Name = pinPad.GetName(),
+                        Firmware = pinPad.GetFirmware(),
+                        Screen = pinPad.GetScreenCapabilities(),
+                        SkipInstruction = pinPad.GetSkipInstruction(),
+                        SkipInstructionSpecified  = true,
+                        Receipt = printer.GetReceiptCapabilities(),
+                    },
+                    Language = pinPad.GetLanguages(),
+                    Server = pinPad.GetServer()
                 }
             };
             return result;
@@ -132,7 +148,7 @@ namespace TruRating.TruModule.V2xx.Serialization
             return result;
         }
 
-        public Request AssembleRequestLookup(IDevice device, string partnerId, string merchantId, string terminalId,
+        public Request AssembleRequestLookup(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
             string sessionId, LookupName lookupName)
         {
             var result = new Request
@@ -144,15 +160,23 @@ namespace TruRating.TruModule.V2xx.Serialization
                 Item = new RequestLookup
                 {
                     Name = lookupName,
-                    Device = device.GetRequestDevice(),
-                    Language = device.GetLanguages(),
-                    Server = device.GetServer()
+                    Device = new RequestDevice
+                    {
+                        Name = pinPad.GetName(),
+                        Firmware = pinPad.GetFirmware(),
+                        Screen = pinPad.GetScreenCapabilities(),
+                        SkipInstruction = pinPad.GetSkipInstruction(),
+                        SkipInstructionSpecified = true,
+                        Receipt = printer.GetReceiptCapabilities(),
+                    },
+                    Language = pinPad.GetLanguages(),
+                    Server = pinPad.GetServer()
                 }
             };
             return result;
         }
 
-        public Request AssembleRequestActivate(IDevice device, string partnerId, string merchantId, string terminalId,
+        public Request AssembleRequestActivate(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
             string sessionId, int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress,
             string password, string address, string mobileNumber, string merchantName, string businessName)
         {
@@ -164,9 +188,17 @@ namespace TruRating.TruModule.V2xx.Serialization
                 SessionId = sessionId,
                 Item = new RequestActivate
                 {
-                    Device = device.GetRequestDevice(),
-                    Language = device.GetLanguages(),
-                    Server = device.GetServer(),
+                    Device = new RequestDevice
+                    {
+                        Name = pinPad.GetName(),
+                        Firmware = pinPad.GetFirmware(),
+                        Screen = pinPad.GetScreenCapabilities(),
+                        SkipInstruction = pinPad.GetSkipInstruction(),
+                        SkipInstructionSpecified = true,
+                        Receipt = printer.GetReceiptCapabilities(),
+                    },
+                    Language = pinPad.GetLanguages(),
+                    Server = pinPad.GetServer(),
                     Item = new RequestRegistrationForm
                     {
                         BusinessAddress = address,
@@ -184,7 +216,7 @@ namespace TruRating.TruModule.V2xx.Serialization
             return result;
         }
 
-        public Request AssembleRequestActivate(IDevice device, string partnerId, string merchantId, string terminalId,
+        public Request AssembleRequestActivate(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
             string sessionId, string registrationCode)
         {
             var result = new Request
@@ -195,9 +227,17 @@ namespace TruRating.TruModule.V2xx.Serialization
                 SessionId = sessionId,
                 Item = new RequestActivate
                 {
-                    Device = device.GetRequestDevice(),
-                    Language = device.GetLanguages(),
-                    Server = device.GetServer(),
+                    Device = new RequestDevice
+                    {
+                        Name = pinPad.GetName(),
+                        Firmware = pinPad.GetFirmware(),
+                        Screen = pinPad.GetScreenCapabilities(),
+                        SkipInstruction = pinPad.GetSkipInstruction(),
+                        SkipInstructionSpecified = true,
+                        Receipt = printer.GetReceiptCapabilities(),
+                    },
+                    Language = pinPad.GetLanguages(),
+                    Server = pinPad.GetServer(),
                     Item = registrationCode
                 }
             };

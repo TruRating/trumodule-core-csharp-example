@@ -29,7 +29,7 @@ using TruRating.TruModule.V2xx.Device;
 
 namespace TruRating.TruModule.V2xx.ConsoleRunner.Device
 {
-    public class ConsoleDevice : IDevice
+    public class ConsoleDevice : IPinPad, IPrinter
     {
         private readonly IConsoleSettings _consoleSettings;
         private readonly IConsoleWriter _logger;
@@ -54,34 +54,46 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.Device
             return readLine;
         }
 
-        public RequestDevice GetRequestDevice()
+        public RequestPeripheral GetScreenCapabilities()
         {
-            return new RequestDevice
+            return new RequestPeripheral
             {
-                Name = GetType().Name,
-                Firmware = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                Screen = new RequestPeripheral
-                {
-                    Format = Format.TEXT,
-                    Separator = System.Environment.NewLine,
-                    Font = Font.MONOSPACED,
-                    Height = 4,
-                    HeightSpecified = true,
-                    Unit = UnitDimension.LINE,
-                    Width = 16,
-                    WidthSpecified = true
-                },
-                Receipt = new RequestPeripheral
-                {
-                    Format = Format.TEXT,
-                    Separator = System.Environment.NewLine,
-                    Font = Font.MONOSPACED,
-                    Unit = UnitDimension.LINE,
-                    Width = 40,
-                    WidthSpecified = true
-                },
-                SkipInstruction = SkipInstruction.NONE,
-                SkipInstructionSpecified = true
+                Format = Format.TEXT,
+                Separator = System.Environment.NewLine,
+                Font = Font.MONOSPACED,
+                Height = 4,
+                HeightSpecified = true,
+                Unit = UnitDimension.LINE,
+                Width = 16,
+                WidthSpecified = true
+            };
+        }
+
+        public SkipInstruction GetSkipInstruction()
+        {
+            return SkipInstruction.NONE;
+        }
+
+        public string GetName()
+        {
+            return GetType().Name;
+        }
+
+        public string GetFirmware()
+        {
+            return Assembly.GetExecutingAssembly().FullName;
+        }
+
+        public RequestPeripheral GetReceiptCapabilities()
+        {
+            return new RequestPeripheral
+            {
+                Format = Format.TEXT,
+                Separator = System.Environment.NewLine,
+                Font = Font.MONOSPACED,
+                Unit = UnitDimension.LINE,
+                Width = 40,
+                WidthSpecified = true
             };
         }
 

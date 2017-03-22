@@ -33,9 +33,9 @@ namespace TruRating.TruModule.V2xx.Module
 {
     public class TruModuleStandalone : TruModule, ITruModuleStandalone
     {
-        public TruModuleStandalone(IDevice device, ITruServiceClient<Request, Response> truServiceClient, ILogger logger,
+        public TruModuleStandalone(IPinPad pinPad, IPrinter printer, ITruServiceClient<Request, Response> truServiceClient, ILogger logger,
             ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
-            : base(device, truServiceClient, logger, truServiceMessageFactory, settings)
+            : base(pinPad,printer, truServiceClient, logger, truServiceMessageFactory, settings)
         {
         }
 
@@ -44,7 +44,7 @@ namespace TruRating.TruModule.V2xx.Module
             SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
             if (IsActivated(false))
             {
-                var request = TruServiceMessageFactory.AssembleRequestQuestion(Device, Settings.PartnerId,
+                var request = TruServiceMessageFactory.AssembleRequestQuestion(PinPad,Printer, Settings.PartnerId,
                     Settings.MerchantId, Settings.TerminalId, SessionId, Trigger.PAYMENTREQUEST);
                 DoRating(request);
             }
@@ -64,8 +64,8 @@ namespace TruRating.TruModule.V2xx.Module
         {
             var result = new List<KeyValuePair<int, string>>();
 
-            var request = TruServiceMessageFactory.AssembleRequestLookup(Device, Settings.PartnerId, Settings.MerchantId,
-                Settings.TerminalId, SessionId, lookupName); // _tsiV220Messages.SendRequestLookup(lookupName);
+            var request = TruServiceMessageFactory.AssembleRequestLookup(PinPad, Printer, Settings.PartnerId, Settings.MerchantId,
+                Settings.TerminalId, SessionId, lookupName);
 
             var responseLookup = SendRequest(request);
 
@@ -75,7 +75,7 @@ namespace TruRating.TruModule.V2xx.Module
                 var optionNumber = 0;
                 foreach (var language in responseStatus.Language)
                 {
-                    if (language.Rfc1766 == Device.GetCurrentLanguage())
+                    if (language.Rfc1766 == PinPad.GetCurrentLanguage())
                     {
                         if (language.Option != null)
                         {
@@ -101,7 +101,7 @@ namespace TruRating.TruModule.V2xx.Module
                 optionNumber++;
                 result.Add(new KeyValuePair<int, string>(optionNumber, lookupOption.Value));
             }
-            Device.DisplayMessage((lookupOption.Value == null ? "N/A" : "\"" + optionNumber + "\"") +
+            PinPad.DisplayMessage((lookupOption.Value == null ? "N/A" : "\"" + optionNumber + "\"") +
                                   "".PadLeft(depth, ' ') + lookupOption.Text + " (" + lookupOption.Value + ")");
             if (lookupOption.Option != null)
             {
@@ -118,7 +118,7 @@ namespace TruRating.TruModule.V2xx.Module
             var options = GetLookupResponse(lookupName);
             while (true)
             {
-                var selectedOption = Device.ReadLine("Please pick a numbered " + lookupName);
+                var selectedOption = PinPad.ReadLine("Please pick a numbered " + lookupName);
                 int selectedOptionNumber;
                 if (int.TryParse(selectedOption, out selectedOptionNumber))
                 {
@@ -126,7 +126,7 @@ namespace TruRating.TruModule.V2xx.Module
                     {
                         return options[selectedOptionNumber];
                     }
-                    Device.DisplayMessage("Invalid option");
+                    PinPad.DisplayMessage("Invalid option");
                 }
             }
         }
@@ -135,9 +135,9 @@ namespace TruRating.TruModule.V2xx.Module
         {
             if (Settings.IsActivated)
                 return;
-            Device.DisplayMessage("This device is not registered!");
+            PinPad.DisplayMessage("This device is not registered!");
             var registrationCode =
-                Device.ReadLine(
+                PinPad.ReadLine(
                     "Type your registration code, Press ENTER to register via form input or type SKIP to skip registration");
             Response status;
             if (string.IsNullOrEmpty(registrationCode))
@@ -152,19 +152,19 @@ namespace TruRating.TruModule.V2xx.Module
                 string merchantName = null;
 
                 while (string.IsNullOrEmpty(emailAddress))
-                    emailAddress = Device.ReadLine("Enter your email address (required)");
+                    emailAddress = PinPad.ReadLine("Enter your email address (required)");
                 while (string.IsNullOrEmpty(password))
-                    password = Device.ReadLine("Enter a password (required)");
+                    password = PinPad.ReadLine("Enter a password (required)");
                 while (string.IsNullOrEmpty(address))
-                    address = Device.ReadLine("Enter your postal address");
+                    address = PinPad.ReadLine("Enter your postal address");
                 while (string.IsNullOrEmpty(mobileNumber))
-                    mobileNumber = Device.ReadLine("Enter your mobile number, e.g. +44 (1234) 787123");
+                    mobileNumber = PinPad.ReadLine("Enter your mobile number, e.g. +44 (1234) 787123");
                 while (string.IsNullOrEmpty(businessName))
-                    businessName = Device.ReadLine("Enter your business name, e.g. McDonalds");
+                    businessName = PinPad.ReadLine("Enter your business name, e.g. McDonalds");
                 while (string.IsNullOrEmpty(merchantName))
-                    merchantName = Device.ReadLine("Enter your outlet name, e.g. McDonalds Fleet Street");
+                    merchantName = PinPad.ReadLine("Enter your outlet name, e.g. McDonalds Fleet Street");
                 status =
-                    SendRequest(TruServiceMessageFactory.AssembleRequestActivate(Device, Settings.PartnerId, SessionId,
+                    SendRequest(TruServiceMessageFactory.AssembleRequestActivate(PinPad,Printer, Settings.PartnerId, SessionId,
                         Settings.MerchantId, Settings.TerminalId, sectorNode, timeZone, PaymentInstant.PAYBEFORE,
                         emailAddress, password, address, mobileNumber, merchantName, businessName));
             }
@@ -175,7 +175,7 @@ namespace TruRating.TruModule.V2xx.Module
             else
             {
                 status =
-                    SendRequest(TruServiceMessageFactory.AssembleRequestActivate(Device, Settings.PartnerId, SessionId,
+                    SendRequest(TruServiceMessageFactory.AssembleRequestActivate(PinPad,Printer, Settings.PartnerId, SessionId,
                         Settings.MerchantId, Settings.TerminalId, registrationCode));
             }
 
@@ -186,11 +186,11 @@ namespace TruRating.TruModule.V2xx.Module
                 Settings.IsActivated = responseStatus.IsActive;
                 if (Settings.IsActivated)
                 {
-                    Device.DisplayMessage("This device is activated");
+                    PinPad.DisplayMessage("This device is activated");
                 }
                 else
                 {
-                    Device.DisplayMessage("This device is not activated");
+                    PinPad.DisplayMessage("This device is not activated");
                 }
             }
         }

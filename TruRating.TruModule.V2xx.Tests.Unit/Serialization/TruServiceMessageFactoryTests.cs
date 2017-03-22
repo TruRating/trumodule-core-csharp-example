@@ -33,13 +33,13 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Serialization
         [TestMethod]
         public void WhenAssemblyRequestQuery()
         {
-            Assert.IsNotNull(Sut.AssemblyRequestQuery(MockOf<IDevice>(), "", "", "", "", true));
+            Assert.IsNotNull(Sut.AssemblyRequestQuery(MockOf<IPinPad>(), MockOf<IPrinter>(), "", "", "", "", true));
         }
 
         [TestMethod]
         public void WhenAssembleRequestQuestion()
         {
-            Assert.IsNotNull(Sut.AssembleRequestQuestion(MockOf<IDevice>(), "", "", "", "",Trigger.CARDINSERTION));
+            Assert.IsNotNull(Sut.AssembleRequestQuestion(MockOf<IPinPad>(), MockOf<IPrinter>(), "", "", "", "",Trigger.CARDINSERTION));
         }
 
         [TestMethod]
@@ -63,19 +63,19 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Serialization
         [TestMethod]
         public void WhenAssembleRequestLookup()
         {
-            Assert.IsNotNull(Sut.AssembleRequestLookup(MockOf<IDevice>(), "", "", "", "",LookupName.SECTORNODE));
+            Assert.IsNotNull(Sut.AssembleRequestLookup(MockOf<IPinPad>(), MockOf<IPrinter>(), "", "", "", "",LookupName.SECTORNODE));
         }
 
         [TestMethod]
         public void WhenAssembleRequestActivate()
         {
-            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<IDevice>(), "", "", "", "",0,"",PaymentInstant.PAYBEFORE,"","","","","",""));
+            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<IPinPad>(), MockOf<IPrinter>(), "", "", "", "",0,"",PaymentInstant.PAYBEFORE,"","","","","",""));
         }
 
         [TestMethod]
         public void WhenAssembleRequestActivateCode()
         {
-            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<IDevice>(), "", "", "", "",""));
+            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<IPinPad>(), MockOf<IPrinter>(), "", "", "", "",""));
         }
     }
 }
