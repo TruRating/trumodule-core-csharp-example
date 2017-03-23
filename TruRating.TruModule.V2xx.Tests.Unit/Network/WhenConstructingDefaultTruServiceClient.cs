@@ -1,4 +1,4 @@
-// The MIT License
+﻿// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -19,24 +19,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Text;
+using System.Runtime.Serialization;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TruRating.Dto.TruService.V2xx.Http;
+using TruRating.TruModule.V2xx.Device;
+using TruRating.TruModule.V2xx.Network;
 
-namespace TruRating.TruModule.V2xx.Network
+namespace TruRating.TruModule.V2xx.Tests.Unit.Network
 {
-    public class SystemWebClientFactory : IWebClientFactory
+    [TestClass]
+    public class WhenConstructingDefaultTruServiceClient : MsTestsContext<V2xx.Network.TruServiceHttpClient>
     {
-
-        private readonly int _httpTimeoutMs;
-
-        public SystemWebClientFactory(int httpTimeoutMs)
+        [TestMethod]
+        public void ItShouldHaveTheDefaultSerializerAndSystemWebClient()
         {
-            _httpTimeoutMs = httpTimeoutMs;
+            V2xx.Network.TruServiceHttpClient truServiceHttpClient = (V2xx.Network.TruServiceHttpClient)V2xx.Network.TruServiceHttpClient.CreateDefault(100, "", MockOf<ILogger>(),MockOf<V2xx.Security.IMacSignatureCalculator>());
+            Assert.IsTrue(truServiceHttpClient.Serializer.GetType() == typeof(V2xx.Serialization.DefaultSerializer));
+            Assert.IsTrue(truServiceHttpClient.WebClientFactory.GetType() == typeof(SystemWebClientFactory));
         }
-
-        public IWebClient Create()
-        {
-            return new SystemWebClient(_httpTimeoutMs) {Encoding = Encoding.UTF8};
-        }
-
     }
 }

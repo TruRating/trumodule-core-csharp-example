@@ -1,4 +1,4 @@
-﻿// The MIT License
+// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -19,61 +19,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Network;
-using ISerializer = TruRating.TruModule.V2xx.Serialization.ISerializer;
+using TruRating.TruModule.V2xx.Serialization;
 
 namespace TruRating.TruModule.V2xx.Tests.Unit.Network
 {
     [TestClass]
-    public class WhenSendingAnUnsuccessfulRequest : MsTestsContext<TruServiceClient<Request, Response>>
-    {
-        private Request _request;
-        private Response _response;
-        private Response _result;
-        private WebException _webException;
-
-        [TestInitialize]
-        public void Setup()
-        {
-            _request = new Request
-            {
-                PartnerId = "1",
-                MerchantId = "2",
-                TerminalId = "3",
-            };
-
-            RegisterFake("http://localhost");
-
-            var webClient = MockOf<IWebClient>();
-            webClient.Headers= new WebHeaderCollection();
-            webClient.Stub(x=> x.ResponseHeaders).Return(new WebHeaderCollection());
-            _webException = new WebException() ;
-            webClient.Stub(x => x.UploadData(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<byte[]>.Is.Anything)).Throw(_webException);
-            var webClientFactory = MockOf<IWebClientFactory>();
-            webClientFactory.Stub(x => x.Create()).Return(webClient);
-            MockOf<V2xx.Security.IMacSignatureCalculator>().Stub(x => x.EncryptionScheme).Return("3");
-            MockOf<V2xx.Security.IMacSignatureCalculator>().Stub(x => x.Calculate(Arg<byte[]>.Is.Anything)).Return("secret");
-            var mockOf = MockOf<ISerializer>();
-
-            mockOf.Stub(x => x.Serialize(_request)).Return(new byte[] { 12 });
-            mockOf.Stub(x => x.Deserialize<Response>(new byte[] { 12 })).Return(_response);
-            _result = Sut.Send(_request);
-        }
-
-        [TestMethod]
-        public void WhenCalled()
-        {
-           MockOf<ILogger>().AssertWasCalled(x=> x.Error(_webException, "Error in TruService Client"));
-        }
-    }
-
-    [TestClass]
-    public class WhenSendingASuccessfulRequest : MsTestsContext<TruServiceClient<Request,Response>>
+    public class WhenSendingASuccessfulRequest : MsTestsContext<TruServiceHttpClient>
     {
         private Request _request;
         private Response _response;
@@ -93,6 +49,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Network
             RegisterFake("http://localhost");
 
             _fakeWebClient = new FakeWebClient();
+            _fakeWebClient.ResponseHeaders.Add("x-tru-api-diagnostic","Server Diagnostic Header");
             MockOf<IWebClientFactory>().Stub(x => x.Create()).Return(_fakeWebClient);
             MockOf<V2xx.Security.IMacSignatureCalculator>().Stub(x=> x.EncryptionScheme).Return("3");
             MockOf<V2xx.Security.IMacSignatureCalculator>().Stub(x=> x.Calculate(Arg<byte[]>.Is.Anything)).Return("secret");
@@ -125,6 +82,12 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Network
             Assert.IsTrue(_fakeWebClient.Headers.GetValues("x-tru-api-encryption-scheme")[0] == "3");
             Assert.IsTrue(_fakeWebClient.Headers.GetValues("Content-Type")[0] == "application/xml; charset=utf-8");
             Assert.IsTrue(_fakeWebClient.Headers.GetValues("x-tru-api-mac")[0] == "secret");
+        }
+
+        [TestMethod]
+        public void ShouldLogTheDiagnosticHeader()
+        {
+            MockOf<ILogger>().AssertWasCalled(x=> x.Warn("{0}", "Server Diagnostic Header"));
         }
     }
 }

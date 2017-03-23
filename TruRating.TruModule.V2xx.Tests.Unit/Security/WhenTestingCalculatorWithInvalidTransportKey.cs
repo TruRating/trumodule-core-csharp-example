@@ -20,22 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TruRating.TruModule.V2xx.Security;
 
-namespace TruRating.TruModule.V2xx.Network
+namespace TruRating.TruModule.V2xx.Tests.Unit.Security
 {
-    public class SystemWebClientFactory : IWebClientFactory
+    [TestClass]
+    public class WhenTestingCalculatorWithInvalidTransportKey : MsTestsContext<MacSignatureCalculator>
     {
-
-        private readonly int _httpTimeoutMs;
-
-        public SystemWebClientFactory(int httpTimeoutMs)
+        [TestInitialize]
+        public void Setup()
         {
-            _httpTimeoutMs = httpTimeoutMs;
+            RegisterFake("1224");
         }
-
-        public IWebClient Create()
+        [TestMethod]
+        public void ShouldReturnNull()
         {
-            return new SystemWebClient(_httpTimeoutMs) {Encoding = Encoding.UTF8};
+            Assert.IsNull(Sut.Calculate(Encoding.UTF8.GetBytes("Super secret message")));
         }
 
     }

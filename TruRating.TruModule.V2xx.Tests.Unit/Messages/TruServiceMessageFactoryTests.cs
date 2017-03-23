@@ -22,14 +22,18 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Device;
-using TruRating.TruModule.V2xx.Module;
-using TruRating.TruModule.V2xx.Serialization;
+using TruRating.TruModule.V2xx.Messages;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.Serialization
+namespace TruRating.TruModule.V2xx.Tests.Unit.Messages
 {
     [TestClass]
     public class TruServiceMessageFactoryTests :MsTestsContext<TruServiceMessageFactory>
     {
+        [TestMethod]
+        public void WhenAssemblyRequestRating()
+        {
+            Assert.IsNotNull(Sut.AssembleRequestRating(new Request(), new RequestRating()));
+        }
         [TestMethod]
         public void WhenAssemblyRequestQuery()
         {

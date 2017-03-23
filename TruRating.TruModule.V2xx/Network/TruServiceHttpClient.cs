@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
+using TruRating.Dto.TruService.V220;
 using TruRating.Dto.TruService.V2xx;
 using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Security;
@@ -31,50 +32,51 @@ using TruRating.TruModule.V2xx.Serialization;
 
 namespace TruRating.TruModule.V2xx.Network
 {
-    public class TruServiceClient<TRequest, TResponse> : ITruServiceClient<TRequest, TResponse>
-        where TRequest : IServiceMessage
+    public class TruServiceHttpClient : ITruServiceClient
     {
         private readonly string _endpoint;
         private readonly ILogger _logger;
         private readonly IMacSignatureCalculator _macSignatureCalculator;
-        private readonly ISerializer _serializer;
-        private readonly IWebClientFactory _webClientFactory;
 
-        public TruServiceClient(string endpoint, IMacSignatureCalculator macSignatureCalculator, ISerializer serializer,
+        public TruServiceHttpClient(string endpoint, IMacSignatureCalculator macSignatureCalculator, ISerializer serializer,
             ILogger logger, IWebClientFactory webClientFactory)
         {
             _endpoint = endpoint;
             _macSignatureCalculator = macSignatureCalculator;
-            _serializer = serializer;
+            Serializer = serializer;
             _logger = logger;
-            _webClientFactory = webClientFactory;
+            WebClientFactory = webClientFactory;
         }
 
-        public static ITruServiceClient<TRequest, TResponse> CreateDefault(int timeout, string endpoint, ILogger logger, IMacSignatureCalculator macSignatureCalculator)
+        internal ISerializer Serializer { get; private set; }
+
+        internal IWebClientFactory WebClientFactory { get; private set; }
+
+        public static ITruServiceClient CreateDefault(int timeout, string endpoint, ILogger logger, IMacSignatureCalculator macSignatureCalculator)
         {
-            return new TruServiceClient<TRequest, TResponse>(endpoint,macSignatureCalculator,new DefaultSerializer(),logger, new SystemWebClientFactory(timeout));
+            return new TruServiceHttpClient(endpoint,macSignatureCalculator,new DefaultSerializer(),logger, new SystemWebClientFactory(timeout));
         }
 
-        public TResponse Send(TRequest request)
+        public Response Send(Request request)
         {
-            var deserialize = default(TResponse);
+            var deserialize = default(Response);
 
             try
             {
-                var webClient = _webClientFactory.Create();
+                var webClient = WebClientFactory.Create();
                 webClient.Headers.Add(HttpRequestHeader.ContentType, "application/xml; charset=utf-8");
                 webClient.Headers.Set("x-tru-api-partner-id", request.PartnerId);
                 webClient.Headers.Set("x-tru-api-merchant-id", request.MerchantId);
                 webClient.Headers.Set("x-tru-api-terminal-id", request.TerminalId);
                 webClient.Headers.Set("x-tru-api-encryption-scheme", _macSignatureCalculator.EncryptionScheme);
-                var requestBody = _serializer.Serialize(request);
+                var requestBody = Serializer.Serialize(request);
                 webClient.Headers.Set("x-tru-api-mac", _macSignatureCalculator.Calculate(requestBody));
                 Trace.TraceInformation("POST {0} HTTP/1.1", _endpoint);
                 foreach (var header in webClient.Headers)
                 {
-                    _logger.Info(ConsoleColor.Yellow, "{0} : {1}", header, webClient.Headers[header.ToString()]);
+                    _logger.Debug("{0} : {1}", header, webClient.Headers[header.ToString()]);
                 }
-                _logger.Info(ConsoleColor.Yellow, "Request Body\n{0}", Encoding.UTF8.GetString(requestBody));
+                _logger.Debug("Request Body\n{0}", Encoding.UTF8.GetString(requestBody));
                 byte[] responseBody;
                 try
                 {
@@ -92,10 +94,10 @@ namespace TruRating.TruModule.V2xx.Network
                 }
                 if (webClient.ResponseHeaders != null && webClient.ResponseHeaders.Get("x-tru-api-diagnostic") != null)
                 {
-                    _logger.Info(ConsoleColor.Red, webClient.ResponseHeaders.Get("x-tru-api-diagnostic"));
+                    _logger.Warn("{0}",webClient.ResponseHeaders.Get("x-tru-api-diagnostic"));
                 }
-                _logger.Info(ConsoleColor.DarkYellow, "Response Body\n{0}", Encoding.UTF8.GetString(responseBody));
-                deserialize = _serializer.Deserialize<TResponse>(responseBody);
+                _logger.Debug("Response Body\n{0}", Encoding.UTF8.GetString(responseBody));
+                deserialize = Serializer.Deserialize<Response>(responseBody);
                 return deserialize;
             }
             catch (Exception e)

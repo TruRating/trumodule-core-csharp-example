@@ -23,16 +23,16 @@ using System;
 using System.Collections.Generic;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Device;
-using TruRating.TruModule.V2xx.Helpers;
+using TruRating.TruModule.V2xx.Messages;
 using TruRating.TruModule.V2xx.Network;
-using TruRating.TruModule.V2xx.Serialization;
 using TruRating.TruModule.V2xx.Settings;
+using TruRating.TruModule.V2xx.Util;
 
-namespace TruRating.TruModule.V2xx.Module
+namespace TruRating.TruModule.V2xx
 {
     public class TruModuleStandalone : TruModule, ITruModuleStandalone
     {
-        public TruModuleStandalone(IDevice device, IReceiptManager receiptManager, ITruServiceClient<Request, Response> truServiceClient, ILogger logger,
+        public TruModuleStandalone(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger,
             ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
             : base(device,receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
         {
@@ -43,8 +43,7 @@ namespace TruRating.TruModule.V2xx.Module
             SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
             if (IsActivated(false))
             {
-                var request = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager, Settings.PartnerId,
-                    Settings.MerchantId, Settings.TerminalId, SessionId, Trigger.PAYMENTREQUEST);
+                var request = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager, Settings.PartnerId, Settings.MerchantId, Settings.TerminalId, SessionId, Trigger.PAYMENTREQUEST);
                 DoRating(request);
             }
         }
@@ -135,10 +134,6 @@ namespace TruRating.TruModule.V2xx.Module
                 Settings.ActivationRecheck = DateTime.UtcNow.AddMinutes(responseStatus.TimeToLive);
                 Settings.IsActivated = responseStatus.IsActive;
             }
-            return Settings.IsActivated;
-        }
-        public bool IsActivated()
-        {
             return Settings.IsActivated;
         }
     }

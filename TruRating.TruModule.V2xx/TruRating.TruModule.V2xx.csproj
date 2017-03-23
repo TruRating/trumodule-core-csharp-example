@@ -53,18 +53,18 @@
   <ItemGroup>
     <Compile Include="Device\ILogger.cs" />
     <Compile Include="Device\IReceiptManager.cs" />
-    <Compile Include="Helpers\DateTimeProvider.cs" />
-    <Compile Include="Helpers\ExtensionMethods.cs" />
-    <Compile Include="Helpers\Func.cs" />
-    <Compile Include="Helpers\TaskHelpers.cs" />
+    <Compile Include="Util\DateTimeProvider.cs" />
+    <Compile Include="Util\ExtensionMethods.cs" />
+    <Compile Include="Util\Func.cs" />
+    <Compile Include="Util\TaskHelpers.cs" />
     <Compile Include="Network\IWebClientFactory.cs" />
     <Compile Include="Network\SystemWebClientFactory.cs" />
     <Compile Include="Settings\ISettings.cs" />
-    <Compile Include="Module\ITruModuleIntegrated.cs" />
-    <Compile Include="Module\ITruModuleStandalone.cs" />
-    <Compile Include="Serialization\ITruServiceMessageFactory.cs" />
+    <Compile Include="ITruModuleIntegrated.cs" />
+    <Compile Include="ITruModuleStandalone.cs" />
+    <Compile Include="Messages\ITruServiceMessageFactory.cs" />
     <Compile Include="Network\ITruServiceClient.cs" />
-    <Compile Include="Module\PosParams.cs" />
+    <Compile Include="Messages\PosParams.cs" />
     <Compile Include="Serialization\DefaultSerializer.cs" />
     <Compile Include="Device\IDevice.cs" />
     <Compile Include="Security\IMacSignatureCalculator.cs" />
@@ -74,12 +74,12 @@
     <Compile Include="Network\SystemWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Network\TruServiceClient.cs" />
+    <Compile Include="Network\TruServiceHttpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Module\TruModule.cs" />
-    <Compile Include="Module\TruModuleIntegrated.cs" />
-    <Compile Include="Module\TruModuleStandalone.cs" />
-    <Compile Include="Serialization\TruServiceMessageFactory.cs" />
+    <Compile Include="TruModule.cs" />
+    <Compile Include="TruModuleIntegrated.cs" />
+    <Compile Include="TruModuleStandalone.cs" />
+    <Compile Include="Messages\TruServiceMessageFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="License.txt" />

@@ -19,20 +19,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Collections.Generic;
-using TruRating.Dto.TruService.V220;
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TruRating.TruModule.V2xx.Network;
 
-namespace TruRating.TruModule.V2xx.Module
+namespace TruRating.TruModule.V2xx.Tests.Unit.Network
 {
-    public interface ITruModuleStandalone
+    [TestClass]
+    public class WhenCreatingAWebRequest : MsTestsContext
     {
-        void DoRating();
-        void CancelRating();
-        void SendTransaction(RequestTransaction requestTransaction);
+        private SystemWebClient _sut;
 
-        bool Activate(int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress, string password, string address,string mobileNumber, string merchantName, string businessName);
-        bool Activate(string registrationCode);
-        bool IsActivated();
-        Dictionary<int, string> GetLookups(LookupName lookupName);
+        [TestInitialize]
+        public void Setup()
+        {
+            _sut = new SystemWebClient(1000);
+        }
+        [TestMethod]
+        public void ItShouldHaveTheTimeoutSet()
+        {
+            var webRequest = _sut.GetWebRequestTimeout(new Uri("http://localhost"));
+            Assert.IsTrue(webRequest.Timeout == 1000);
+        }
     }
 }

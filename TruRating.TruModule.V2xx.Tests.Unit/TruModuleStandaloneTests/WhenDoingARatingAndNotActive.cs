@@ -19,7 +19,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace TruRating.TruModule.V2xx.Helpers
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rhino.Mocks;
+using TruRating.Dto.TruService.V220;
+using TruRating.TruModule.V2xx.Device;
+using TruRating.TruModule.V2xx.Messages;
+using TruRating.TruModule.V2xx.Settings;
+
+namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
 {
-    public delegate T Func<T>();
+    [TestClass]
+    public class WhenDoingARatingAndNotActive: MsTestsContext<TruModuleStandalone>
+    {
+        [TestInitialize]
+        public void Setup()
+        {
+            MockOf<ISettings>().IsActivated = false;
+            Sut.DoRating();
+        }
+        [TestMethod]
+        public void ItShouldNotAssembleRequestQuestion()
+        {
+            MockOf<ITruServiceMessageFactory>().AssertWasNotCalled(x=> x.AssembleRequestQuestion(Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything,Arg<Trigger>.Is.Anything));
+        }
+    }
 }

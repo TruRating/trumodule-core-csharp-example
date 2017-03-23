@@ -1,4 +1,4 @@
-﻿// The MIT License
+// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -19,14 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using TruRating.Dto.TruService.V220;
-
-namespace TruRating.TruModule.V2xx.Module
+namespace TruRating.TruModule.V2xx.Util
 {
-    public interface ITruModuleIntegrated
-    {
-        void SendTransaction(PosParams posParams, RequestTransaction requestTransaction);
-        void SendPosEvent(PosParams posParams, RequestPosEvent requestPosEvent);
-        void SendPosEventList(PosParams posParams, RequestPosEventList eventList);
-    }
+    public delegate T Func<T>();
 }

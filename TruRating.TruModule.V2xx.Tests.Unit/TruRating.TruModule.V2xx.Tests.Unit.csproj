@@ -64,14 +64,24 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Network\FakeWebClient.cs" />
-    <Compile Include="Network\TruServiceClientTests.cs" />
+    <Compile Include="Network\HttpHelpers.cs" />
+    <Compile Include="Network\SystemWebClientFactoryTests.cs" />
+    <Compile Include="Network\WhenCreatingAWebRequest.cs" />
+    <Compile Include="Network\WhenConstructingDefaultTruServiceClient.cs" />
+    <Compile Include="Network\WhenSendingAnUnsuccessfulRequest.cs" />
+    <Compile Include="Network\WhenSendingASuccessfulRequest.cs" />
     <Compile Include="RhinoMockingContainer.cs" />
-    <Compile Include="Security\MacSignatureCalculatorTests.cs" />
+    <Compile Include="Security\WhenTestingCalculatorWithValidTransportKey.cs" />
     <Compile Include="MsTestsContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scenarios\V200ExemplarTests.cs" />
+    <Compile Include="Security\WhenTestingCalculatorWithInvalidTransportKey.cs" />
     <Compile Include="Serialization\DefaultSerializerTests.cs" />
-    <Compile Include="Serialization\TruServiceMessageFactoryTests.cs" />
+    <Compile Include="Messages\TruServiceMessageFactoryTests.cs" />
+    <Compile Include="TruModuleStandaloneTests\ActiveTruModuleStandaloneTestsContext.cs" />
+    <Compile Include="TruModuleStandaloneTests\WhenDoingARatingAndNotActive.cs" />
+    <Compile Include="TruModuleStandaloneTests\WhenQuestionAvailableAndDoingDwellTimeExtendRating.cs" />
+    <Compile Include="TruModuleStandaloneTests\WhenTruModuleIsInactiveAndTTLNotExpiredAndDoingAPassiveActivationCheck.cs" />
+    <Compile Include="TruModuleStandaloneTests\WhenTruModuleIsInactiveAndTTLNotExpiredButForcingAnActivationCheck.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

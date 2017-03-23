@@ -23,12 +23,12 @@ using System.Diagnostics;
 using System.Threading;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Device;
-using TruRating.TruModule.V2xx.Helpers;
+using TruRating.TruModule.V2xx.Messages;
 using TruRating.TruModule.V2xx.Network;
-using TruRating.TruModule.V2xx.Serialization;
 using TruRating.TruModule.V2xx.Settings;
+using TruRating.TruModule.V2xx.Util;
 
-namespace TruRating.TruModule.V2xx.Module
+namespace TruRating.TruModule.V2xx
 {
     public abstract class TruModule
     {
@@ -36,7 +36,7 @@ namespace TruRating.TruModule.V2xx.Module
         private readonly object _isCancelledLock = new object();
         private readonly object _isQuestionRunningLock = new object();
         private readonly ILogger _logger;
-        private readonly ITruServiceClient<Request, Response> _truServiceClient;
+        private readonly ITruServiceClient _truServiceClient;
         protected readonly IDevice Device;
         protected readonly IReceiptManager ReceiptManager;
         protected readonly ISettings Settings;
@@ -49,7 +49,7 @@ namespace TruRating.TruModule.V2xx.Module
         private bool _isQuestionRunning;
         protected Trigger Trigger = Trigger.PAYMENTREQUEST;
 
-        protected TruModule(IDevice device, IReceiptManager receiptManager, ITruServiceClient<Request, Response> truServiceClient, ILogger logger,
+        protected TruModule(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger,
             ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
         {
             Device = device;
@@ -168,6 +168,7 @@ namespace TruRating.TruModule.V2xx.Module
                 Value = -4 //initial state is "cannot show question"
             };
             //Look through the response for a valid question
+            ResponseScreen responseScreen = null;
             if (QuestionAvailable(response, Device.GetCurrentLanguage(), out question, out receipts, out screens))
             {
                 var sw = new Stopwatch();
@@ -188,20 +189,20 @@ namespace TruRating.TruModule.V2xx.Module
                 _dwellTimeExtendAutoResetEvent.Reset();
                 sw.Stop();
                 rating.ResponseTimeMs = (int) sw.ElapsedMilliseconds; //Set the response time
-                _truServiceClient.Send(TruServiceMessageFactory.AssembleRatingRequest(request, rating));
                 var responseReceipt = GetResponseReceipt(receipts, rating.Value < 0 ? When.NOTRATED : When.RATED);
-                var responseScreen = GetResponseScreen(screens, rating.Value < 0 ? When.NOTRATED : When.RATED);
+                responseScreen = GetResponseScreen(screens, rating.Value < 0 ? When.NOTRATED : When.RATED);
                 ReceiptManager.AppendReceipt(responseReceipt);
-                if (!GetCancelled() || responseScreen.Priority)
-                {
-                    Device.DisplayMessage(responseScreen.Value, responseScreen.TimeoutMs);
-                }
+            }
+            _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));
+            if ( responseScreen != null && (!GetCancelled() || responseScreen.Priority))
+            {
+                Device.DisplayMessage(responseScreen.Value, responseScreen.TimeoutMs);
             }
         }
 
-        
 
-        private static bool QuestionAvailable(Response response, string language, out ResponseQuestion responseQuestion,
+
+        internal static bool QuestionAvailable(Response response, string language, out ResponseQuestion responseQuestion,
             out ResponseReceipt[] responseReceipts, out ResponseScreen[] responseScreens)
         {
             responseQuestion = null;
@@ -213,7 +214,7 @@ namespace TruRating.TruModule.V2xx.Module
                 var responseDisplay = item;
                 foreach (var responseLanguage in responseDisplay.Language)
                 {
-                    if (responseLanguage.Rfc1766 == language)
+                    if (responseLanguage.Rfc1766 == language && responseLanguage.Question!=null)
                     {
                         responseQuestion = responseLanguage.Question;
                         responseReceipts = responseLanguage.Receipt;
@@ -221,13 +222,13 @@ namespace TruRating.TruModule.V2xx.Module
                         return true;
                     }
                 }
-                return true;
+                return false;
             }
 
             return false;
         }
 
-        private static string GetResponseReceipt(ResponseReceipt[] responseReceipts, When when)
+        internal static string GetResponseReceipt(ResponseReceipt[] responseReceipts, When when)
         {
             if (responseReceipts == null)
                 return null;
@@ -242,7 +243,7 @@ namespace TruRating.TruModule.V2xx.Module
             return null;
         }
 
-        private static ResponseScreen GetResponseScreen(ResponseScreen[] responseScreens, When whenToDisplay)
+        internal static ResponseScreen GetResponseScreen(ResponseScreen[] responseScreens, When whenToDisplay)
         {
             if (responseScreens == null)
                 return null;

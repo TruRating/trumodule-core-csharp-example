@@ -1,4 +1,4 @@
-﻿// The MIT License
+// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -19,14 +19,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace TruRating.TruModule.V2xx.Module
+using System;
+
+namespace TruRating.TruModule.V2xx.Util
 {
-    public class PosParams
+    public static class DateTimeProvider
     {
-        public string PartnerId { get; set; }
-        public string MerchantId { get; set; }
-        public string TerminalId { get; set; }
-        public string SessionId { get; set; }
-        public string Url { get; set; }
+        private static Func<DateTime> _nowFunc = () => DateTime.UtcNow;
+
+        /// <summary>
+        ///     The current representation of UtcNow
+        /// </summary>
+        public static DateTime UtcNow
+        {
+            get { return _nowFunc(); }
+            set { _nowFunc = () => value; }
+        }
     }
 }

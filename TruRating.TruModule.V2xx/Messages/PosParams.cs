@@ -1,4 +1,4 @@
-// The MIT License
+﻿// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -19,24 +19,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Text;
-
-namespace TruRating.TruModule.V2xx.Network
+namespace TruRating.TruModule.V2xx.Messages
 {
-    public class SystemWebClientFactory : IWebClientFactory
+    public class PosParams
     {
-
-        private readonly int _httpTimeoutMs;
-
-        public SystemWebClientFactory(int httpTimeoutMs)
-        {
-            _httpTimeoutMs = httpTimeoutMs;
-        }
-
-        public IWebClient Create()
-        {
-            return new SystemWebClient(_httpTimeoutMs) {Encoding = Encoding.UTF8};
-        }
-
+        public string PartnerId { get; set; }
+        public string MerchantId { get; set; }
+        public string TerminalId { get; set; }
+        public string SessionId { get; set; }
+        public string Url { get; set; }
     }
 }

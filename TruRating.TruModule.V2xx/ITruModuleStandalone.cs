@@ -1,4 +1,4 @@
-// The MIT License
+﻿// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -19,43 +19,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Threading;
+using System.Collections.Generic;
+using TruRating.Dto.TruService.V220;
 
-namespace TruRating.TruModule.V2xx.Helpers
+namespace TruRating.TruModule.V2xx
 {
-    public static class TaskHelpers
+    public interface ITruModuleStandalone
     {
-        public delegate R AsyncTask<R>();
+        void DoRating();
+        void CancelRating();
+        void SendTransaction(RequestTransaction requestTransaction);
 
-        public static AsyncTask<TResult> BeginTask<TResult>(AsyncTask<TResult> function)
-        {
-            var retv = default(TResult);
-            var completed = false;
-
-            var sync = new object();
-
-            var asyncResult = function.BeginInvoke(
-                iAsyncResult =>
-                {
-                    lock (sync)
-                    {
-                        completed = true;
-                        retv = function.EndInvoke(iAsyncResult);
-                        Monitor.Pulse(sync);
-                    }
-                }, null);
-
-            return delegate
-            {
-                lock (sync)
-                {
-                    if (!completed)
-                    {
-                        Monitor.Wait(sync);
-                    }
-                    return retv;
-                }
-            };
-        }
+        bool Activate(int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress, string password, string address,string mobileNumber, string merchantName, string businessName);
+        bool Activate(string registrationCode);
+        bool IsActivated(bool force);
+        Dictionary<int, string> GetLookups(LookupName lookupName);
     }
 }

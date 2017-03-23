@@ -19,21 +19,43 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
+using System.Threading;
 
-namespace TruRating.TruModule.V2xx.Helpers
+namespace TruRating.TruModule.V2xx.Util
 {
-    public static class DateTimeProvider
+    public static class TaskHelpers
     {
-        private static Func<DateTime> _nowFunc = () => DateTime.UtcNow;
+        public delegate R AsyncTask<R>();
 
-        /// <summary>
-        ///     The current representation of UtcNow
-        /// </summary>
-        public static DateTime UtcNow
+        public static AsyncTask<TResult> BeginTask<TResult>(AsyncTask<TResult> function)
         {
-            get { return _nowFunc(); }
-            set { _nowFunc = () => value; }
+            var retv = default(TResult);
+            var completed = false;
+
+            var sync = new object();
+
+            var asyncResult = function.BeginInvoke(
+                iAsyncResult =>
+                {
+                    lock (sync)
+                    {
+                        completed = true;
+                        retv = function.EndInvoke(iAsyncResult);
+                        Monitor.Pulse(sync);
+                    }
+                }, null);
+
+            return delegate
+            {
+                lock (sync)
+                {
+                    if (!completed)
+                    {
+                        Monitor.Wait(sync);
+                    }
+                    return retv;
+                }
+            };
         }
     }
 }

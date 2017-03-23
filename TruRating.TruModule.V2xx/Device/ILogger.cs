@@ -29,7 +29,6 @@ namespace TruRating.TruModule.V2xx.Device
         void Error(string format, params object[] parms);
         void Warn(string format, params object[] parms);
         void Info(string format, params object[] parms);
-        void Info(ConsoleColor consoleColor, string format, params object[] parms);
         void Debug(string format, params object[] parms);
     }
 }

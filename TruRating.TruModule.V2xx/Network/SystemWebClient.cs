@@ -26,22 +26,25 @@ namespace TruRating.TruModule.V2xx.Network
 {
     public class SystemWebClient : WebClient, IWebClient
     {
-        private readonly int _httpTimeoutMs;
-
         public SystemWebClient(int httpTimeoutMs)
         {
-            _httpTimeoutMs = httpTimeoutMs;
+            HttpTimeoutMs = httpTimeoutMs;
         }
-
+        internal int HttpTimeoutMs { get; private set; }
         protected override WebRequest GetWebRequest(Uri address)
         {
             var webRequest = base.GetWebRequest(address);
             if (webRequest != null)
             {
-                webRequest.Timeout = _httpTimeoutMs;
+                webRequest.Timeout = HttpTimeoutMs;
                 return webRequest;
             }
             return null;
+        }
+
+        internal WebRequest GetWebRequestTimeout(Uri address)
+        {
+            return GetWebRequest(address);
         }
     }
 }

@@ -22,9 +22,8 @@
 using TruRating.Dto.TruService.V220;
 using TruRating.Dto.TruService.V2xx;
 using TruRating.TruModule.V2xx.Device;
-using TruRating.TruModule.V2xx.Module;
 
-namespace TruRating.TruModule.V2xx.Serialization
+namespace TruRating.TruModule.V2xx.Messages
 {
     public class TruServiceMessageFactory : ITruServiceMessageFactory
     {
@@ -61,7 +60,7 @@ namespace TruRating.TruModule.V2xx.Serialization
             return result;
         }
 
-        public Request AssembleRatingRequest(IServiceMessage request, RequestRating rating)
+        public Request AssembleRequestRating(Request request, RequestRating rating)
         {
             var result = new Request
             {

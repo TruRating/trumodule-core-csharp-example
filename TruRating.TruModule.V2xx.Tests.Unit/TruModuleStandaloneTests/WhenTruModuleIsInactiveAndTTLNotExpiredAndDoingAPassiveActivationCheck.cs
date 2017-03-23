@@ -19,24 +19,41 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Text;
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rhino.Mocks;
+using TruRating.Dto.TruService.V220;
+using TruRating.TruModule.V2xx.Network;
+using TruRating.TruModule.V2xx.Settings;
+using TruRating.TruModule.V2xx.Util;
 
-namespace TruRating.TruModule.V2xx.Network
+namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
 {
-    public class SystemWebClientFactory : IWebClientFactory
+    [TestClass]
+    public class WhenTruModuleIsInactiveAndTtlNotExpiredAndDoingAPassiveActivationCheck :MsTestsContext<TruModuleStandalone>
     {
+        private bool _isActivated;
+        private ITruServiceClient _truServiceClient;
 
-        private readonly int _httpTimeoutMs;
-
-        public SystemWebClientFactory(int httpTimeoutMs)
+        [TestInitialize]
+        public void Setup()
         {
-            _httpTimeoutMs = httpTimeoutMs;
+            DateTimeProvider.UtcNow = new DateTime(2000,01,01);
+            MockOf<ISettings>().ActivationRecheck= new DateTime(2001, 01,01);
+            _isActivated = Sut.IsActivated(false);
+            _truServiceClient = MockOf<ITruServiceClient>();
         }
 
-        public IWebClient Create()
+        [TestMethod]
+        public void ShouldBeInactive()
         {
-            return new SystemWebClient(_httpTimeoutMs) {Encoding = Encoding.UTF8};
+            Assert.IsFalse(_isActivated);
         }
 
+        [TestMethod]
+        public void ShouldReturnIsActiveFalse()
+        {
+            _truServiceClient.AssertWasCalled(x => x.Send(Arg<Request>.Is.Anything), options => options.Repeat.Once());
+        }
     }
 }

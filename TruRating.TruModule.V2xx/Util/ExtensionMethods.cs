@@ -25,7 +25,7 @@ using System.Net;
 using System.Net.Sockets;
 using TruRating.Dto.TruService.V2xx.Serialization;
 
-namespace TruRating.TruModule.V2xx.Helpers
+namespace TruRating.TruModule.V2xx.Util
 {
     public class ExtensionMethods
     {

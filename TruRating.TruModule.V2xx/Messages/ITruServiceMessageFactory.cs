@@ -22,9 +22,8 @@
 using TruRating.Dto.TruService.V220;
 using TruRating.Dto.TruService.V2xx;
 using TruRating.TruModule.V2xx.Device;
-using TruRating.TruModule.V2xx.Module;
 
-namespace TruRating.TruModule.V2xx.Serialization
+namespace TruRating.TruModule.V2xx.Messages
 {
     public interface ITruServiceMessageFactory
     {
@@ -58,6 +57,6 @@ namespace TruRating.TruModule.V2xx.Serialization
         Request AssembleRequestActivate(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
             string sessionId, string registrationCode);
 
-        Request AssembleRatingRequest(IServiceMessage serviceMessage, RequestRating rating);
+        Request AssembleRequestRating(Request request, RequestRating rating);
     }
 }
