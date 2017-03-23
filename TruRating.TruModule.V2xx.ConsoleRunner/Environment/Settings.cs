@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Reflection;
+using TruRating.Dto.TruService.V220;
 
 namespace TruRating.TruModule.V2xx.ConsoleRunner.Environment
 {
@@ -120,7 +121,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.Environment
 
         public DateTime ActivationRecheck { get; set; }
         public bool IsActivated { get; set; }
-
+        public Trigger Trigger { get; set; }
         public static string GetValues<T>()
         {
             var sb = new List<string>();

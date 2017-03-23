@@ -41,13 +41,9 @@ namespace TruRating.TruModule.V2xx
         protected readonly IReceiptManager ReceiptManager;
         protected readonly ISettings Settings;
         protected readonly ITruServiceMessageFactory TruServiceMessageFactory;
-
-
         private int _dwellTimeExtendMs;
         private bool _isCancelled;
-
         private bool _isQuestionRunning;
-        protected Trigger Trigger = Trigger.PAYMENTREQUEST;
 
         protected TruModule(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger,
             ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
@@ -122,7 +118,7 @@ namespace TruRating.TruModule.V2xx
             SetCancelled(true); //Set flag to show question has been cancelled
             if (GetQuestionRunning())
             {
-                if (Trigger == Trigger.DWELLTIMEEXTEND)
+                if (Settings.Trigger == Trigger.DWELLTIMEEXTEND)
                 {
                     _logger.Debug("Waiting {0} to cancel rating", _dwellTimeExtendMs);
                     _dwellTimeExtendAutoResetEvent.WaitOne(_dwellTimeExtendMs); //Wait for dwelltime extend to finish
@@ -146,12 +142,14 @@ namespace TruRating.TruModule.V2xx
 
         protected void DoRating(Request request)
         {
+            
             SetCancelled(false);
             if (!(request.Item is RequestQuestion))
             {
                 _logger.Info("Request was not a question");
                 return;
             }
+            Settings.Trigger = ((RequestQuestion) request.Item).Trigger;
             var response = _truServiceClient.Send(request);
             if (response == null)
             {

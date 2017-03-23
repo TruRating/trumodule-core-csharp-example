@@ -39,8 +39,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
         protected ISettings Settings;
         protected IDevice Device;
         protected ITruServiceClient TruServiceClient;
-        protected Trigger Trigger;
-        protected ActiveTruModuleStandaloneTestsContext()
+        protected ActiveTruModuleStandaloneTestsContext(Trigger trigger)
         {
             Request = new Request
             {
@@ -50,7 +49,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
                 SessionId = "1",
                 Item = new RequestQuestion
                 {
-                    Trigger = Trigger.DWELLTIMEEXTEND,
+                    Trigger = trigger,
                 }
             };
             Response = new Response
@@ -80,6 +79,8 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
         [TestInitialize]
         public void SetupBase()
         {
+            
+            
             Settings = MockOf<ISettings>();
             Settings.IsActivated = true;
             DateTimeProvider.UtcNow = new DateTime(2000, 01, 01);
@@ -95,7 +96,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
             
             Device.Stub(x => x.GetCurrentLanguage()).Return("en-GB");
             TruServiceClient = MockOf<ITruServiceClient>();
-            TruServiceClient.Stub(x => x.Send(Request)).Return(Response);
+            TruServiceClient.Stub(x => x.Send(Arg<Request>.Is.Anything)).Return(Response);
         }
     }
 }

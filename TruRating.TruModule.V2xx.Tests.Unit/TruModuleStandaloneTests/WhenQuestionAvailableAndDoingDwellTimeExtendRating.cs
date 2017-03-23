@@ -33,6 +33,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
         [TestInitialize]
         public void Setup()
         {
+            Settings.Trigger = Trigger.DWELLTIMEEXTEND;
             Device.Stub(x => x.Display1AQ1KR(Arg<string>.Is.Anything, Arg<int>.Is.Anything)).WhenCalled(invocation =>
             {
                 Thread.Sleep(250);
@@ -63,6 +64,10 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
             var arguments = TruServiceMessageFactory.GetArgumentsForCallsMadeOn(
                 x => x.AssembleRequestRating(Arg<Request>.Is.Anything, Arg<RequestRating>.Is.Anything))[0];
             Assert.IsTrue(((RequestRating) arguments[1]).Value == 2);
+        }
+
+        public WhenQuestionAvailableAndDoingDwellTimeExtendRating() : base(Trigger.DWELLTIMEEXTEND)
+        {
         }
     }
 }

@@ -43,7 +43,7 @@ namespace TruRating.TruModule.V2xx
             SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
             if (IsActivated(false))
             {
-                var request = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager, Settings.PartnerId, Settings.MerchantId, Settings.TerminalId, SessionId, Trigger.PAYMENTREQUEST);
+                var request = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager, Settings.PartnerId, Settings.MerchantId, Settings.TerminalId, SessionId, Settings.Trigger);
                 DoRating(request);
             }
         }

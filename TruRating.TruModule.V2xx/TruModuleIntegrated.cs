@@ -59,12 +59,10 @@ namespace TruRating.TruModule.V2xx
                         : null;
                     if (item is ResponseEventQuestion)
                     {
-                        Trigger = (item as ResponseEventQuestion).Trigger;
-                        if (Trigger == Trigger.DWELLTIME || Trigger == Trigger.DWELLTIMEEXTEND)
+                        Settings.Trigger = (item as ResponseEventQuestion).Trigger;
+                        if (Settings.Trigger == Trigger.DWELLTIME || Settings.Trigger == Trigger.DWELLTIMEEXTEND)
                         {
-                            var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager,
-                                posParams.PartnerId, posParams.MerchantId, posParams.TerminalId, posParams.SessionId,
-                                Trigger);
+                            var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager,posParams.PartnerId, posParams.MerchantId, posParams.TerminalId, posParams.SessionId, Settings.Trigger);
                             DoRating(questionRequest);
                         }
                     }
@@ -94,10 +92,10 @@ namespace TruRating.TruModule.V2xx
         {
             if (IsActivated(false))
             {
-                if (Trigger == Trigger.PAYMENTREQUEST)
+                if (Settings.Trigger == Trigger.PAYMENTREQUEST)
                 {
                     var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager, posParams.PartnerId,
-                        posParams.MerchantId, posParams.TerminalId, posParams.SessionId, Trigger);
+                        posParams.MerchantId, posParams.TerminalId, posParams.SessionId, Settings.Trigger);
                     DoRating(questionRequest);
                 }
                 else

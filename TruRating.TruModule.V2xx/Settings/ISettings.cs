@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using TruRating.Dto.TruService.V220;
 
 namespace TruRating.TruModule.V2xx.Settings
 {
@@ -33,5 +34,6 @@ namespace TruRating.TruModule.V2xx.Settings
         string TerminalId { get; set; }
         DateTime ActivationRecheck { get; set; }
         bool IsActivated { get; set; }
+        Trigger Trigger { get; set; }
     }
 }
