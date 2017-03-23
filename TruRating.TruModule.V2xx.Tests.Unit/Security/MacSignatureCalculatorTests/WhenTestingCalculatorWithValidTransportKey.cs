@@ -35,13 +35,13 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Security.MacSignatureCalculatorTes
             RegisterFake("000001002051431059683111");
         }
         [TestMethod]
-        public void ShouldCalculateMacForKnownMessage()
+        public void ItShouldCalculateMacForKnownMessage()
         {
             var result = Sut.Calculate(Encoding.UTF8.GetBytes("Super secret message")) =="E133185A2953E98B978535CB9CEC1A691BCE247D5ABF17DCCC758E99A458AD780141F192E25B9BDD";
             Assert.IsTrue(result);
         }
         [TestMethod]
-        public void ShouldBeEncryptionSchemeThree()
+        public void ItShouldBeEncryptionSchemeThree()
         {
             Assert.IsTrue(Sut.EncryptionScheme == "3");
         }

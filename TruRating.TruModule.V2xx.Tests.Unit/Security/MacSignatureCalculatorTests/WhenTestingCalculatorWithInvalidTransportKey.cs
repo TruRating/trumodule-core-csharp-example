@@ -35,7 +35,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Security.MacSignatureCalculatorTes
             RegisterFake("1224");
         }
         [TestMethod]
-        public void ShouldReturnNull()
+        public void ItShouldReturnNull()
         {
             Assert.IsNull(Sut.Calculate(Encoding.UTF8.GetBytes("Super secret message")));
         }

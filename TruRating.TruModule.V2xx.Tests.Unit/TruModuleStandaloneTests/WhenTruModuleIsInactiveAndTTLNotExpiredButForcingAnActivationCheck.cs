@@ -49,19 +49,19 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
         }
 
         [TestMethod]
-        public void ShouldBeActive()
+        public void ItShouldBeActive()
         {
             Assert.IsTrue(_result);
         }
 
         [TestMethod]
-        public void ShouldAdvanceTheTTL()
+        public void ItShouldAdvanceTheTTL()
         {
             Assert.IsTrue(_settings.ActivationRecheck == new DateTime(2001, 01, 01, 21, 00, 00));
         }
 
         [TestMethod]
-        public void ShouldHaveMadeTwoCallsToTruService()
+        public void ItShouldHaveMadeTwoCallsToTruService()
         {
             _truServiceClient.AssertWasCalled(x => x.Send(Arg<Request>.Is.Anything), options => options.Repeat.Twice());
         }

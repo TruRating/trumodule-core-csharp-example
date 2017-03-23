@@ -45,13 +45,13 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
         }
 
         [TestMethod]
-        public void ShouldBeInactive()
+        public void ItShouldBeInactive()
         {
             Assert.IsFalse(_isActivated);
         }
 
         [TestMethod]
-        public void ShouldReturnIsActiveFalse()
+        public void ItShouldReturnIsActiveFalse()
         {
             _truServiceClient.AssertWasCalled(x => x.Send(Arg<Request>.Is.Anything), options => options.Repeat.Once());
         }

@@ -69,13 +69,13 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Network.TruServiceHttpClientTests
         }
 
         [TestMethod]
-        public void ShouldReturnTheDeserializedObject()
+        public void ItShouldReturnTheDeserializedObject()
         {
             Assert.IsTrue(_result == _response);
         }
 
         [TestMethod]
-        public void ShouldSetTheRequiredHeaders()
+        public void ItShouldSetTheRequiredHeaders()
         {
             Assert.IsTrue(_fakeWebClient.Headers.GetValues("x-tru-api-partner-id")[0] == "1");
             Assert.IsTrue(_fakeWebClient.Headers.GetValues("x-tru-api-merchant-id")[0] == "2");
@@ -86,7 +86,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Network.TruServiceHttpClientTests
         }
 
         [TestMethod]
-        public void ShouldLogTheDiagnosticHeader()
+        public void ItShouldLogTheDiagnosticHeader()
         {
             MockOf<ILogger>().AssertWasCalled(x=> x.Warn("{0}", "Server Diagnostic Header"));
         }
