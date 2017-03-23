@@ -38,8 +38,8 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
         private readonly IConsoleIo _consoleIo;
         private TruModuleIntegrated _truModule;
 
-        public IntegratedPosEventUseCase(IConsoleIo consoleIo, IConsoleSettings consoleSettings, IPinPad pinPad, IPrinter printer)
-            : base(consoleIo, consoleSettings, pinPad, printer)
+        public IntegratedPosEventUseCase(IConsoleIo consoleIo, IConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
+            : base(consoleIo, consoleSettings, device, receiptManager)
         {
             _consoleIo = consoleIo;
             _consoleSettings = consoleSettings;
@@ -50,7 +50,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
             var truServiceClient = TruServiceClient<Request, Response>.CreateDefault(_consoleSettings.HttpTimeoutMs,
                 _consoleSettings.TruServiceUrl, _consoleIo,
                 new MacSignatureCalculator(_consoleSettings.TransportKey, _consoleIo));
-            _truModule = new TruModuleIntegrated(PinPad,Printer, truServiceClient, _consoleIo,
+            _truModule = new TruModuleIntegrated(Device,ReceiptManager, truServiceClient, _consoleIo,
                 new TruServiceMessageFactory(), _consoleSettings);
         }
 

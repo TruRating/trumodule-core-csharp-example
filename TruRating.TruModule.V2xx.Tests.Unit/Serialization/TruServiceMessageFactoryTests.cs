@@ -33,13 +33,13 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Serialization
         [TestMethod]
         public void WhenAssemblyRequestQuery()
         {
-            Assert.IsNotNull(Sut.AssemblyRequestQuery(MockOf<IPinPad>(), MockOf<IPrinter>(), "", "", "", "", true));
+            Assert.IsNotNull(Sut.AssemblyRequestQuery(MockOf<IDevice>(), MockOf<IReceiptManager>(), "", "", "", "", true));
         }
 
         [TestMethod]
         public void WhenAssembleRequestQuestion()
         {
-            Assert.IsNotNull(Sut.AssembleRequestQuestion(MockOf<IPinPad>(), MockOf<IPrinter>(), "", "", "", "",Trigger.CARDINSERTION));
+            Assert.IsNotNull(Sut.AssembleRequestQuestion(MockOf<IDevice>(), MockOf<IReceiptManager>(), "", "", "", "",Trigger.CARDINSERTION));
         }
 
         [TestMethod]
@@ -63,19 +63,19 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Serialization
         [TestMethod]
         public void WhenAssembleRequestLookup()
         {
-            Assert.IsNotNull(Sut.AssembleRequestLookup(MockOf<IPinPad>(), MockOf<IPrinter>(), "", "", "", "",LookupName.SECTORNODE));
+            Assert.IsNotNull(Sut.AssembleRequestLookup(MockOf<IDevice>(), MockOf<IReceiptManager>(), "", "", "", "",LookupName.SECTORNODE));
         }
 
         [TestMethod]
         public void WhenAssembleRequestActivate()
         {
-            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<IPinPad>(), MockOf<IPrinter>(), "", "", "", "",0,"",PaymentInstant.PAYBEFORE,"","","","","",""));
+            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<IDevice>(), MockOf<IReceiptManager>(), "", "", "", "",0,"",PaymentInstant.PAYBEFORE,"","","","","",""));
         }
 
         [TestMethod]
         public void WhenAssembleRequestActivateCode()
         {
-            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<IPinPad>(), MockOf<IPrinter>(), "", "", "", "",""));
+            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<IDevice>(), MockOf<IReceiptManager>(), "", "", "", "",""));
         }
     }
 }

@@ -31,14 +31,14 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
         protected static readonly Random Rand = new Random();
         protected readonly IConsoleSettings ConsoleSettings;
         protected readonly IConsoleIo ConsoleIo;
-        protected readonly IPinPad PinPad;
-        protected readonly IPrinter Printer;
-        protected UseCaseBase(IConsoleIo consoleIo, IConsoleSettings consoleSettings, IPinPad pinPad, IPrinter printer)
+        protected readonly IDevice Device;
+        protected readonly IReceiptManager ReceiptManager;
+        protected UseCaseBase(IConsoleIo consoleIo, IConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
         {
             ConsoleIo = consoleIo;
             ConsoleSettings = consoleSettings;
-            PinPad = pinPad;
-            Printer = printer;
+            Device = device;
+            ReceiptManager = receiptManager;
         }
 
         public void MainLoop()

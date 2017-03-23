@@ -26,7 +26,7 @@ namespace TruRating.TruModule.V2xx.Device
     /// <summary>
     /// Represents a logical PinPad that can display text and capture basic key input
     /// </summary>
-    public interface IPinPad
+    public interface IDevice
     {
         /// <summary>
         /// Displays an arbitrary message on screen that can be removed at any time and can be removed at any time

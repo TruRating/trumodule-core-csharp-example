@@ -28,14 +28,14 @@ namespace TruRating.TruModule.V2xx.Serialization
 {
     public interface ITruServiceMessageFactory
     {
-        Request AssemblyRequestQuery(IPinPad pinPad, IPrinter printer,
+        Request AssemblyRequestQuery(IDevice device, IReceiptManager receiptManager,
             string partnerId,
             string merchantId,
             string terminalId,
             string sessionId,
             bool force);
 
-        Request AssembleRequestQuestion(IPinPad pinPad, IPrinter printer,
+        Request AssembleRequestQuestion(IDevice device, IReceiptManager receiptManager,
             string partnerId,
             string merchantId,
             string terminalId,
@@ -48,14 +48,14 @@ namespace TruRating.TruModule.V2xx.Serialization
         Request AssembleRequestPosEvent(PosParams posParams, RequestPosEvent requestPosEvent);
         Request AssembleRequestPosEvent(PosParams posParams, RequestPosEventList requestPosEventList);
 
-        Request AssembleRequestLookup(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
+        Request AssembleRequestLookup(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
             string sessionId, LookupName lookupName);
 
-        Request AssembleRequestActivate(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
+        Request AssembleRequestActivate(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
             string sessionId, int sectorNode, string timeZone, PaymentInstant paybefore, string emailAddress,
             string password, string address, string mobileNumber, string merchantName, string businessName);
 
-        Request AssembleRequestActivate(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
+        Request AssembleRequestActivate(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
             string sessionId, string registrationCode);
 
         Request AssembleRatingRequest(IServiceMessage serviceMessage, RequestRating rating);

@@ -37,8 +37,8 @@ namespace TruRating.TruModule.V2xx.Module
         private readonly object _isQuestionRunningLock = new object();
         private readonly ILogger _logger;
         private readonly ITruServiceClient<Request, Response> _truServiceClient;
-        protected readonly IPinPad PinPad;
-        protected readonly IPrinter Printer;
+        protected readonly IDevice Device;
+        protected readonly IReceiptManager ReceiptManager;
         protected readonly ISettings Settings;
         protected readonly ITruServiceMessageFactory TruServiceMessageFactory;
 
@@ -49,15 +49,15 @@ namespace TruRating.TruModule.V2xx.Module
         private bool _isQuestionRunning;
         protected Trigger Trigger = Trigger.PAYMENTREQUEST;
 
-        protected TruModule(IPinPad pinPad, IPrinter printer, ITruServiceClient<Request, Response> truServiceClient, ILogger logger,
+        protected TruModule(IDevice device, IReceiptManager receiptManager, ITruServiceClient<Request, Response> truServiceClient, ILogger logger,
             ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
         {
-            PinPad = pinPad;
+            Device = device;
             _truServiceClient = truServiceClient;
             _logger = logger;
             TruServiceMessageFactory = truServiceMessageFactory;
             Settings = settings;
-            Printer = printer;
+            ReceiptManager = receiptManager;
             SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
             IsActivated(true);
         }
@@ -105,7 +105,7 @@ namespace TruRating.TruModule.V2xx.Module
                 return Settings.IsActivated;
             }
             var status =
-                _truServiceClient.Send(TruServiceMessageFactory.AssemblyRequestQuery(PinPad,Printer, Settings.PartnerId,
+                _truServiceClient.Send(TruServiceMessageFactory.AssemblyRequestQuery(Device,ReceiptManager, Settings.PartnerId,
                     Settings.MerchantId, Settings.TerminalId, SessionId, force));
 
             var responseStatus = status != null ? status.Item as ResponseStatus : null;
@@ -128,12 +128,12 @@ namespace TruRating.TruModule.V2xx.Module
                     _dwellTimeExtendAutoResetEvent.WaitOne(_dwellTimeExtendMs); //Wait for dwelltime extend to finish
                     if (GetQuestionRunning()) //recheck _isQuestionRunning because customer may have provided rating
                     {
-                        PinPad.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
+                        Device.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
                     }
                 }
                 else
                 {
-                    PinPad.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
+                    Device.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
                 }
                 _logger.Debug("Cancelled rating");
             }
@@ -164,11 +164,11 @@ namespace TruRating.TruModule.V2xx.Module
             var rating = new RequestRating //Have a question, construct the basic rating record
             {
                 DateTime = DateTimeProvider.UtcNow,
-                Rfc1766 = PinPad.GetCurrentLanguage(),
+                Rfc1766 = Device.GetCurrentLanguage(),
                 Value = -4 //initial state is "cannot show question"
             };
             //Look through the response for a valid question
-            if (QuestionAvailable(response, PinPad.GetCurrentLanguage(), out question, out receipts, out screens))
+            if (QuestionAvailable(response, Device.GetCurrentLanguage(), out question, out receipts, out screens))
             {
                 var sw = new Stopwatch();
                 sw.Start();
@@ -180,7 +180,7 @@ namespace TruRating.TruModule.V2xx.Module
                     _dwellTimeExtendMs = question.TimeoutMs;
                 }
                 SetQuestionRunning(true);
-                rating.Value = PinPad.Display1AQ1KR(question.Value, timeoutMs);
+                rating.Value = Device.Display1AQ1KR(question.Value, timeoutMs);
                     //Wait for the user input for the specified period
                 SetQuestionRunning(false);
                 _dwellTimeExtendAutoResetEvent.Set();
@@ -191,10 +191,10 @@ namespace TruRating.TruModule.V2xx.Module
                 _truServiceClient.Send(TruServiceMessageFactory.AssembleRatingRequest(request, rating));
                 var responseReceipt = GetResponseReceipt(receipts, rating.Value < 0 ? When.NOTRATED : When.RATED);
                 var responseScreen = GetResponseScreen(screens, rating.Value < 0 ? When.NOTRATED : When.RATED);
-                Printer.AppendReceipt(responseReceipt);
+                ReceiptManager.AppendReceipt(responseReceipt);
                 if (!GetCancelled() || responseScreen.Priority)
                 {
-                    PinPad.DisplayMessage(responseScreen.Value, responseScreen.TimeoutMs);
+                    Device.DisplayMessage(responseScreen.Value, responseScreen.TimeoutMs);
                 }
             }
         }

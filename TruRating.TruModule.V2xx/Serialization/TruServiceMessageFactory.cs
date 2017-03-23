@@ -28,7 +28,7 @@ namespace TruRating.TruModule.V2xx.Serialization
 {
     public class TruServiceMessageFactory : ITruServiceMessageFactory
     {
-        public Request AssemblyRequestQuery(IPinPad pinPad, IPrinter printer,
+        public Request AssemblyRequestQuery(IDevice device, IReceiptManager receiptManager,
             string partnerId,
             string merchantId,
             string terminalId,
@@ -45,15 +45,15 @@ namespace TruRating.TruModule.V2xx.Serialization
                 {
                     Device = new RequestDevice
                     {
-                        Name = pinPad.GetName(),
-                        Firmware = pinPad.GetFirmware(),
-                        Screen = pinPad.GetScreenCapabilities(),
-                        SkipInstruction = pinPad.GetSkipInstruction(),
+                        Name = device.GetName(),
+                        Firmware = device.GetFirmware(),
+                        Screen = device.GetScreenCapabilities(),
+                        SkipInstruction = device.GetSkipInstruction(),
                         SkipInstructionSpecified = true,
-                        Receipt = printer.GetReceiptCapabilities(),
+                        Receipt = receiptManager.GetReceiptCapabilities(),
                     },
-                    Language = pinPad.GetLanguages(),
-                    Server = pinPad.GetServer(),
+                    Language = device.GetLanguages(),
+                    Server = device.GetServer(),
                     ForceSpecified = true,
                     Force = force
                 }
@@ -75,7 +75,7 @@ namespace TruRating.TruModule.V2xx.Serialization
         }
 
         public Request AssembleRequestQuestion(
-            IPinPad pinPad, IPrinter printer,
+            IDevice device, IReceiptManager receiptManager,
             string partnerId,
             string merchantId,
             string terminalId,
@@ -93,15 +93,15 @@ namespace TruRating.TruModule.V2xx.Serialization
                     Trigger = trigger,
                     Device = new RequestDevice
                     {
-                        Name = pinPad.GetName(),
-                        Firmware = pinPad.GetFirmware(),
-                        Screen = pinPad.GetScreenCapabilities(),
-                        SkipInstruction = pinPad.GetSkipInstruction(),
+                        Name = device.GetName(),
+                        Firmware = device.GetFirmware(),
+                        Screen = device.GetScreenCapabilities(),
+                        SkipInstruction = device.GetSkipInstruction(),
                         SkipInstructionSpecified  = true,
-                        Receipt = printer.GetReceiptCapabilities(),
+                        Receipt = receiptManager.GetReceiptCapabilities(),
                     },
-                    Language = pinPad.GetLanguages(),
-                    Server = pinPad.GetServer()
+                    Language = device.GetLanguages(),
+                    Server = device.GetServer()
                 }
             };
             return result;
@@ -147,7 +147,7 @@ namespace TruRating.TruModule.V2xx.Serialization
             return result;
         }
 
-        public Request AssembleRequestLookup(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
+        public Request AssembleRequestLookup(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
             string sessionId, LookupName lookupName)
         {
             var result = new Request
@@ -161,21 +161,21 @@ namespace TruRating.TruModule.V2xx.Serialization
                     Name = lookupName,
                     Device = new RequestDevice
                     {
-                        Name = pinPad.GetName(),
-                        Firmware = pinPad.GetFirmware(),
-                        Screen = pinPad.GetScreenCapabilities(),
-                        SkipInstruction = pinPad.GetSkipInstruction(),
+                        Name = device.GetName(),
+                        Firmware = device.GetFirmware(),
+                        Screen = device.GetScreenCapabilities(),
+                        SkipInstruction = device.GetSkipInstruction(),
                         SkipInstructionSpecified = true,
-                        Receipt = printer.GetReceiptCapabilities(),
+                        Receipt = receiptManager.GetReceiptCapabilities(),
                     },
-                    Language = pinPad.GetLanguages(),
-                    Server = pinPad.GetServer()
+                    Language = device.GetLanguages(),
+                    Server = device.GetServer()
                 }
             };
             return result;
         }
 
-        public Request AssembleRequestActivate(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
+        public Request AssembleRequestActivate(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
             string sessionId, int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress,
             string password, string address, string mobileNumber, string merchantName, string businessName)
         {
@@ -189,15 +189,15 @@ namespace TruRating.TruModule.V2xx.Serialization
                 {
                     Device = new RequestDevice
                     {
-                        Name = pinPad.GetName(),
-                        Firmware = pinPad.GetFirmware(),
-                        Screen = pinPad.GetScreenCapabilities(),
-                        SkipInstruction = pinPad.GetSkipInstruction(),
+                        Name = device.GetName(),
+                        Firmware = device.GetFirmware(),
+                        Screen = device.GetScreenCapabilities(),
+                        SkipInstruction = device.GetSkipInstruction(),
                         SkipInstructionSpecified = true,
-                        Receipt = printer.GetReceiptCapabilities(),
+                        Receipt = receiptManager.GetReceiptCapabilities(),
                     },
-                    Language = pinPad.GetLanguages(),
-                    Server = pinPad.GetServer(),
+                    Language = device.GetLanguages(),
+                    Server = device.GetServer(),
                     Item = new RequestRegistrationForm
                     {
                         BusinessAddress = address,
@@ -215,7 +215,7 @@ namespace TruRating.TruModule.V2xx.Serialization
             return result;
         }
 
-        public Request AssembleRequestActivate(IPinPad pinPad, IPrinter printer, string partnerId, string merchantId, string terminalId,
+        public Request AssembleRequestActivate(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
             string sessionId, string registrationCode)
         {
             var result = new Request
@@ -228,15 +228,15 @@ namespace TruRating.TruModule.V2xx.Serialization
                 {
                     Device = new RequestDevice
                     {
-                        Name = pinPad.GetName(),
-                        Firmware = pinPad.GetFirmware(),
-                        Screen = pinPad.GetScreenCapabilities(),
-                        SkipInstruction = pinPad.GetSkipInstruction(),
+                        Name = device.GetName(),
+                        Firmware = device.GetFirmware(),
+                        Screen = device.GetScreenCapabilities(),
+                        SkipInstruction = device.GetSkipInstruction(),
                         SkipInstructionSpecified = true,
-                        Receipt = printer.GetReceiptCapabilities(),
+                        Receipt = receiptManager.GetReceiptCapabilities(),
                     },
-                    Language = pinPad.GetLanguages(),
-                    Server = pinPad.GetServer(),
+                    Language = device.GetLanguages(),
+                    Server = device.GetServer(),
                     Item = registrationCode
                 }
             };

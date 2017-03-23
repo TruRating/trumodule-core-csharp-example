@@ -32,9 +32,9 @@ namespace TruRating.TruModule.V2xx.Module
 {
     public class TruModuleStandalone : TruModule, ITruModuleStandalone
     {
-        public TruModuleStandalone(IPinPad pinPad, IPrinter printer, ITruServiceClient<Request, Response> truServiceClient, ILogger logger,
+        public TruModuleStandalone(IDevice device, IReceiptManager receiptManager, ITruServiceClient<Request, Response> truServiceClient, ILogger logger,
             ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
-            : base(pinPad,printer, truServiceClient, logger, truServiceMessageFactory, settings)
+            : base(device,receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
         {
         }
 
@@ -43,7 +43,7 @@ namespace TruRating.TruModule.V2xx.Module
             SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
             if (IsActivated(false))
             {
-                var request = TruServiceMessageFactory.AssembleRequestQuestion(PinPad,Printer, Settings.PartnerId,
+                var request = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager, Settings.PartnerId,
                     Settings.MerchantId, Settings.TerminalId, SessionId, Trigger.PAYMENTREQUEST);
                 DoRating(request);
             }
@@ -63,7 +63,7 @@ namespace TruRating.TruModule.V2xx.Module
         {
             var result = new List<KeyValuePair<int, string>>();
 
-            var request = TruServiceMessageFactory.AssembleRequestLookup(PinPad, Printer, Settings.PartnerId, Settings.MerchantId,
+            var request = TruServiceMessageFactory.AssembleRequestLookup(Device, ReceiptManager, Settings.PartnerId, Settings.MerchantId,
                 Settings.TerminalId, SessionId, lookupName);
 
             var responseLookup = SendRequest(request);
@@ -74,7 +74,7 @@ namespace TruRating.TruModule.V2xx.Module
                 var optionNumber = 0;
                 foreach (var language in responseStatus.Language)
                 {
-                    if (language.Rfc1766 == PinPad.GetCurrentLanguage())
+                    if (language.Rfc1766 == Device.GetCurrentLanguage())
                     {
                         if (language.Option != null)
                         {
@@ -100,7 +100,7 @@ namespace TruRating.TruModule.V2xx.Module
                 optionNumber++;
                 result.Add(new KeyValuePair<int, string>(optionNumber, lookupOption.Value));
             }
-            PinPad.DisplayMessage((lookupOption.Value == null ? "N/A" : "\"" + optionNumber + "\"") +
+            Device.DisplayMessage((lookupOption.Value == null ? "N/A" : "\"" + optionNumber + "\"") +
                                   "".PadLeft(depth, ' ') + lookupOption.Text + " (" + lookupOption.Value + ")");
             if (lookupOption.Option != null)
             {
@@ -114,7 +114,7 @@ namespace TruRating.TruModule.V2xx.Module
 
         public bool Activate(int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress, string password, string address, string mobileNumber, string merchantName, string businessName)
         {
-            var status =SendRequest(TruServiceMessageFactory.AssembleRequestActivate(PinPad, Printer, Settings.PartnerId, SessionId,
+            var status =SendRequest(TruServiceMessageFactory.AssembleRequestActivate(Device, ReceiptManager, Settings.PartnerId, SessionId,
                         Settings.MerchantId, Settings.TerminalId, sectorNode, timeZone, PaymentInstant.PAYBEFORE,
                         emailAddress, password, address, mobileNumber, merchantName, businessName));
             var responseStatus = status.Item as ResponseStatus;
@@ -127,7 +127,7 @@ namespace TruRating.TruModule.V2xx.Module
         }
         public bool Activate(string registrationCode)
         {
-            var status = SendRequest(TruServiceMessageFactory.AssembleRequestActivate(PinPad, Printer, Settings.PartnerId, SessionId,
+            var status = SendRequest(TruServiceMessageFactory.AssembleRequestActivate(Device, ReceiptManager, Settings.PartnerId, SessionId,
                        Settings.MerchantId, Settings.TerminalId, registrationCode));
             var responseStatus = status.Item as ResponseStatus;
             if (responseStatus != null)

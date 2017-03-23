@@ -36,8 +36,8 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
         private readonly IConsoleIo _consoleIo;
         private ITruModuleStandalone _truModule;
 
-        public StandaloneUseCase(IConsoleIo consoleIo, IConsoleSettings consoleSettings, IPinPad pinPad, IPrinter printer)
-            : base(consoleIo, consoleSettings, pinPad,printer)
+        public StandaloneUseCase(IConsoleIo consoleIo, IConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
+            : base(consoleIo, consoleSettings, device,receiptManager)
         {
             _consoleIo = consoleIo;
             _consoleSettings = consoleSettings;
@@ -48,7 +48,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
             var truServiceClient = TruServiceClient<Request, Response>.CreateDefault(_consoleSettings.HttpTimeoutMs,
                 _consoleSettings.TruServiceUrl, _consoleIo,
                 new MacSignatureCalculator(_consoleSettings.TransportKey, _consoleIo));
-            _truModule = new TruModuleStandalone(PinPad,Printer, truServiceClient, _consoleIo, new TruServiceMessageFactory(), _consoleSettings);
+            _truModule = new TruModuleStandalone(Device,ReceiptManager, truServiceClient, _consoleIo, new TruServiceMessageFactory(), _consoleSettings);
             if (!_truModule.IsActivated())
             {
                 _consoleIo.WriteLine(ConsoleColor.Gray,"Standalone UseCase: Not activated at start-up, prompting registration");
@@ -68,7 +68,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
                     {
                         return options[selectedOptionNumber];
                     }
-                    PinPad.DisplayMessage("Invalid option");
+                    Device.DisplayMessage("Invalid option");
                 }
             }
         }
@@ -76,7 +76,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
         {
             if (_truModule.IsActivated())
                 return;
-            PinPad.DisplayMessage("This device is not registered!");
+            Device.DisplayMessage("This device is not registered!");
             var registrationCode =
                 ConsoleIo.ReadLine(
                     "Type your registration code, Press ENTER to register via form input or type SKIP to skip registration");
@@ -117,11 +117,11 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
             
             if (_truModule.IsActivated())
             {
-                PinPad.DisplayMessage("This device is activated");
+                Device.DisplayMessage("This device is activated");
             }
             else
             {
-                PinPad.DisplayMessage("This device is not activated");
+                Device.DisplayMessage("This device is not activated");
             }
         }
         public override void Example()

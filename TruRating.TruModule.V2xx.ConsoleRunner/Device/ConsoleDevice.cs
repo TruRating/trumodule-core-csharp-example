@@ -28,7 +28,7 @@ using TruRating.TruModule.V2xx.Device;
 
 namespace TruRating.TruModule.V2xx.ConsoleRunner.Device
 {
-    public class ConsoleDevice : IPinPad, IPrinter
+    public class ConsoleDevice : IDevice, IReceiptManager
     {
         private readonly IConsoleSettings _consoleSettings;
         private readonly IConsoleIo _logger;

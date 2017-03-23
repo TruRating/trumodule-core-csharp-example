@@ -27,11 +27,11 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
 {
     public class UseCaseFactory
     {
-        internal static List<IUseCase> Get(IConsoleIo consoleIo, ConsoleSettings consoleSettings, IPinPad pinPad, IPrinter printer)
+        internal static List<IUseCase> Get(IConsoleIo consoleIo, ConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
         {
-            var standaloneUseCase = new StandaloneUseCase(consoleIo, consoleSettings, pinPad, printer);
-            var integratedPosEventUseCase = new IntegratedPosEventUseCase(consoleIo, consoleSettings, pinPad, printer);
-            var integratedPosEventListUseCase = new IntegratedPosEventListUseCase(consoleIo, consoleSettings, pinPad, printer);
+            var standaloneUseCase = new StandaloneUseCase(consoleIo, consoleSettings, device, receiptManager);
+            var integratedPosEventUseCase = new IntegratedPosEventUseCase(consoleIo, consoleSettings, device, receiptManager);
+            var integratedPosEventListUseCase = new IntegratedPosEventListUseCase(consoleIo, consoleSettings, device, receiptManager);
 
             var modules = new List<IUseCase>
             {

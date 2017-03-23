@@ -52,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Device\ILogger.cs" />
-    <Compile Include="Device\IPrinter.cs" />
+    <Compile Include="Device\IReceiptManager.cs" />
     <Compile Include="Helpers\DateTimeProvider.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\Func.cs" />
@@ -66,7 +66,7 @@
     <Compile Include="Network\ITruServiceClient.cs" />
     <Compile Include="Module\PosParams.cs" />
     <Compile Include="Serialization\DefaultSerializer.cs" />
-    <Compile Include="Device\IPinPad.cs" />
+    <Compile Include="Device\IDevice.cs" />
     <Compile Include="Security\IMacSignatureCalculator.cs" />
     <Compile Include="Serialization\ISerializer.cs" />
     <Compile Include="Network\IWebClient.cs" />
