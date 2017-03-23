@@ -19,27 +19,22 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Network;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.Network
+namespace TruRating.TruModule.V2xx.Tests.Unit.Network.TruServiceHttpClientTests
 {
     [TestClass]
-    public class WhenCreatingAWebRequest : MsTestsContext
+    public class WhenConstructingDefaultTruServiceClient : MsTestsContext<V2xx.Network.TruServiceHttpClient>
     {
-        private SystemWebClient _sut;
-
-        [TestInitialize]
-        public void Setup()
-        {
-            _sut = new SystemWebClient(1000);
-        }
         [TestMethod]
-        public void ItShouldHaveTheTimeoutSet()
+        public void ItShouldHaveTheDefaultSerializerAndSystemWebClient()
         {
-            var webRequest = _sut.GetWebRequestTimeout(new Uri("http://localhost"));
-            Assert.IsTrue(webRequest.Timeout == 1000);
+            V2xx.Network.TruServiceHttpClient truServiceHttpClient = (V2xx.Network.TruServiceHttpClient)V2xx.Network.TruServiceHttpClient.CreateDefault(100, "", MockOf<ILogger>(),MockOf<V2xx.Security.IMacSignatureCalculator>());
+            Assert.IsTrue(truServiceHttpClient.Serializer.GetType() == typeof(V2xx.Serialization.DefaultSerializer));
+            Assert.IsTrue(truServiceHttpClient.WebClientFactory.GetType() == typeof(SystemWebClientFactory));
         }
     }
 }

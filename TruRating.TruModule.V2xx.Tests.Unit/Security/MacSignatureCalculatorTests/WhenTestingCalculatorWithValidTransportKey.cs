@@ -19,30 +19,32 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System.Linq.Expressions;
+
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TruRating.TruModule.V2xx.Network;
+using TruRating.TruModule.V2xx.Security;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.Network
+namespace TruRating.TruModule.V2xx.Tests.Unit.Security.MacSignatureCalculatorTests
 {
     [TestClass]
-    public class SystemWebClientFactoryTests
+    public class WhenTestingCalculatorWithValidTransportKey : MsTestsContext<MacSignatureCalculator>
     {
-        private SystemWebClientFactory _sut;
-
         [TestInitialize]
         public void Setup()
         {
-            _sut = new SystemWebClientFactory(1000);
+            RegisterFake("000001002051431059683111");
+        }
+        [TestMethod]
+        public void ShouldCalculateMacForKnownMessage()
+        {
+            var result = Sut.Calculate(Encoding.UTF8.GetBytes("Super secret message")) =="E133185A2953E98B978535CB9CEC1A691BCE247D5ABF17DCCC758E99A458AD780141F192E25B9BDD";
+            Assert.IsTrue(result);
+        }
+        [TestMethod]
+        public void ShouldBeEncryptionSchemeThree()
+        {
+            Assert.IsTrue(Sut.EncryptionScheme == "3");
         }
 
-        [TestMethod]
-        public void WhenCreatingAWebClientTheTimeoutShouldBeSet()
-        {
-            var systemWebClient = ((SystemWebClient)_sut.Create());
-            Assert.IsTrue(systemWebClient.HttpTimeoutMs == 1000);
-            Assert.IsTrue(systemWebClient.Encoding.Equals(Encoding.UTF8));
-        }
     }
 }

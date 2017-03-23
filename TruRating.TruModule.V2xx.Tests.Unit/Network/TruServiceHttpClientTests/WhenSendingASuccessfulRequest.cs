@@ -19,10 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using System.IO;
-using System.Net;
-using System.Text;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 using TruRating.Dto.TruService.V220;
@@ -30,20 +27,20 @@ using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Network;
 using TruRating.TruModule.V2xx.Serialization;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.Network
+namespace TruRating.TruModule.V2xx.Tests.Unit.Network.TruServiceHttpClientTests
 {
     [TestClass]
-    public class WhenSendingAnUnsuccessfulRequest : MsTestsContext<V2xx.Network.TruServiceHttpClient>
+    public class WhenSendingASuccessfulRequest : MsTestsContext<TruServiceHttpClient>
     {
         private Request _request;
         private Response _response;
         private Response _result;
-        private WebException _webException;
+        private FakeWebClient _fakeWebClient;
 
         [TestInitialize]
         public void Setup()
         {
-            _request = new Request
+            _request = new Request()
             {
                 PartnerId = "1",
                 MerchantId = "2",
@@ -52,32 +49,46 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Network
 
             RegisterFake("http://localhost");
 
-            var webClient = MockOf<IWebClient>();
-            webClient.Headers= new WebHeaderCollection();
-            webClient.Stub(x=> x.ResponseHeaders).Return(new WebHeaderCollection());
-            _webException = new WebException("Dummy Error", new Exception(), WebExceptionStatus.UnknownError, HttpHelpers.CreateWebResponse(HttpStatusCode.InternalServerError, new MemoryStream(Encoding.UTF8.GetBytes("Server Error!"))));
-            webClient.Stub(x => x.UploadData(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<byte[]>.Is.Anything)).Throw(_webException);
-            var webClientFactory = MockOf<IWebClientFactory>();
-            webClientFactory.Stub(x => x.Create()).Return(webClient);
-            MockOf<V2xx.Security.IMacSignatureCalculator>().Stub(x => x.EncryptionScheme).Return("3");
-            MockOf<V2xx.Security.IMacSignatureCalculator>().Stub(x => x.Calculate(Arg<byte[]>.Is.Anything)).Return("secret");
+            _fakeWebClient = new FakeWebClient();
+            _fakeWebClient.ResponseHeaders.Add("x-tru-api-diagnostic","Server Diagnostic Header");
+            MockOf<IWebClientFactory>().Stub(x => x.Create()).Return(_fakeWebClient);
+            MockOf<V2xx.Security.IMacSignatureCalculator>().Stub(x=> x.EncryptionScheme).Return("3");
+            MockOf<V2xx.Security.IMacSignatureCalculator>().Stub(x=> x.Calculate(Arg<byte[]>.Is.Anything)).Return("secret");
             var mockOf = MockOf<ISerializer>();
 
-            mockOf.Stub(x => x.Serialize(_request)).Return(new byte[] { 12 });
+            mockOf.Stub(x => x.Serialize(_request)).Return(new byte[] {12});
             mockOf.Stub(x => x.Deserialize<Response>(new byte[] { 12 })).Return(_response);
+
             _result = Sut.Send(_request);
         }
 
         [TestMethod]
-        public void ItShouldLogTheWebException()
+        public void ItShouldCreateANewWebClient()
         {
-            MockOf<ILogger>().AssertWasCalled(x=> x.Error(_webException, "Error in TruService Client"));
+            MockOf<IWebClientFactory>().AssertWasCalled(x => x.Create());
         }
 
         [TestMethod]
-        public void ItShouldLogTheServerResponseBody()
+        public void ShouldReturnTheDeserializedObject()
         {
-            MockOf<ILogger>().AssertWasCalled(x => x.Error("Server Error!"));
+            Assert.IsTrue(_result == _response);
+        }
+
+        [TestMethod]
+        public void ShouldSetTheRequiredHeaders()
+        {
+            Assert.IsTrue(_fakeWebClient.Headers.GetValues("x-tru-api-partner-id")[0] == "1");
+            Assert.IsTrue(_fakeWebClient.Headers.GetValues("x-tru-api-merchant-id")[0] == "2");
+            Assert.IsTrue(_fakeWebClient.Headers.GetValues("x-tru-api-terminal-id")[0] == "3");
+            Assert.IsTrue(_fakeWebClient.Headers.GetValues("x-tru-api-encryption-scheme")[0] == "3");
+            Assert.IsTrue(_fakeWebClient.Headers.GetValues("Content-Type")[0] == "application/xml; charset=utf-8");
+            Assert.IsTrue(_fakeWebClient.Headers.GetValues("x-tru-api-mac")[0] == "secret");
+        }
+
+        [TestMethod]
+        public void ShouldLogTheDiagnosticHeader()
+        {
+            MockOf<ILogger>().AssertWasCalled(x=> x.Warn("{0}", "Server Diagnostic Header"));
         }
     }
 }

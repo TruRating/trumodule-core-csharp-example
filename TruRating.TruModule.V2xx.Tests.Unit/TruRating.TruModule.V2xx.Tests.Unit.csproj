@@ -65,17 +65,17 @@
   <ItemGroup>
     <Compile Include="Network\FakeWebClient.cs" />
     <Compile Include="Network\HttpHelpers.cs" />
-    <Compile Include="Network\SystemWebClientFactoryTests.cs" />
-    <Compile Include="Network\WhenCreatingAWebRequest.cs" />
-    <Compile Include="Network\WhenConstructingDefaultTruServiceClient.cs" />
-    <Compile Include="Network\WhenSendingAnUnsuccessfulRequest.cs" />
-    <Compile Include="Network\WhenSendingASuccessfulRequest.cs" />
+    <Compile Include="Network\SystemWebClientFactoryTests\WhenCreatingAWebClient.cs" />
+    <Compile Include="Network\SystemWebClientTests\WhenCreatingAWebRequest.cs" />
+    <Compile Include="Network\TruServiceHttpClientTests\WhenConstructingDefaultTruServiceClient.cs" />
+    <Compile Include="Network\TruServiceHttpClientTests\WhenSendingAnUnsuccessfulRequest.cs" />
+    <Compile Include="Network\TruServiceHttpClientTests\WhenSendingASuccessfulRequest.cs" />
     <Compile Include="RhinoMockingContainer.cs" />
-    <Compile Include="Security\WhenTestingCalculatorWithValidTransportKey.cs" />
+    <Compile Include="Security\MacSignatureCalculatorTests\WhenTestingCalculatorWithValidTransportKey.cs" />
     <Compile Include="MsTestsContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\WhenTestingCalculatorWithInvalidTransportKey.cs" />
-    <Compile Include="Serialization\DefaultSerializerTests.cs" />
+    <Compile Include="Security\MacSignatureCalculatorTests\WhenTestingCalculatorWithInvalidTransportKey.cs" />
+    <Compile Include="Serialization\DefaultSerializerTests\DefaultSerializerTests.cs" />
     <Compile Include="Messages\TruServiceMessageFactoryTests.cs" />
     <Compile Include="TruModuleStandaloneTests\ActiveTruModuleStandaloneTestsContext.cs" />
     <Compile Include="TruModuleStandaloneTests\WhenDoingARatingAndNotActive.cs" />

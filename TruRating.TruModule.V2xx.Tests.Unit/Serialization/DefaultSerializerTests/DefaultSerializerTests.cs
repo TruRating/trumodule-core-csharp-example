@@ -19,13 +19,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
+
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Serialization;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.Serialization
+namespace TruRating.TruModule.V2xx.Tests.Unit.Serialization.DefaultSerializerTests
 {
     [TestClass]
     class DefaultSerializerTests : MsTestsContext<DefaultSerializer>

@@ -1,4 +1,4 @@
-// The MIT License
+﻿// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -19,25 +19,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TruRating.TruModule.V2xx.Security;
+using TruRating.TruModule.V2xx.Network;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.Security
+namespace TruRating.TruModule.V2xx.Tests.Unit.Network.SystemWebClientFactoryTests
 {
     [TestClass]
-    public class WhenTestingCalculatorWithInvalidTransportKey : MsTestsContext<MacSignatureCalculator>
+    public class WhenCreatingAWebClient
     {
+        private SystemWebClientFactory _sut;
+
         [TestInitialize]
         public void Setup()
         {
-            RegisterFake("1224");
-        }
-        [TestMethod]
-        public void ShouldReturnNull()
-        {
-            Assert.IsNull(Sut.Calculate(Encoding.UTF8.GetBytes("Super secret message")));
+            _sut = new SystemWebClientFactory(1000);
         }
 
+        [TestMethod]
+        public void ItShouldSetTheTimeout()
+        {
+            var systemWebClient = ((SystemWebClient)_sut.Create());
+            Assert.IsTrue(systemWebClient.HttpTimeoutMs == 1000);
+            Assert.IsTrue(systemWebClient.Encoding.Equals(Encoding.UTF8));
+        }
     }
 }
