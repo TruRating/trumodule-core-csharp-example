@@ -21,6 +21,12 @@
 // THE SOFTWARE.
 namespace TruRating.TruModule.V2xx.Network
 {
+    /*
+     * Todo:
+     * Shouldn't IWebClientFactory, IWebClient be internal? 
+     * At the moment IWebClient seem to be very .NET biased.
+     * If IWebClient is to be a public interface I'd prefer to have simple KeyValue collections for Request and Response headers and a byte[] (or string) for Request and Response bodies.
+     */
     public interface IWebClientFactory
     {
         IWebClient Create();

@@ -40,8 +40,10 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
         {
             DateTimeProvider.UtcNow = new DateTime(2000,01,01);
             MockOf<ISettings>().ActivationRecheck= new DateTime(2001, 01,01);
-            _isActivated = Sut.IsActivated(false);
             _truServiceClient = MockOf<ITruServiceClient>();
+
+            _isActivated = Sut.IsActivated(false); // todo: for clarity this should be moved to test methods. Arrange, Act, Assert
+            
         }
 
         [TestMethod]
