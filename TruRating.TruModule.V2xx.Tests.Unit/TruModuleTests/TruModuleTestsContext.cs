@@ -10,6 +10,7 @@ using TruRating.TruModule.V2xx.Util;
 
 namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleTests
 {
+    //todo: find a better name. TruModuleDummy? TruModuleTestable?
     public class TroModuleNonAbstract : TruModule
     {
         public TroModuleNonAbstract(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger, ITruServiceMessageFactory truServiceMessageFactory, ISettings settings) : base(device, receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
