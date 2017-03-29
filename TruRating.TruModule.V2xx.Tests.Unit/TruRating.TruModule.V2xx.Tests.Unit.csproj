@@ -82,9 +82,11 @@
     <Compile Include="Messages\TruServiceMessageFactoryTests.cs" />
     <Compile Include="TruModuleStandaloneTests\ActiveTruModuleStandaloneTestsContext.cs" />
     <Compile Include="TruModuleStandaloneTests\WhenDoingARatingAndNotActive.cs" />
-    <Compile Include="TruModuleStandaloneTests\WhenQuestionAvailableAndDoingDwellTimeExtendRating.cs" />
+    <Compile Include="TruModuleStandaloneTests\WhenDoingARatingAndActive.cs" />
     <Compile Include="TruModuleStandaloneTests\WhenTruModuleIsInactiveAndTTLNotExpiredAndDoingAPassiveActivationCheck.cs" />
     <Compile Include="TruModuleStandaloneTests\WhenTruModuleIsInactiveAndTTLNotExpiredButForcingAnActivationCheck.cs" />
+    <Compile Include="TruModuleTests\WhenQuestionAvailableAndDoingDwellTimeExtendRating.cs" />
+    <Compile Include="TruModuleTests\TruModuleTestsContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

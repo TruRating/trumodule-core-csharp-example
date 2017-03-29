@@ -24,49 +24,27 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Device;
+using TruRating.TruModule.V2xx.Settings;
 
 namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
 {
     [TestClass]
-    public class WhenQuestionAvailableAndDoingDwellTimeExtendRating : ActiveTruModuleStandaloneTestsContext
+    public class WhenDoingARatingAndActive : ActiveTruModuleStandaloneTestsContext
     {
         [TestInitialize]
         public void Setup()
         {
-            Settings.Trigger = Trigger.DWELLTIMEEXTEND;
-            Device.Stub(x => x.Display1AQ1KR(Arg<string>.Is.Anything, Arg<int>.Is.Anything)).WhenCalled(invocation =>
-            {
-                Thread.Sleep(250);
-            }).Return(2);
+            MockOf<ISettings>().IsActivated = true;
             Sut.DoRating();
         }
+
         [TestMethod]
         public void ItShouldAssembleRequestQuestion()
         {
             TruServiceMessageFactory.AssertWasCalled(x=> x.AssembleRequestQuestion(Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything,Arg<string>.Is.Anything, Arg<Trigger>.Is.Anything));
         }
-        [TestMethod]
-        public void ItShouldSendThreeRequests()
-        {
-            //Once for TruModule init and 2 for Question and Rating
-            TruServiceClient.AssertWasCalled(x => x.Send(Arg<Request>.Is.Anything), options => options.Repeat.Times(3));
-        }
 
-        [TestMethod]
-        public void ItShouldCall1AQ1KRWithMaxTimeout()
-        {
-            Device.AssertWasCalled(x => x.Display1AQ1KR("Hello", int.MaxValue));
-        }
-       
-        [TestMethod]
-        public void ItShouldSedndARating()
-        {
-            var arguments = TruServiceMessageFactory.GetArgumentsForCallsMadeOn(
-                x => x.AssembleRequestRating(Arg<Request>.Is.Anything, Arg<RequestRating>.Is.Anything))[0];
-            Assert.IsTrue(((RequestRating) arguments[1]).Value == 2);
-        }
-
-        public WhenQuestionAvailableAndDoingDwellTimeExtendRating() : base(Trigger.DWELLTIMEEXTEND)
+        public WhenDoingARatingAndActive() : base(Trigger.DWELLTIMEEXTEND)
         {
         }
     }
