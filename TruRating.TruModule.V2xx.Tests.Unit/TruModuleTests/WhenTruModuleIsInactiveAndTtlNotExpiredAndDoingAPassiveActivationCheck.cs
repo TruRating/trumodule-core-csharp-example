@@ -19,6 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
@@ -27,43 +28,35 @@ using TruRating.TruModule.V2xx.Network;
 using TruRating.TruModule.V2xx.Settings;
 using TruRating.TruModule.V2xx.Util;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
+namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleTests
 {
     [TestClass]
-    public class WhenTruModuleIsInactiveAndTtlNotExpiredButForcingAnActivationCheck : MsTestsContext<TruModuleStandalone>
+    public class WhenTruModuleIsInactiveAndTtlNotExpiredAndDoingAPassiveActivationCheck : TruModuleTestsContext
     {
+        private bool _isActivated;
         private ITruServiceClient _truServiceClient;
-        private ISettings _settings;
-        private bool _result;
 
         [TestInitialize]
         public void Setup()
         {
-            DateTimeProvider.UtcNow = new DateTime(2001, 01, 01, 11, 00,00);
-            _settings = MockOf<ISettings>();
-            _settings.ActivationRecheck = new DateTime(2001, 01, 01,12,00,00);
+            DateTimeProvider.UtcNow = new DateTime(2000,01,01);
+            MockOf<ISettings>().ActivationRecheck= new DateTime(2001, 01,01);
             _truServiceClient = MockOf<ITruServiceClient>();
-            _truServiceClient.Stub(x => x.Send(Arg<Request>.Is.Anything))
-                .Return(new Response() {Item = new ResponseStatus() {TimeToLive = 36000, IsActive = true}});
-            _result = Sut.IsActivated(true);
+
+            _isActivated = Sut.IsActivated(false); 
+            
         }
 
         [TestMethod]
-        public void ItShouldBeActive()
+        public void ItShouldBeInactive()
         {
-            Assert.IsTrue(_result);
+            Assert.IsFalse(_isActivated);
         }
 
         [TestMethod]
-        public void ItShouldAdvanceTheTTL()
+        public void ItShouldReturnIsActiveFalse()
         {
-            Assert.IsTrue(_settings.ActivationRecheck == new DateTime(2001, 01, 01, 21, 00, 00));
-        }
-
-        [TestMethod]
-        public void ItShouldHaveMadeTwoCallsToTruService()
-        {
-            _truServiceClient.AssertWasCalled(x => x.Send(Arg<Request>.Is.Anything), options => options.Repeat.Twice());
+            _truServiceClient.AssertWasCalled(x => x.Send(Arg<Request>.Is.Anything), options => options.Repeat.Once());
         }
     }
 }
