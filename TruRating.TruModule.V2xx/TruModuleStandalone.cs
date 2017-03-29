@@ -89,6 +89,8 @@ namespace TruRating.TruModule.V2xx
             return ExtensionMethods.ToDictionary(result, x => x.Key, x => x.Value);
         }
 
+
+        //Todo: PrintLookups doesn't belong here. Refactor. This should probably be in Usecase?
         private IEnumerable<KeyValuePair<int, string>> PrintLookups(LookupOption lookupOption, int depth,
             int optionNumber)
         {

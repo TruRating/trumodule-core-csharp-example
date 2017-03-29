@@ -174,6 +174,7 @@ namespace TruRating.TruModule.V2xx.Messages
             return result;
         }
 
+        //todo: Simplify this.
         public Request AssembleRequestActivate(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
             string sessionId, int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress,
             string password, string address, string mobileNumber, string merchantName, string businessName)
