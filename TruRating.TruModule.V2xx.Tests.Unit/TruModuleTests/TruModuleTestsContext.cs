@@ -71,8 +71,6 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleTests
 
             Settings = MockOf<ISettings>();
             Settings.IsActivated = true;
-            DateTimeProvider.UtcNow = new DateTime(2000, 01, 01);
-            Settings.ActivationRecheck = new DateTime(2001, 01, 01);
             TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
             TruServiceMessageFactory.Stub(
                 x =>
