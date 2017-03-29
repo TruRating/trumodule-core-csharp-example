@@ -85,8 +85,8 @@
     <Compile Include="TruModuleStandaloneTests\WhenDoingARatingAndActive.cs" />
     <Compile Include="TruModuleTests\WhenQuestionAvailableAndDoingDwellTimeExtendRating.cs" />
     <Compile Include="TruModuleTests\TruModuleTestsContext.cs" />
-    <Compile Include="TruModuleTests\WhenTruModuleIsInactiveAndTtlNotExpiredAndDoingAPassiveActivationCheck.cs" />
-    <Compile Include="TruModuleTests\WhenTruModuleIsInactiveAndTtlNotExpiredButForcingAnActivationCheck.cs" />
+    <Compile Include="TruModuleTests\Activation\WhenTruModuleIsInactiveAndTtlNotExpiredAndDoingAPassiveActivationCheck.cs" />
+    <Compile Include="TruModuleTests\Activation\WhenTruModuleIsInactiveAndTtlNotExpiredButForcingAnActivationCheck.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
