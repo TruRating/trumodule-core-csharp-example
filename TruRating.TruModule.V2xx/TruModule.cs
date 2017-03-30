@@ -33,8 +33,6 @@ namespace TruRating.TruModule.V2xx
     public abstract class TruModule
     {
         private readonly AutoResetEvent _dwellTimeExtendAutoResetEvent = new AutoResetEvent(false);
-        private readonly object _isCancelledLock = new object();
-        private readonly object _isQuestionRunningLock = new object();
         private readonly ILogger _logger;
         private readonly ITruServiceClient _truServiceClient;
         protected readonly IDevice Device;
@@ -42,8 +40,8 @@ namespace TruRating.TruModule.V2xx
         protected readonly ISettings Settings;
         protected readonly ITruServiceMessageFactory TruServiceMessageFactory;
         private int _dwellTimeExtendMs;
-        private bool _isCancelled;
-        private bool _isQuestionRunning;
+        private volatile bool _isCancelled;
+        private volatile bool _isQuestionRunning;
 
         protected TruModule(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger,
             ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
@@ -59,39 +57,7 @@ namespace TruRating.TruModule.V2xx
         }
 
         protected string SessionId { get; set; }
-
-        private bool GetCancelled()
-        {
-            lock (_isCancelledLock)
-            {
-                return _isCancelled;
-            }
-        }
-
-        private void SetCancelled(bool value)
-        {
-            lock (_isCancelledLock)
-            {
-                _isCancelled = value;
-            }
-        }
-
-        private bool GetQuestionRunning()
-        {
-            lock (_isQuestionRunningLock)
-            {
-                return _isQuestionRunning;
-            }
-        }
-
-        private void SetQuestionRunning(bool value)
-        {
-            lock (_isQuestionRunningLock)
-            {
-                _isQuestionRunning = value;
-            }
-        }
-
+    
         public bool IsActivated(bool force)
         {
             if (Settings.ActivationRecheck > DateTimeProvider.UtcNow && !force)
@@ -115,14 +81,14 @@ namespace TruRating.TruModule.V2xx
 
         public void CancelRating()
         {
-            SetCancelled(true); //Set flag to show question has been cancelled
-            if (GetQuestionRunning())
+            _isCancelled=true; //Set flag to show question has been cancelled
+            if (_isQuestionRunning)
             {
                 if (Settings.Trigger == Trigger.DWELLTIMEEXTEND)
                 {
                     _logger.Debug("Waiting {0} to cancel rating", _dwellTimeExtendMs);
                     _dwellTimeExtendAutoResetEvent.WaitOne(_dwellTimeExtendMs); //Wait for dwelltime extend to finish
-                    if (GetQuestionRunning()) //recheck _isQuestionRunning because customer may have provided rating
+                    if (_isQuestionRunning) //recheck _isQuestionRunning because customer may have provided rating
                     {
                         Device.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
                     }
@@ -142,8 +108,7 @@ namespace TruRating.TruModule.V2xx
 
         protected void DoRating(Request request)
         {
-            
-            SetCancelled(false);
+            _isCancelled=false;
             if (!(request.Item is RequestQuestion))
             {
                 _logger.Info("Request was not a question");
@@ -178,10 +143,10 @@ namespace TruRating.TruModule.V2xx
                     timeoutMs = int.MaxValue;
                     _dwellTimeExtendMs = question.TimeoutMs;
                 }
-                SetQuestionRunning(true);
+                _isQuestionRunning=true;
                 rating.Value = Device.Display1AQ1KR(question.Value, timeoutMs);
-                    //Wait for the user input for the specified period
-                SetQuestionRunning(false);
+                //Wait for the user input for the specified period
+                _isQuestionRunning=false;
                 _dwellTimeExtendAutoResetEvent.Set();
                     //Signal to CancelRating that question has been answered when called in another thread.
                 _dwellTimeExtendAutoResetEvent.Reset();
@@ -192,7 +157,7 @@ namespace TruRating.TruModule.V2xx
                 ReceiptManager.AppendReceipt(responseReceipt);
             }
             _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));
-            if ( responseScreen != null && (!GetCancelled() || responseScreen.Priority))
+            if ( responseScreen != null && (!_isCancelled || responseScreen.Priority))
             {
                 Device.DisplayMessage(responseScreen.Value, responseScreen.TimeoutMs);
             }
