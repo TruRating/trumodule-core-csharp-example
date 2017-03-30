@@ -83,6 +83,7 @@
     <Compile Include="TruModuleStandaloneTests\ActiveTruModuleStandaloneTestsContext.cs" />
     <Compile Include="TruModuleStandaloneTests\WhenDoingARatingAndNotActive.cs" />
     <Compile Include="TruModuleStandaloneTests\WhenDoingARatingAndActive.cs" />
+    <Compile Include="TruModuleStandaloneTests\WhenSendingATransaction.cs" />
     <Compile Include="TruModuleTests\WhenQuestionAvailableAndDoingDwellTimeExtendRating.cs" />
     <Compile Include="TruModuleTests\TruModuleTestsContext.cs" />
     <Compile Include="TruModuleTests\Activation\WhenTruModuleIsInactiveAndTtlNotExpiredAndDoingAPassiveActivationCheck.cs" />

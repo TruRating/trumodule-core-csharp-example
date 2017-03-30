@@ -198,7 +198,6 @@ namespace TruRating.TruModule.V2xx
             {
                 if (responseReceipt.When == when)
                 {
-                    // Device.AppendReceipt(responseReceipt.Value);
                     return responseReceipt.Value;
                 }
             }
@@ -213,11 +212,6 @@ namespace TruRating.TruModule.V2xx
             {
                 if (responseScreen.When == whenToDisplay) //If this response element matches the state of the screen.
                 {
-                    //if (!_isCancelled || responseScreen.Priority)
-                    //{
-                    //    Device.DisplayMessage(responseScreen.Value, responseScreen.TimeoutMs);
-                    //}
-                    //break;
                     return responseScreen;
                 }
             }
