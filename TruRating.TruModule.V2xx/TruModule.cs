@@ -149,7 +149,6 @@ namespace TruRating.TruModule.V2xx
                 _isQuestionRunning=false;
                 _dwellTimeExtendAutoResetEvent.Set();
                     //Signal to CancelRating that question has been answered when called in another thread.
-                _dwellTimeExtendAutoResetEvent.Reset();
                 sw.Stop();
                 rating.ResponseTimeMs = (int) sw.ElapsedMilliseconds; //Set the response time
                 var responseReceipt = GetResponseReceipt(receipts, rating.Value < 0 ? When.NOTRATED : When.RATED);
