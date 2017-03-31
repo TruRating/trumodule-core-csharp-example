@@ -1,8 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TruRating.Dto.TruService.V220;
-using TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.LookupTests;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
+namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.Lookup
 {
     [TestClass]
     public class WhenGettingLookupDataAndResoponseContainsDeviceLangauge: TruModuleStandaloneLookupTestContext

@@ -85,7 +85,6 @@ namespace TruRating.TruModule.V2xx
         
         public bool Activate(int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress, string password, string address, string mobileNumber, string merchantName, string businessName)
         {
-            //Todo
             var status =SendRequest(TruServiceMessageFactory.AssembleRequestActivate(Device, ReceiptManager, Settings.PartnerId, SessionId,
                         Settings.MerchantId, Settings.TerminalId, sectorNode, timeZone, PaymentInstant.PAYBEFORE,
                         emailAddress, password, address, mobileNumber, merchantName, businessName));

@@ -28,7 +28,7 @@ using TruRating.TruModule.V2xx.Network;
 using TruRating.TruModule.V2xx.Settings;
 using TruRating.TruModule.V2xx.Util;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleTests
+namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleTests.Activation
 {
     [TestClass]
     public class WhenTruModuleIsInactiveAndTtlNotExpiredButForcingAnActivationCheck : TruModuleTestsContext

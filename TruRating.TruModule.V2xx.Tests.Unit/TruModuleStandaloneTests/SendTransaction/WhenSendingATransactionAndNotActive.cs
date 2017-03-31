@@ -6,7 +6,7 @@ using TruRating.TruModule.V2xx.Messages;
 using TruRating.TruModule.V2xx.Network;
 using TruRating.TruModule.V2xx.Settings;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
+namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.SendTransaction
 {
     [TestClass]
     public class WhenSendingATransactionAndNotActive : MsTestsContext<TruModuleStandalone>

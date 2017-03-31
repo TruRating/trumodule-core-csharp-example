@@ -3,7 +3,7 @@ using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Network;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.LookupTests
+namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.Lookup
 {
     public class TruModuleStandaloneLookupTestContext: MsTestsContext<TruModuleStandalone>
     {
