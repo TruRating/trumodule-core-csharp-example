@@ -58,7 +58,29 @@ namespace TruRating.TruModule.V2xx
             }
         }
 
-        public Dictionary<int, string> GetLookups(LookupName lookupName)
+        public LookupOption[] GetLookups(LookupName lookupName)
+        {
+            var request = TruServiceMessageFactory.AssembleRequestLookup(Device, ReceiptManager, Settings.PartnerId, Settings.MerchantId,
+                Settings.TerminalId, SessionId, lookupName);
+
+            var responseLookup = SendRequest(request);
+
+            var responseStatus = responseLookup?.Item as ResponseLookup;
+            if (responseStatus != null)
+            {
+                foreach (var language in responseStatus.Language)
+                {
+                    if (language.Rfc1766 == Device.GetCurrentLanguage())
+                    {
+                        return language.Option;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public Dictionary<int, string> GetLookups_Obsolte(LookupName lookupName)
         {
             var result = new List<KeyValuePair<int, string>>();
 
@@ -91,8 +113,7 @@ namespace TruRating.TruModule.V2xx
 
 
         //Todo: PrintLookups doesn't belong here. Refactor. This should probably be in Usecase?
-        private IEnumerable<KeyValuePair<int, string>> PrintLookups(LookupOption lookupOption, int depth,
-            int optionNumber)
+        private IEnumerable<KeyValuePair<int, string>> PrintLookups(LookupOption lookupOption, int depth, int optionNumber)
         {
             var result = new List<KeyValuePair<int, string>>();
 

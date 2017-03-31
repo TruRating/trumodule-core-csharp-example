@@ -57,7 +57,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
         }
         private string Lookup(LookupName lookupName)
         {
-            var options = _truModule.GetLookups(lookupName);
+            var options = _truModule.GetLookups_Obsolte(lookupName);
             while (true)
             {
                 var selectedOption = ConsoleIo.ReadLine("Please pick a numbered " + lookupName);

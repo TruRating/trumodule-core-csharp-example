@@ -81,10 +81,12 @@
     <Compile Include="Serialization\DefaultSerializerTests\DefaultSerializerTests.cs" />
     <Compile Include="Messages\TruServiceMessageFactoryTests.cs" />
     <Compile Include="TruModuleStandaloneTests\ActiveTruModuleStandaloneTestsContext.cs" />
-    <Compile Include="TruModuleStandaloneTests\LookupTests.cs" />
+    <Compile Include="TruModuleStandaloneTests\LookupTests\WhenGettingLookupDataAndResoponseDoesNotContainDeviceLangauge.cs" />
+    <Compile Include="TruModuleStandaloneTests\LookupTests\TruModuleStandaloneLookupTestContext.cs" />
     <Compile Include="TruModuleStandaloneTests\WhenActivating.cs" />
     <Compile Include="TruModuleStandaloneTests\WhenDoingARatingAndNotActive.cs" />
     <Compile Include="TruModuleStandaloneTests\WhenDoingARatingAndActive.cs" />
+    <Compile Include="TruModuleStandaloneTests\LookupTests\WhenGettingLookupDataAndResoponseContainsDeviceLangauge.cs" />
     <Compile Include="TruModuleStandaloneTests\WhenSendingATransactionAndActive.cs" />
     <Compile Include="TruModuleStandaloneTests\WhenSendingATransactionAndNotActive.cs" />
     <Compile Include="TruModuleTests\WhenQuestionAvailableAndDoingDwellTimeExtendRating.cs" />
