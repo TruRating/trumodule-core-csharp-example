@@ -91,7 +91,7 @@ namespace TruRating.TruModule.V2xx
             var responseStatus = status.Item as ResponseStatus;
             if (responseStatus != null)
             {
-                Settings.ActivationRecheck = DateTime.UtcNow.AddMinutes(responseStatus.TimeToLive);
+                Settings.ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(responseStatus.TimeToLive);
                 Settings.IsActivated = responseStatus.IsActive;
             }
             return Settings.IsActivated;
@@ -103,7 +103,7 @@ namespace TruRating.TruModule.V2xx
             var responseStatus = status.Item as ResponseStatus;
             if (responseStatus != null)
             {
-                Settings.ActivationRecheck = DateTime.UtcNow.AddMinutes(responseStatus.TimeToLive);
+                Settings.ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(responseStatus.TimeToLive);
                 Settings.IsActivated = responseStatus.IsActive;
             }
             return Settings.IsActivated;
