@@ -38,7 +38,7 @@ namespace TruRating.TruModule.V2xx
 
         public void SendTransaction(PosParams posParams, RequestTransaction requestTransaction)
         {
-            if (IsActivated(false))
+            if (IsActivated(bypassTruServiceCache:false))
             {
                 var request = TruServiceMessageFactory.AssembleRequestTransaction(posParams.PartnerId,
                     posParams.SessionId, posParams.MerchantId, posParams.TerminalId, requestTransaction);
@@ -48,7 +48,7 @@ namespace TruRating.TruModule.V2xx
 
         public void SendPosEvent(PosParams posParams, RequestPosEvent requestPosEvent)
         {
-            if (IsActivated(false))
+            if (IsActivated(bypassTruServiceCache:false))
             {
                 TaskHelpers.BeginTask(() =>
                 {
@@ -77,7 +77,7 @@ namespace TruRating.TruModule.V2xx
 
         public void SendPosEventList(PosParams posParams, RequestPosEventList requestPosEventList)
         {
-            if (IsActivated(false))
+            if (IsActivated(bypassTruServiceCache:false))
             {
                 TaskHelpers.BeginTask(() =>
                 {
@@ -90,7 +90,7 @@ namespace TruRating.TruModule.V2xx
 
         public void InitiatePayment(PosParams posParams)
         {
-            if (IsActivated(false))
+            if (IsActivated(bypassTruServiceCache:false))
             {
                 if (Settings.Trigger == Trigger.PAYMENTREQUEST)
                 {

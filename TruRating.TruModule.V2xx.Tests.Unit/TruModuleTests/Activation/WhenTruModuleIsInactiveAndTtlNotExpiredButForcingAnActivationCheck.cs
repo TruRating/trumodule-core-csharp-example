@@ -46,7 +46,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleTests
             _truServiceClient = MockOf<ITruServiceClient>();
             _truServiceClient.Stub(x => x.Send(Arg<Request>.Is.Anything))
                 .Return(new Response() {Item = new ResponseStatus() {TimeToLive = 36000, IsActive = true}});
-            _result = Sut.IsActivated(true);
+            _result = Sut.IsActivated(bypassTruServiceCache:true);
         }
 
         [TestMethod]

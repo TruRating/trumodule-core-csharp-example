@@ -53,14 +53,15 @@ namespace TruRating.TruModule.V2xx
             Settings = settings;
             ReceiptManager = receiptManager;
             SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
-            IsActivated(true);
+            IsActivated(bypassTruServiceCache:true);
         }
 
         protected string SessionId { get; set; }
-    
-        public bool IsActivated(bool force)
+
+       
+        public bool IsActivated(bool bypassTruServiceCache)
         {
-            if (Settings.ActivationRecheck > DateTimeProvider.UtcNow && !force)
+            if (Settings.ActivationRecheck > DateTimeProvider.UtcNow && !bypassTruServiceCache)
             {
                 _logger.Debug("Not querying TruService status, next check at {0}. IsActive is {1}",
                     Settings.ActivationRecheck, Settings.IsActivated);
@@ -68,7 +69,7 @@ namespace TruRating.TruModule.V2xx
             }
             var status =
                 _truServiceClient.Send(TruServiceMessageFactory.AssemblyRequestQuery(Device,ReceiptManager, Settings.PartnerId,
-                    Settings.MerchantId, Settings.TerminalId, SessionId, force));
+                    Settings.MerchantId, Settings.TerminalId, SessionId, bypassTruServiceCache));
 
             var responseStatus = status != null ? status.Item as ResponseStatus : null;
             if (responseStatus != null)

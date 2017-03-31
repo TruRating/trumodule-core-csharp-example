@@ -43,7 +43,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleTests
             MockOf<ISettings>().ActivationRecheck= new DateTime(2001, 01,01);
             _truServiceClient = MockOf<ITruServiceClient>();
 
-            _isActivated = Sut.IsActivated(false); 
+            _isActivated = Sut.IsActivated(bypassTruServiceCache:false); 
             
         }
 

@@ -32,7 +32,7 @@ namespace TruRating.TruModule.V2xx
 
         bool Activate(int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress, string password, string address,string mobileNumber, string merchantName, string businessName);
         bool Activate(string registrationCode);
-        bool IsActivated(bool force);
+        bool IsActivated(bool bypassTruServiceCache);
         LookupOption[] GetLookups(LookupName lookupName);
     }
 }

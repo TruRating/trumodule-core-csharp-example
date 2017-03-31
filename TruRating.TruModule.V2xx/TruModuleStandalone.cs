@@ -41,7 +41,7 @@ namespace TruRating.TruModule.V2xx
         public void DoRating()
         {
             SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
-            if (IsActivated(false))
+            if (IsActivated(bypassTruServiceCache:false))
             {
                 var request = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager, Settings.PartnerId, Settings.MerchantId, Settings.TerminalId, SessionId, Settings.Trigger);
                 DoRating(request);
@@ -50,7 +50,7 @@ namespace TruRating.TruModule.V2xx
 
         public void SendTransaction(RequestTransaction requestTransaction)
         {
-            if (IsActivated(false))
+            if (IsActivated(bypassTruServiceCache:false))
             {
                 var request = TruServiceMessageFactory.AssembleRequestTransaction(Settings.PartnerId, SessionId,
                     Settings.MerchantId, Settings.TerminalId, requestTransaction);
@@ -65,7 +65,10 @@ namespace TruRating.TruModule.V2xx
 
             var responseLookup = SendRequest(request);
 
-            var responseStatus = responseLookup?.Item as ResponseLookup;
+            if (responseLookup == null)
+                return null;
+
+            var responseStatus = responseLookup.Item as ResponseLookup;
             if (responseStatus != null)
             {
                 foreach (var language in responseStatus.Language)

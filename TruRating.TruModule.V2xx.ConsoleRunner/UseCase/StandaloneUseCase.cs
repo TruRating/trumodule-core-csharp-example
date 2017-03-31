@@ -51,7 +51,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
                 _consoleSettings.TruServiceUrl, _consoleIo,
                 new MacSignatureCalculator(_consoleSettings.TransportKey, _consoleIo));
             _truModule = new TruModuleStandalone(Device,ReceiptManager, truServiceClient, _consoleIo, new TruServiceMessageFactory(), _consoleSettings);
-            if (!_truModule.IsActivated(false))
+            if (!_truModule.IsActivated(bypassTruServiceCache:false))
             {
                 _consoleIo.WriteLine(ConsoleColor.Gray,"Standalone UseCase: Not activated at start-up, prompting registration");
                 Activate();
@@ -111,7 +111,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
 
         private void Activate()
         {
-            if (_truModule.IsActivated(false))
+            if (_truModule.IsActivated(bypassTruServiceCache:false))
                 return;
             Device.DisplayMessage("This device is not registered!");
             var registrationCode =
@@ -152,7 +152,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
                 _truModule.Activate(registrationCode);
             }
             
-            if (_truModule.IsActivated(false))
+            if (_truModule.IsActivated(bypassTruServiceCache:false))
             {
                 Device.DisplayMessage("This device is activated");
             }
