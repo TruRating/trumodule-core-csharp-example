@@ -80,7 +80,9 @@
     <Compile Include="Security\MacSignatureCalculatorTests\WhenTestingCalculatorWithInvalidTransportKey.cs" />
     <Compile Include="Serialization\DefaultSerializerTests\DefaultSerializerTests.cs" />
     <Compile Include="Messages\TruServiceMessageFactoryTests.cs" />
-    <Compile Include="TruModuleStandaloneTests\Activate\Foo.cs" />
+    <Compile Include="TruModuleStandaloneTests\Activate\WhenActivatingWithRegisgrationCodeAndRecievesFailedResponse.cs" />
+    <Compile Include="TruModuleStandaloneTests\Activate\TruModuleStanadaloneActivateWithRegCodeTestContext.cs" />
+    <Compile Include="TruModuleStandaloneTests\Activate\WhenActivatingWithRegisgrationCodeAndRecievesSuccessResponse.cs" />
     <Compile Include="TruModuleStandaloneTests\ActiveTruModuleStandaloneTestsContext.cs" />
     <Compile Include="TruModuleStandaloneTests\Lookup\WhenGettingLookupDataAndResoponseDoesNotContainDeviceLangauge.cs" />
     <Compile Include="TruModuleStandaloneTests\Lookup\TruModuleStandaloneLookupTestContext.cs" />
