@@ -36,7 +36,6 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Network.SystemWebClientTests
             _sut = new SystemWebClient(1000);
         }
 
-        //Todo: I'd prefer getting rid of this test. There's a test to cover WebRequest timeout.
         [TestMethod]
         public void ItShouldHaveTheTimeoutSet()
         {

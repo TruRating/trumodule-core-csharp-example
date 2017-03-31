@@ -27,7 +27,6 @@ using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Messages;
 using TruRating.TruModule.V2xx.Network;
 using TruRating.TruModule.V2xx.Security;
-using TruRating.TruModule.V2xx.Serialization;
 using TruRating.TruModule.V2xx.Util;
 
 namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
@@ -58,19 +57,11 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
             }
         }
 
-        private string Lookup(LookupName lookupName)
+        private string ChooseLookupOption(LookupName lookupName)
         {
             var lookups = _truModule.GetLookups(lookupName);
 
-            //todo: refactor and improve readability of this.
-            var result = new List<KeyValuePair<int, string>>();
-            var optionNumber = 0;
-            foreach (var lookupOption in lookups)
-            {
-                result.AddRange(PrintLookups(lookupOption, 1, optionNumber));
-            }
-
-            var options= ExtensionMethods.ToDictionary(result, x => x.Key, x => x.Value);
+            var options = PrintLookupOptions(lookups);
 
             while (true)
             {
@@ -87,8 +78,21 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
             }
         }
 
+        private Dictionary<int, string> PrintLookupOptions(IEnumerable<LookupOption> lookups)
+        {
+            var result = new List<KeyValuePair<int, string>>();
+            var optionNumber = 0;
+            foreach (var lookupOption in lookups)
+            {
+                result.AddRange(RecurseLookupOptions(lookupOption, 1, optionNumber));
+            }
 
-        private IEnumerable<KeyValuePair<int, string>> PrintLookups(LookupOption lookupOption, int depth, int optionNumber)
+            var options = ExtensionMethods.ToDictionary(result, x => x.Key, x => x.Value);
+            return options;
+        }
+
+
+        private IEnumerable<KeyValuePair<int, string>> RecurseLookupOptions(LookupOption lookupOption, int depth, int optionNumber)
         {
             var result = new List<KeyValuePair<int, string>>();
 
@@ -103,7 +107,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
             {
                 foreach (var option in lookupOption.Option)
                 {
-                    result.AddRange(PrintLookups(option, depth + 1, optionNumber));
+                    result.AddRange(RecurseLookupOptions(option, depth + 1, optionNumber));
                 }
             }
             return result;
@@ -119,8 +123,8 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
                     "Type your registration code, Press ENTER to register via form input or type SKIP to skip registration");
             if (string.IsNullOrEmpty(registrationCode))
             {
-                var sectorNode = int.Parse(Lookup(LookupName.SECTORNODE));
-                var timeZone = Lookup(LookupName.TIMEZONE);
+                var sectorNode = int.Parse(ChooseLookupOption(LookupName.SECTORNODE));
+                var timeZone = ChooseLookupOption(LookupName.TIMEZONE);
                 string emailAddress = null;
                 string password = null;
                 string address = null;

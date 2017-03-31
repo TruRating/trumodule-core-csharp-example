@@ -19,32 +19,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Messages;
 using TruRating.TruModule.V2xx.Network;
 using TruRating.TruModule.V2xx.Settings;
-using TruRating.TruModule.V2xx.Util;
 
 namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleTests
 {
-    //todo: find a better name. TruModuleDummy? TruModuleTestable?
-    public class TroModuleNonAbstract : TruModule
+    public class TestContextTruModule : TruModule
     {
-        public TroModuleNonAbstract(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger, ITruServiceMessageFactory truServiceMessageFactory, ISettings settings) : base(device, receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
+        public TestContextTruModule(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger, ITruServiceMessageFactory truServiceMessageFactory, ISettings settings) : base(device, receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
         {
         }
-
+        //Modify visibility for Unit Tests
         public new void DoRating(Request request)
         {
             base.DoRating(request);
         }
     }
 
-    public abstract class TruModuleTestsContext : MsTestsContext<TroModuleNonAbstract>
+    public abstract class TruModuleTestsContext : MsTestsContext<TestContextTruModule>
     {
         protected Request Request;
         protected Response Response;

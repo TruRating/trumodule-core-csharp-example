@@ -26,7 +26,7 @@ using TruRating.TruModule.V2xx.Network;
 namespace TruRating.TruModule.V2xx.Tests.Unit.Network.SystemWebClientFactoryTests
 {
     [TestClass]
-    public class WhenCreatingAWebClient
+    public class WhenCreatingAWebClientUsingSystemWebClientFactory
     {
         private SystemWebClientFactory _sut;
         private int _httpTimeoutMs = 1000;

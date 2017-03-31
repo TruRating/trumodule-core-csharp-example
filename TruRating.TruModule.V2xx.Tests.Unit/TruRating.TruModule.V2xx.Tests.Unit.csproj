@@ -68,7 +68,7 @@
   <ItemGroup>
     <Compile Include="Network\FakeWebClient.cs" />
     <Compile Include="Network\HttpHelpers.cs" />
-    <Compile Include="Network\SystemWebClientFactoryTests\WhenCreatingAWebClient.cs" />
+    <Compile Include="Network\SystemWebClientFactoryTests\WhenCreatingAWebClientUsingSystemWebClientFactory.cs" />
     <Compile Include="Network\SystemWebClientTests\WhenCreatingAWebRequest.cs" />
     <Compile Include="Network\TruServiceHttpClientTests\WhenConstructingDefaultTruServiceClient.cs" />
     <Compile Include="Network\TruServiceHttpClientTests\WhenSendingAnUnsuccessfulRequest.cs" />
