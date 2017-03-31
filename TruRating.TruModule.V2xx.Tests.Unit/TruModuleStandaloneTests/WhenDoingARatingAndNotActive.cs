@@ -34,7 +34,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
         [TestInitialize]
         public void Setup()
         {
-            MockOf<ISettings>().IsActivated = false; // todo: forcing BaseClass.IsActivated to ruturn false would have been better than. using ISettings.IsActivated.
+            MockOf<ISettings>().IsActivated = false;  
             Sut.DoRating();
         }
         [TestMethod]
