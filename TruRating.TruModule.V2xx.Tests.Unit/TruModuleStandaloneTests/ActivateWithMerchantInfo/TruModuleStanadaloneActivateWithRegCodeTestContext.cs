@@ -8,9 +8,9 @@ using TruRating.TruModule.V2xx.Network;
 using TruRating.TruModule.V2xx.Settings;
 using TruRating.TruModule.V2xx.Util;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.Activate
+namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.ActivateWithMerchantInfo
 {
-    public class TruModuleStanadaloneActivateWithRegCodeTestContext: MsTestsContext<TruModuleStandalone>
+    public class TruModuleStanadaloneActivateWithMerchantInfoTestContext: MsTestsContext<TruModuleStandalone>
     {
         protected ITruServiceMessageFactory TruServiceMessageFactory { get; set; }
         protected ITruServiceClient TruServiceClient { get; set; }
@@ -18,7 +18,6 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.Activate
 
         protected Request Request;
         protected Response Response;
-        protected string RegistrationCode;
         protected int ActivationReCheckTimeMinutes = 60 * 24 * 365;
 
         [TestInitialize]
@@ -34,16 +33,17 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.Activate
             TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
             TruServiceMessageFactory.Stub(
                 x =>
-                    x.AssembleRequestQuestion(Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,
+                    x.AssembleRequestActivate(Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,
                         Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything,
-                        Arg<string>.Is.Anything, Arg<Trigger>.Is.Anything)).Return(Request);
-
+                        Arg<string>.Is.Anything, Arg<int>.Is.Anything, Arg<string>.Is.Anything,
+                        Arg<PaymentInstant>.Is.Anything,Arg<string>.Is.Anything, Arg<string>.Is.Anything, 
+                        Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, 
+                        Arg<string>.Is.Anything)).Return(Request);
+            
             TruServiceClient = MockOf<ITruServiceClient>();
             TruServiceClient.Stub(t => t.Send(Arg<Request>.Is.Anything)).Return(Response);
 
             Settings = MockOf<ISettings>();
-
-            RegistrationCode = "ABCD";
             
         }
 

@@ -80,9 +80,12 @@
     <Compile Include="Security\MacSignatureCalculatorTests\WhenTestingCalculatorWithInvalidTransportKey.cs" />
     <Compile Include="Serialization\DefaultSerializerTests\DefaultSerializerTests.cs" />
     <Compile Include="Messages\TruServiceMessageFactoryTests.cs" />
-    <Compile Include="TruModuleStandaloneTests\Activate\WhenActivatingWithRegisgrationCodeAndRecievesFailedResponse.cs" />
-    <Compile Include="TruModuleStandaloneTests\Activate\TruModuleStanadaloneActivateWithRegCodeTestContext.cs" />
-    <Compile Include="TruModuleStandaloneTests\Activate\WhenActivatingWithRegisgrationCodeAndRecievesSuccessResponse.cs" />
+    <Compile Include="TruModuleStandaloneTests\ActivateWithMerchantInfo\TruModuleStanadaloneActivateWithRegCodeTestContext.cs" />
+    <Compile Include="TruModuleStandaloneTests\ActivateWithMerchantInfo\WhenActivatingWithRegisgrationCodeAndRecievesFailedResponse.cs" />
+    <Compile Include="TruModuleStandaloneTests\ActivateWithMerchantInfo\WhenActivatingWithRegisgrationCodeAndRecievesSuccessResponse.cs" />
+    <Compile Include="TruModuleStandaloneTests\ActivateWithRegistraionCode\WhenActivatingWithRegisgrationCodeAndRecievesFailedResponse.cs" />
+    <Compile Include="TruModuleStandaloneTests\ActivateWithRegistraionCode\TruModuleStanadaloneActivateWithRegCodeTestContext.cs" />
+    <Compile Include="TruModuleStandaloneTests\ActivateWithRegistraionCode\WhenActivatingWithRegisgrationCodeAndRecievesSuccessResponse.cs" />
     <Compile Include="TruModuleStandaloneTests\ActiveTruModuleStandaloneTestsContext.cs" />
     <Compile Include="TruModuleStandaloneTests\Lookup\WhenGettingLookupDataAndResoponseDoesNotContainDeviceLangauge.cs" />
     <Compile Include="TruModuleStandaloneTests\Lookup\TruModuleStandaloneLookupTestContext.cs" />

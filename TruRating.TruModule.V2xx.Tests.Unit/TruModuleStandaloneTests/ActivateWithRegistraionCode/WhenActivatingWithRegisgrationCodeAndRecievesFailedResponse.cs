@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TruRating.TruModule.V2xx.Util;
 
-namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.Activate
+namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.ActivateWithRegistraionCode
 {
     [TestClass]
     public class WhenActivatingWithRegisgrationCodeAndRecievesFailedResponse : TruModuleStanadaloneActivateWithRegCodeTestContext
