@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.ConsoleRunner.Environment;
 using TruRating.TruModule.V2xx.Device;
@@ -27,6 +28,7 @@ using TruRating.TruModule.V2xx.Messages;
 using TruRating.TruModule.V2xx.Network;
 using TruRating.TruModule.V2xx.Security;
 using TruRating.TruModule.V2xx.Serialization;
+using TruRating.TruModule.V2xx.Util;
 
 namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
 {
@@ -55,9 +57,21 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
                 Activate();
             }
         }
+
         private string Lookup(LookupName lookupName)
         {
-            var options = _truModule.GetLookups_Obsolte(lookupName);
+            var lookups = _truModule.GetLookups(lookupName);
+
+            //todo: refactor and improve readability of this.
+            var result = new List<KeyValuePair<int, string>>();
+            var optionNumber = 0;
+            foreach (var lookupOption in lookups)
+            {
+                result.AddRange(PrintLookups(lookupOption, 1, optionNumber));
+            }
+
+            var options= ExtensionMethods.ToDictionary(result, x => x.Key, x => x.Value);
+
             while (true)
             {
                 var selectedOption = ConsoleIo.ReadLine("Please pick a numbered " + lookupName);
@@ -72,6 +86,29 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
                 }
             }
         }
+
+
+        private IEnumerable<KeyValuePair<int, string>> PrintLookups(LookupOption lookupOption, int depth, int optionNumber)
+        {
+            var result = new List<KeyValuePair<int, string>>();
+
+            if (lookupOption.Value != null)
+            {
+                optionNumber++;
+                result.Add(new KeyValuePair<int, string>(optionNumber, lookupOption.Value));
+            }
+            Device.DisplayMessage((lookupOption.Value == null ? "N/A" : "\"" + optionNumber + "\"") +
+                                  "".PadLeft(depth, ' ') + lookupOption.Text + " (" + lookupOption.Value + ")");
+            if (lookupOption.Option != null)
+            {
+                foreach (var option in lookupOption.Option)
+                {
+                    result.AddRange(PrintLookups(option, depth + 1, optionNumber));
+                }
+            }
+            return result;
+        }
+
         private void Activate()
         {
             if (_truModule.IsActivated(false))

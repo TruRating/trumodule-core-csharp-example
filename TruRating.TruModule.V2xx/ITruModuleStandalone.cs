@@ -33,6 +33,6 @@ namespace TruRating.TruModule.V2xx
         bool Activate(int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress, string password, string address,string mobileNumber, string merchantName, string businessName);
         bool Activate(string registrationCode);
         bool IsActivated(bool force);
-        Dictionary<int, string> GetLookups_Obsolte(LookupName lookupName);
+        LookupOption[] GetLookups(LookupName lookupName);
     }
 }

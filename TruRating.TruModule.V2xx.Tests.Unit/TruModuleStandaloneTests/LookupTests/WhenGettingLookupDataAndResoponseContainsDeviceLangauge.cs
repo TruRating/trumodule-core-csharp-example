@@ -25,6 +25,5 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
         {
             CollectionAssert.AreEqual(LookupsReturned, ResponseLookupLanguage.Option);
         }
-
     }
 }

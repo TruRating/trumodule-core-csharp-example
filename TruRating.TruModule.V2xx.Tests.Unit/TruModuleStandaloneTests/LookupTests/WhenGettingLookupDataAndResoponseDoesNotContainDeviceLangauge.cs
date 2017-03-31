@@ -15,19 +15,14 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
             DeviceLanguageCode = "fr";
 
             base.Setup();
-            
 
             LookupsReturned = Sut.GetLookups(LookupName.SECTORNODE);
-
         }
 
         [TestMethod]
         public void ItShouldNotReturnLookupData()
         {
-          
             Assert.IsNull(LookupsReturned);
-
         }
-
     }
 }

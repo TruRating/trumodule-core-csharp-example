@@ -79,61 +79,7 @@ namespace TruRating.TruModule.V2xx
 
             return null;
         }
-
-        public Dictionary<int, string> GetLookups_Obsolte(LookupName lookupName)
-        {
-            var result = new List<KeyValuePair<int, string>>();
-
-            var request = TruServiceMessageFactory.AssembleRequestLookup(Device, ReceiptManager, Settings.PartnerId, Settings.MerchantId,
-                Settings.TerminalId, SessionId, lookupName);
-
-            var responseLookup = SendRequest(request);
-
-            var responseStatus = responseLookup.Item as ResponseLookup;
-            if (responseStatus != null)
-            {
-                var optionNumber = 0;
-                foreach (var language in responseStatus.Language)
-                {
-                    if (language.Rfc1766 == Device.GetCurrentLanguage())
-                    {
-                        if (language.Option != null)
-                        {
-                            foreach (var lookupOption in language.Option)
-                            {
-                                result.AddRange(PrintLookups(lookupOption, 1, optionNumber));
-                            }
-                        }
-                    }
-                }
-            }
-
-            return ExtensionMethods.ToDictionary(result, x => x.Key, x => x.Value);
-        }
-
-
-        //Todo: PrintLookups doesn't belong here. Refactor. This should probably be in Usecase?
-        private IEnumerable<KeyValuePair<int, string>> PrintLookups(LookupOption lookupOption, int depth, int optionNumber)
-        {
-            var result = new List<KeyValuePair<int, string>>();
-
-            if (lookupOption.Value != null)
-            {
-                optionNumber++;
-                result.Add(new KeyValuePair<int, string>(optionNumber, lookupOption.Value));
-            }
-            Device.DisplayMessage((lookupOption.Value == null ? "N/A" : "\"" + optionNumber + "\"") +
-                                  "".PadLeft(depth, ' ') + lookupOption.Text + " (" + lookupOption.Value + ")");
-            if (lookupOption.Option != null)
-            {
-                foreach (var option in lookupOption.Option)
-                {
-                    result.AddRange(PrintLookups(option, depth + 1, optionNumber));
-                }
-            }
-            return result;
-        }
-
+        
         public bool Activate(int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress, string password, string address, string mobileNumber, string merchantName, string businessName)
         {
             //Todo
