@@ -1,0 +1,16 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>$version$</version>
+    <authors>TruRating</authors>
+    <owners>TruRating</owners>
+    <id>TruRating.TruModule.V2xx</id>
+    <title>TruRating.TruModule.V2xx</title>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <projectUrl>https://docs.trurating.com</projectUrl>
+    <licenseUrl>https://docs.trurating.com/licenses/TruRating.Dto.TruService.V2xx.txt</licenseUrl>
+    <iconUrl>https://az740467.vo.msecnd.net/trustrap/master/icons/apple-touch-icon.png</iconUrl>
+    <description>Defines common shared data and physically acts an an interface to TruService.</description>
+    <copyright>TruRating 2017</copyright>
+  </metadata>
+</package>
