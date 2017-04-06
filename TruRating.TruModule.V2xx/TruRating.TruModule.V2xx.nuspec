@@ -12,5 +12,8 @@
     <iconUrl>https://az740467.vo.msecnd.net/trustrap/master/icons/apple-touch-icon.png</iconUrl>
     <description>Defines common shared data and physically acts an an interface to TruService.</description>
     <copyright>TruRating 2017</copyright>
+    <dependencies>
+      <dependency id="TruRating.Dto.TruService.V2xx" version="2.2.4.11" />
+    </dependencies>
   </metadata>
 </package>
