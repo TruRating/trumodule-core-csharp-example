@@ -27,36 +27,15 @@ namespace TruRating.TruModule.V2xx.Messages
 {
     public interface ITruServiceMessageFactory
     {
-        Request AssemblyRequestQuery(IDevice device, IReceiptManager receiptManager,
-            string partnerId,
-            string merchantId,
-            string terminalId,
-            string sessionId,
-            bool force);
-
-        Request AssembleRequestQuestion(IDevice device, IReceiptManager receiptManager,
-            string partnerId,
-            string merchantId,
-            string terminalId,
-            string sessionId,
-            Trigger trigger);
-
-        Request AssembleRequestTransaction(string partnerId, string sessionId, string merchantId, string terminalId,
-            RequestTransaction requestTransaction);
-
+        Request AssemblyRequestQuery(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, bool force);
+        Request AssembleRequestQuestion(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, Trigger trigger);
+        Request AssembleRequestTransaction(RequestParams requestParams,  RequestTransaction requestTransaction);
         Request AssembleRequestPosEvent(PosParams posParams, RequestPosEvent requestPosEvent);
-        Request AssembleRequestPosEvent(PosParams posParams, RequestPosEventList requestPosEventList);
 
-        Request AssembleRequestLookup(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
-            string sessionId, LookupName lookupName);
-
-        Request AssembleRequestActivate(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
-            string sessionId, int sectorNode, string timeZone, PaymentInstant paybefore, string emailAddress,
-            string password, string address, string mobileNumber, string merchantName, string businessName);
-
-        Request AssembleRequestActivate(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
-            string sessionId, string registrationCode);
-
+        Request AssembleRequestPosEventList(RequestParams requestParams,  RequestPosEventList requestPosEventList);
+        Request AssembleRequestLookup(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, LookupName lookupName);
+        Request AssembleRequestActivate(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, int sectorNode, string timeZone, PaymentInstant paybefore, string emailAddress, string password, string address, string mobileNumber, string merchantName, string businessName);
+        Request AssembleRequestActivate(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, string registrationCode);
         Request AssembleRequestRating(Request request, RequestRating rating);
     }
 }

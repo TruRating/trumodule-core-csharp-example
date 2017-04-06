@@ -1,4 +1,4 @@
-﻿// The MIT License
+// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -19,44 +19,26 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using TruRating.Dto.TruService.V220;
+using TruRating.TruModule.V2xx.Device;
+using TruRating.TruModule.V2xx.Messages;
+using TruRating.TruModule.V2xx.Network;
 using TruRating.TruModule.V2xx.Settings;
 
-namespace TruRating.TruModule.V2xx.Messages
+namespace TruRating.TruModule.V2xx
 {
-    public class RequestParams
+    public class TruModuleSemiIntegrated : TruModuleStandalone, ITruModuleSemiIntegrated
     {
-        public RequestParams()
+        public TruModuleSemiIntegrated(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger, ITruServiceMessageFactory truServiceMessageFactory, ISettings settings) : base(device, receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
         {
-            
         }
-        public RequestParams(PosParams posParams)
+        public void SendBatchedPosEvents(RequestPosEventList requestPosEventList)
         {
-            PartnerId = posParams.PartnerId;
-            MerchantId = posParams.MerchantId;
-            TerminalId = posParams.TerminalId;
-            SessionId = posParams.SessionId;
-            Url = posParams.Url;
+            if (IsActivated(bypassTruServiceCache: false))
+            {
+                var request = TruServiceMessageFactory.AssembleRequestPosEventList(new RequestParams(Settings, SessionId), requestPosEventList);
+                SendRequest(request);
+            }
         }
-        public RequestParams(ISettings settings, string sessionId)
-        {
-            PartnerId = settings.PartnerId;
-            MerchantId = settings.MerchantId;
-            TerminalId = settings.TerminalId;
-            SessionId = sessionId;
-            Url = settings.TruServiceUrl;
-        }
-        public string PartnerId { get; set; }
-        public string MerchantId { get; set; }
-        public string TerminalId { get; set; }
-        public string SessionId { get; set; }
-        public string Url { get; set; }
-    }
-    public class PosParams
-    {
-        public string PartnerId { get; set; }
-        public string MerchantId { get; set; }
-        public string TerminalId { get; set; }
-        public string SessionId { get; set; }
-        public string Url { get; set; }
     }
 }

@@ -20,25 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
+using System.Threading;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.ConsoleRunner.Environment;
 using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Messages;
 using TruRating.TruModule.V2xx.Network;
 using TruRating.TruModule.V2xx.Security;
-using TruRating.TruModule.V2xx.Serialization;
-using TruRating.TruModule.V2xx.Util;
 
 namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
 {
-    public class IntegratedPosEventListUseCase : UseCaseBase
+    public class IntegratedUseCase : UseCaseBase
     {
         private readonly IConsoleSettings _consoleSettings;
         private readonly IConsoleIo _consoleIo;
         private TruModuleIntegrated _truModule;
 
-        public IntegratedPosEventListUseCase(IConsoleIo consoleIo, IConsoleSettings consoleSettings,
-            IDevice device, IReceiptManager receiptManager) : base(consoleIo, consoleSettings, device, receiptManager)
+        public IntegratedUseCase(IConsoleIo consoleIo, IConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
+            : base(consoleIo, consoleSettings, device, receiptManager)
         {
             _consoleIo = consoleIo;
             _consoleSettings = consoleSettings;
@@ -47,15 +47,17 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
         public override void Init()
         {
             var truServiceClient = TruServiceHttpClient.CreateDefault(_consoleSettings.HttpTimeoutMs,
-                _consoleSettings.TruServiceUrl,_consoleIo,
+                _consoleSettings.TruServiceUrl, _consoleIo,
                 new MacSignatureCalculator(_consoleSettings.TransportKey, _consoleIo));
-            _truModule = new TruModuleIntegrated(Device, ReceiptManager,truServiceClient, _consoleIo,
+            _truModule = new TruModuleIntegrated(Device,ReceiptManager, truServiceClient, _consoleIo,
                 new TruServiceMessageFactory(), _consoleSettings);
         }
 
         public override void Example()
         {
-            var sessionId = DateTimeProvider.UtcNow.Ticks.ToString();
+            var log = new List<Type>();
+            var sessionId = Guid.NewGuid().ToString();
+            _consoleIo.WriteLine(ConsoleColor.Gray, "Pos Application: starting tilling");
             var posParams = new PosParams
             {
                 SessionId = sessionId,
@@ -64,8 +66,21 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
                 TerminalId = _consoleSettings.TerminalId,
                 Url = _consoleSettings.TruServiceUrl
             };
+            while (true) //Send all pos events
+            {
+                var posEvent = CreateRequestPosEvent(sessionId, log);
+                if (posEvent == null)
+                {
+                    break;
+                }
+                _truModule.SendPosEvent(posParams, posEvent);
+                Thread.Sleep(250); //Wait a short length of time before continuing
+            }
             _consoleIo.WriteLine(ConsoleColor.Gray, "Pos Application: About to make a payment");
             _truModule.InitiatePayment(posParams);
+            _consoleIo.WriteLine(ConsoleColor.Gray, "Pos Application: customer made payment");
+            Thread.Sleep(250); //Wait a short length of time between Making a payment and transation
+            _consoleIo.WriteLine(ConsoleColor.Gray, "Pos Application: Payment complete");
             _truModule.SendTransaction(posParams, new RequestTransaction
             {
                 Amount = Rand.Next(1000, 2000),
@@ -75,29 +90,53 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
                 Id = Guid.NewGuid().ToString(),
                 Result = TransactionResult.APPROVED
             });
-            var posEvent = CreateRequestPosEventList();
-            _truModule.SendPosEventList(posParams, posEvent);
         }
 
-        public RequestPosEventList CreateRequestPosEventList()
+        public RequestPosEvent CreateRequestPosEvent(string sessionId, ICollection<Type> log)
         {
-            return new RequestPosEventList
+            object posEvent = null;
+            //Make all pos events
+            //This creates a single pos event of each type in order - this is the minimum number of events expected by TruService
+            if (!log.Contains(typeof (RequestPosStartTransaction)))
             {
-                StartTransaction = CreateRequestPosStartTransaction(),
-                StartTilling = CreateRequestPosStartTilling(),
-                Items = new object[] {CreateRequestPosItem()},
-                EndTilling = CreateRequestPosEndTilling(),
-                EndTransaction = CreateRequestPosEndTransaction()
-            };
+                posEvent = CreateRequestPosStartTransaction();
+            }
+            else if (!log.Contains(typeof (RequestPosStartTilling)))
+            {
+                posEvent = CreateRequestPosStartTilling();
+            }
+            else if (!log.Contains(typeof (RequestPosItem)))
+            {
+                posEvent = CreateRequestPosItem();
+            }
+            else if (!log.Contains(typeof (RequestPosEndTilling)))
+            {
+                posEvent = CreateRequestPosEndTilling();
+            }
+            else if (!log.Contains(typeof (RequestPosEndTransaction)))
+            {
+                posEvent = CreateRequestPosEndTransaction();
+            }
+            if (posEvent != null)
+            {
+                log.Add(posEvent.GetType());
+                return new RequestPosEvent {Items = new[] {posEvent}};
+            }
+            return null;
         }
 
-        private RequestPosStartTilling CreateRequestPosStartTilling()
+        public override bool IsApplicable()
+        {
+            return _consoleSettings.PosIntegration == PosIntegration.Integrated;
+        }
+
+        private static RequestPosStartTilling CreateRequestPosStartTilling()
         {
             var posEvent = new RequestPosStartTilling();
             return posEvent;
         }
 
-        private RequestPosStartTransaction CreateRequestPosStartTransaction()
+        private static RequestPosStartTransaction CreateRequestPosStartTransaction()
         {
             var posEvent = new RequestPosStartTransaction
             {
@@ -110,7 +149,7 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
             return posEvent;
         }
 
-        private RequestPosEndTilling CreateRequestPosEndTilling()
+        private static RequestPosEndTilling CreateRequestPosEndTilling()
         {
             var posEvent = new RequestPosEndTilling
             {
@@ -119,24 +158,19 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
             return posEvent;
         }
 
-        private RequestPosEndTransaction CreateRequestPosEndTransaction()
+        private static RequestPosEndTransaction CreateRequestPosEndTransaction()
         {
             var posEvent = new RequestPosEndTransaction();
             return posEvent;
         }
 
-        private RequestPosItem CreateRequestPosItem()
+        private static RequestPosItem CreateRequestPosItem()
         {
             var posEvent = new RequestPosItem
             {
                 Quantity = 1
             };
             return posEvent;
-        }
-
-        public override bool IsApplicable()
-        {
-            return _consoleSettings.PosIntegration == PosIntegration.EventList;
         }
     }
 }

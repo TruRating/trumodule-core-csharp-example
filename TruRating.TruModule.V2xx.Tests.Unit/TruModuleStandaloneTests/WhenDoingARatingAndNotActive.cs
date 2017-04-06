@@ -40,7 +40,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
         [TestMethod]
         public void ItShouldNotAssembleRequestQuestion()
         {
-            MockOf<ITruServiceMessageFactory>().AssertWasNotCalled(x=> x.AssembleRequestQuestion(Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything,Arg<Trigger>.Is.Anything));
+            MockOf<ITruServiceMessageFactory>().AssertWasNotCalled(x=> x.AssembleRequestQuestion(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,Arg<Trigger>.Is.Anything));
         }
     }
 }

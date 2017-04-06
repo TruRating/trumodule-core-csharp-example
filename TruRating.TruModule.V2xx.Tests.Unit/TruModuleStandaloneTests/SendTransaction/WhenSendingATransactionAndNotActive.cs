@@ -40,7 +40,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.SendTrans
             MockOf<ISettings>().IsActivated = false;
             MockOf<ISettings>().ActivationRecheck = DateTime.MaxValue;
             objToReturn = new Request();
-            MockOf<ITruServiceMessageFactory>().Stub(x => x.AssembleRequestTransaction(Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<RequestTransaction>.Is.Anything)).Return(objToReturn);
+            MockOf<ITruServiceMessageFactory>().Stub(x => x.AssembleRequestTransaction(Arg<RequestParams>.Is.Anything, Arg<RequestTransaction>.Is.Anything)).Return(objToReturn);
             Sut.SendTransaction(new RequestTransaction());
 
         }

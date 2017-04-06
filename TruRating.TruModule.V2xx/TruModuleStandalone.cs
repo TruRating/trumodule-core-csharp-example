@@ -43,7 +43,7 @@ namespace TruRating.TruModule.V2xx
             SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
             if (IsActivated(bypassTruServiceCache:false))
             {
-                var request = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager, Settings.PartnerId, Settings.MerchantId, Settings.TerminalId, SessionId, Settings.Trigger);
+                var request = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(Settings,SessionId),  Device,ReceiptManager, Settings.Trigger);
                 DoRating(request);
             }
         }
@@ -52,16 +52,14 @@ namespace TruRating.TruModule.V2xx
         {
             if (IsActivated(bypassTruServiceCache:false))
             {
-                var request = TruServiceMessageFactory.AssembleRequestTransaction(Settings.PartnerId, SessionId,
-                    Settings.MerchantId, Settings.TerminalId, requestTransaction);
+                var request = TruServiceMessageFactory.AssembleRequestTransaction(new RequestParams(Settings, SessionId), requestTransaction);
                 SendRequest(request);
             }
         }
 
         public LookupOption[] GetLookups(LookupName lookupName)
         {
-            var request = TruServiceMessageFactory.AssembleRequestLookup(Device, ReceiptManager, Settings.PartnerId, Settings.MerchantId,
-                Settings.TerminalId, SessionId, lookupName);
+            var request = TruServiceMessageFactory.AssembleRequestLookup(new RequestParams(Settings, SessionId), Device, ReceiptManager, lookupName);
 
             var responseLookup = SendRequest(request);
 
@@ -85,8 +83,7 @@ namespace TruRating.TruModule.V2xx
         
         public bool Activate(int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress, string password, string address, string mobileNumber, string merchantName, string businessName)
         {
-            var status =SendRequest(TruServiceMessageFactory.AssembleRequestActivate(Device, ReceiptManager, Settings.PartnerId, SessionId,
-                        Settings.MerchantId, Settings.TerminalId, sectorNode, timeZone, PaymentInstant.PAYBEFORE,
+            var status =SendRequest(TruServiceMessageFactory.AssembleRequestActivate(new RequestParams(Settings, SessionId), Device, ReceiptManager, sectorNode, timeZone, PaymentInstant.PAYBEFORE,
                         emailAddress, password, address, mobileNumber, merchantName, businessName));
             var responseStatus = status.Item as ResponseStatus;
             if (responseStatus != null)
@@ -98,8 +95,7 @@ namespace TruRating.TruModule.V2xx
         }
         public bool Activate(string registrationCode)
         {
-            var status = SendRequest(TruServiceMessageFactory.AssembleRequestActivate(Device, ReceiptManager, Settings.PartnerId, SessionId,
-                       Settings.MerchantId, Settings.TerminalId, registrationCode));
+            var status = SendRequest(TruServiceMessageFactory.AssembleRequestActivate(new RequestParams(Settings, SessionId), Device, ReceiptManager, registrationCode));
             var responseStatus = status.Item as ResponseStatus;
             if (responseStatus != null)
             {
@@ -108,5 +104,7 @@ namespace TruRating.TruModule.V2xx
             }
             return Settings.IsActivated;
         }
+
+        
     }
 }

@@ -37,19 +37,19 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Messages
         [TestMethod]
         public void ItShouldAssembleRequestQuery()
         {
-            Assert.IsNotNull(Sut.AssemblyRequestQuery(MockOf<IDevice>(), MockOf<IReceiptManager>(), "", "", "", "", true));
+            Assert.IsNotNull(Sut.AssemblyRequestQuery(MockOf<RequestParams>(), MockOf<IDevice>(), MockOf<IReceiptManager>(), true));
         }
 
         [TestMethod]
         public void ItShouldAssembleRequestQuestion()
         {
-            Assert.IsNotNull(Sut.AssembleRequestQuestion(MockOf<IDevice>(), MockOf<IReceiptManager>(), "", "", "", "",Trigger.CARDINSERTION));
+            Assert.IsNotNull(Sut.AssembleRequestQuestion(MockOf<RequestParams>(), MockOf<IDevice>(), MockOf<IReceiptManager>(),Trigger.CARDINSERTION));
         }
 
         [TestMethod]
         public void ItShouldAssembleRequestTransaction()
         {
-            Assert.IsNotNull(Sut.AssembleRequestTransaction( "", "", "", "", new RequestTransaction()));
+            Assert.IsNotNull(Sut.AssembleRequestTransaction(MockOf<RequestParams>(), new RequestTransaction()));
         }
 
         [TestMethod]
@@ -61,25 +61,25 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.Messages
         [TestMethod]
         public void ItShouldAssembleRequestPosEventList()
         {
-            Assert.IsNotNull(Sut.AssembleRequestPosEvent(new PosParams(), new RequestPosEventList()));
+            Assert.IsNotNull(Sut.AssembleRequestPosEventList(MockOf<RequestParams>(), new RequestPosEventList()));
         }
 
         [TestMethod]
         public void ItShouldAssembleRequestLookup()
         {
-            Assert.IsNotNull(Sut.AssembleRequestLookup(MockOf<IDevice>(), MockOf<IReceiptManager>(), "", "", "", "",LookupName.SECTORNODE));
+            Assert.IsNotNull(Sut.AssembleRequestLookup(MockOf<RequestParams>(), MockOf<IDevice>(), MockOf<IReceiptManager>(), LookupName.SECTORNODE));
         }
 
         [TestMethod]
         public void ItShouldAssembleRequestActivateForm()
         {
-            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<IDevice>(), MockOf<IReceiptManager>(), "", "", "", "",0,"",PaymentInstant.PAYBEFORE,"","","","","",""));
+            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<RequestParams>(), MockOf<IDevice>(), MockOf<IReceiptManager>(),0,"",PaymentInstant.PAYBEFORE,"","","","","",""));
         }
 
         [TestMethod]
         public void ItShouldAssembleRequestActivateCode()
         {
-            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<IDevice>(), MockOf<IReceiptManager>(), "", "", "", "",""));
+            Assert.IsNotNull(Sut.AssembleRequestActivate(MockOf<RequestParams>(), MockOf<IDevice>(), MockOf<IReceiptManager>(),""));
         }
     }
 }

@@ -54,9 +54,8 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests.ActivateW
             TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
             TruServiceMessageFactory.Stub(
                 x =>
-                    x.AssembleRequestActivate(Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,
-                        Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything,
-                        Arg<string>.Is.Anything, Arg<int>.Is.Anything, Arg<string>.Is.Anything,
+                    x.AssembleRequestActivate(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,
+                        Arg<int>.Is.Anything, Arg<string>.Is.Anything,
                         Arg<PaymentInstant>.Is.Anything,Arg<string>.Is.Anything, Arg<string>.Is.Anything, 
                         Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, 
                         Arg<string>.Is.Anything)).Return(Request);

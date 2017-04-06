@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="Device\ILogger.cs" />
     <Compile Include="Device\IReceiptManager.cs" />
+    <Compile Include="ITruModuleSemiIntegrated.cs" />
+    <Compile Include="TruModuleSemiIntegrated.cs" />
     <Compile Include="Util\DateTimeProvider.cs" />
     <Compile Include="Util\ExtensionMethods.cs" />
     <Compile Include="Util\Func.cs" />

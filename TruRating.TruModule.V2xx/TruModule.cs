@@ -68,8 +68,7 @@ namespace TruRating.TruModule.V2xx
                 return Settings.IsActivated;
             }
             var status =
-                _truServiceClient.Send(TruServiceMessageFactory.AssemblyRequestQuery(Device,ReceiptManager, Settings.PartnerId,
-                    Settings.MerchantId, Settings.TerminalId, SessionId, bypassTruServiceCache));
+                _truServiceClient.Send(TruServiceMessageFactory.AssemblyRequestQuery(new RequestParams(Settings,SessionId),  Device,ReceiptManager, bypassTruServiceCache));
 
             var responseStatus = status != null ? status.Item as ResponseStatus : null;
             if (responseStatus != null)

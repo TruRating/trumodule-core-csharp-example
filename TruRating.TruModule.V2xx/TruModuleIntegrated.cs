@@ -40,8 +40,7 @@ namespace TruRating.TruModule.V2xx
         {
             if (IsActivated(bypassTruServiceCache:false))
             {
-                var request = TruServiceMessageFactory.AssembleRequestTransaction(posParams.PartnerId,
-                    posParams.SessionId, posParams.MerchantId, posParams.TerminalId, requestTransaction);
+                var request = TruServiceMessageFactory.AssembleRequestTransaction(new RequestParams(posParams), requestTransaction);
                 SendRequest(request);
             }
         }
@@ -62,7 +61,7 @@ namespace TruRating.TruModule.V2xx
                         Settings.Trigger = (item as ResponseEventQuestion).Trigger;
                         if (Settings.Trigger == Trigger.DWELLTIME || Settings.Trigger == Trigger.DWELLTIMEEXTEND)
                         {
-                            var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager,posParams.PartnerId, posParams.MerchantId, posParams.TerminalId, posParams.SessionId, Settings.Trigger);
+                            var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(posParams), Device,ReceiptManager, Settings.Trigger);
                             DoRating(questionRequest);
                         }
                     }
@@ -75,18 +74,7 @@ namespace TruRating.TruModule.V2xx
             }
         }
 
-        public void SendPosEventList(PosParams posParams, RequestPosEventList requestPosEventList)
-        {
-            if (IsActivated(bypassTruServiceCache:false))
-            {
-                TaskHelpers.BeginTask(() =>
-                {
-                    var request = TruServiceMessageFactory.AssembleRequestPosEvent(posParams, requestPosEventList);
-                    SendRequest(request);
-                    return 1;
-                });
-            }
-        }
+       
 
         public void InitiatePayment(PosParams posParams)
         {
@@ -94,8 +82,7 @@ namespace TruRating.TruModule.V2xx
             {
                 if (Settings.Trigger == Trigger.PAYMENTREQUEST)
                 {
-                    var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(Device,ReceiptManager, posParams.PartnerId,
-                        posParams.MerchantId, posParams.TerminalId, posParams.SessionId, Settings.Trigger);
+                    var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(posParams),  Device,ReceiptManager, Settings.Trigger);
                     DoRating(questionRequest);
                 }
                 else

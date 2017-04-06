@@ -20,26 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using TruRating.Dto.TruService.V220;
-using TruRating.Dto.TruService.V2xx;
 using TruRating.TruModule.V2xx.Device;
 
 namespace TruRating.TruModule.V2xx.Messages
 {
     public class TruServiceMessageFactory : ITruServiceMessageFactory
     {
-        public Request AssemblyRequestQuery(IDevice device, IReceiptManager receiptManager,
-            string partnerId,
-            string merchantId,
-            string terminalId,
-            string sessionId,
+        public Request AssemblyRequestQuery(RequestParams requestParams, IDevice device, IReceiptManager receiptManager,
             bool force)
         {
             var result = new Request
             {
-                PartnerId = partnerId,
-                MerchantId = merchantId,
-                TerminalId = terminalId,
-                SessionId = sessionId,
+                PartnerId = requestParams.PartnerId,
+                MerchantId = requestParams.MerchantId,
+                TerminalId = requestParams.TerminalId,
+                SessionId = requestParams.SessionId,
                 Item = new RequestQuery
                 {
                     Device = new RequestDevice
@@ -73,20 +68,16 @@ namespace TruRating.TruModule.V2xx.Messages
             return result;
         }
 
-        public Request AssembleRequestQuestion(
+        public Request AssembleRequestQuestion(RequestParams requestParams,
             IDevice device, IReceiptManager receiptManager,
-            string partnerId,
-            string merchantId,
-            string terminalId,
-            string sessionId,
             Trigger trigger)
         {
             var result = new Request
             {
-                PartnerId = partnerId,
-                MerchantId = merchantId,
-                TerminalId = terminalId,
-                SessionId = sessionId,
+                PartnerId = requestParams.PartnerId,
+                MerchantId = requestParams.MerchantId,
+                TerminalId = requestParams.TerminalId,
+                SessionId = requestParams.SessionId,
                 Item = new RequestQuestion
                 {
                     Trigger = trigger,
@@ -106,15 +97,14 @@ namespace TruRating.TruModule.V2xx.Messages
             return result;
         }
 
-        public Request AssembleRequestTransaction(string partnerId, string sessionId, string merchantId,
-            string terminalId, RequestTransaction requestTransaction)
+        public Request AssembleRequestTransaction(RequestParams requestParams, RequestTransaction requestTransaction)
         {
             var result = new Request
             {
-                PartnerId = partnerId,
-                MerchantId = merchantId,
-                TerminalId = terminalId,
-                SessionId = sessionId,
+                PartnerId = requestParams.PartnerId,
+                MerchantId = requestParams.MerchantId,
+                TerminalId = requestParams.TerminalId,
+                SessionId = requestParams.SessionId,
                 Item = requestTransaction
             };
             return result;
@@ -133,28 +123,27 @@ namespace TruRating.TruModule.V2xx.Messages
             return result;
         }
 
-        public Request AssembleRequestPosEvent(PosParams posParams, RequestPosEventList requestPosEventList)
+        public Request AssembleRequestPosEventList(RequestParams requestParams, RequestPosEventList requestPosEventList)
         {
             var result = new Request
             {
-                PartnerId = posParams.PartnerId,
-                MerchantId = posParams.MerchantId,
-                TerminalId = posParams.TerminalId,
-                SessionId = posParams.SessionId,
+                PartnerId = requestParams.PartnerId,
+                MerchantId = requestParams.MerchantId,
+                TerminalId = requestParams.TerminalId,
+                SessionId = requestParams.SessionId,
                 Item = requestPosEventList
             };
             return result;
         }
 
-        public Request AssembleRequestLookup(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
-            string sessionId, LookupName lookupName)
+        public Request AssembleRequestLookup(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, LookupName lookupName)
         {
             var result = new Request
             {
-                PartnerId = partnerId,
-                MerchantId = merchantId,
-                TerminalId = terminalId,
-                SessionId = sessionId,
+                PartnerId = requestParams.PartnerId,
+                MerchantId = requestParams.MerchantId,
+                TerminalId = requestParams.TerminalId,
+                SessionId = requestParams.SessionId,
                 Item = new RequestLookup
                 {
                     Name = lookupName,
@@ -174,16 +163,15 @@ namespace TruRating.TruModule.V2xx.Messages
             return result;
         }
 
-        public Request AssembleRequestActivate(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
-            string sessionId, int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress,
+        public Request AssembleRequestActivate(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress,
             string password, string address, string mobileNumber, string merchantName, string businessName)
         {
             var result = new Request
             {
-                PartnerId = partnerId,
-                MerchantId = merchantId,
-                TerminalId = terminalId,
-                SessionId = sessionId,
+                PartnerId = requestParams.PartnerId,
+                MerchantId = requestParams.MerchantId,
+                TerminalId = requestParams.TerminalId,
+                SessionId = requestParams.SessionId,
                 Item = new RequestActivate
                 {
                     Device = new RequestDevice
@@ -214,15 +202,14 @@ namespace TruRating.TruModule.V2xx.Messages
             return result;
         }
 
-        public Request AssembleRequestActivate(IDevice device, IReceiptManager receiptManager, string partnerId, string merchantId, string terminalId,
-            string sessionId, string registrationCode)
+        public Request AssembleRequestActivate(RequestParams requestParams, IDevice device, IReceiptManager receiptManager,string registrationCode)
         {
             var result = new Request
             {
-                PartnerId = partnerId,
-                MerchantId = merchantId,
-                TerminalId = terminalId,
-                SessionId = sessionId,
+                PartnerId = requestParams.PartnerId,
+                MerchantId = requestParams.MerchantId,
+                TerminalId = requestParams.TerminalId,
+                SessionId = requestParams.SessionId,
                 Item = new RequestActivate
                 {
                     Device = new RequestDevice

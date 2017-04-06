@@ -51,8 +51,8 @@
     <Compile Include="Environment\Settings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UseCase\IntegratedPosEventListUseCase.cs" />
-    <Compile Include="UseCase\IntegratedPosEventUseCase.cs" />
+    <Compile Include="UseCase\SemiIntegratedUseCase.cs" />
+    <Compile Include="UseCase\IntegratedUseCase.cs" />
     <Compile Include="UseCase\IUseCase.cs" />
     <Compile Include="UseCase\UseCaseBase.cs" />
     <Compile Include="UseCase\UseCaseFactory.cs" />

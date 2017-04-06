@@ -19,12 +19,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace TruRating.TruModule.V2xx.ConsoleRunner.Environment
+using TruRating.Dto.TruService.V220;
+
+namespace TruRating.TruModule.V2xx
 {
-    public enum PosIntegration
+    public interface ITruModuleSemiIntegrated : ITruModuleStandalone
     {
-        None = 0,
-        Integrated = 1,
-        Semi = 2
+        /// <summary>
+        /// Capture any available POS Data, called after a call to DoRating but before the transaction result has been returned by the payment application
+        /// </summary>
+        /// <param name="requestPosEventList"></param>
+        void SendBatchedPosEvents(RequestPosEventList requestPosEventList);
     }
 }

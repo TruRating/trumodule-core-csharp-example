@@ -24,6 +24,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Device;
+using TruRating.TruModule.V2xx.Messages;
 using TruRating.TruModule.V2xx.Settings;
 
 namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
@@ -41,7 +42,7 @@ namespace TruRating.TruModule.V2xx.Tests.Unit.TruModuleStandaloneTests
         [TestMethod]
         public void ItShouldAssembleRequestQuestion()
         {
-            TruServiceMessageFactory.AssertWasCalled(x=> x.AssembleRequestQuestion(Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything,Arg<string>.Is.Anything, Arg<Trigger>.Is.Anything));
+            TruServiceMessageFactory.AssertWasCalled(x=> x.AssembleRequestQuestion(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything, Arg<Trigger>.Is.Anything));
         }
 
         public WhenDoingARatingAndActive() : base(Trigger.DWELLTIMEEXTEND)

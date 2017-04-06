@@ -30,8 +30,8 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.UseCase
         internal static List<IUseCase> Get(IConsoleIo consoleIo, ConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
         {
             var standaloneUseCase = new StandaloneUseCase(consoleIo, consoleSettings, device, receiptManager);
-            var integratedPosEventUseCase = new IntegratedPosEventUseCase(consoleIo, consoleSettings, device, receiptManager);
-            var integratedPosEventListUseCase = new IntegratedPosEventListUseCase(consoleIo, consoleSettings, device, receiptManager);
+            var integratedPosEventUseCase = new IntegratedUseCase(consoleIo, consoleSettings, device, receiptManager);
+            var integratedPosEventListUseCase = new SemiIntegratedUseCase(consoleIo, consoleSettings, device, receiptManager);
 
             var modules = new List<IUseCase>
             {
