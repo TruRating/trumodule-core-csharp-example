@@ -41,9 +41,16 @@ namespace TruRating.TruModule.V2xx.ConsoleRunner.Environment
                 " consoleSettings ".PadRight((Console.WindowWidth)/2, '=').PadLeft((Console.WindowWidth) - 1, '='));
             logger.WriteLine(ConsoleColor.Yellow,
                 System.Environment.NewLine +
-                "Override any of these consoleSettings from the configuration file - required consoleSettings will require user input");
+                "- Override any of these consoleSettings from the configuration file - required consoleSettings will require user input");
             logger.WriteLine(ConsoleColor.Yellow,
-                "Press 's' anytime after the scenario has started print all consoleSettings." +
+                
+                "- You will find your PartnerId, MerchantId and TransportKey under your account in https://developer.trurating.com");
+            logger.WriteLine(ConsoleColor.Yellow,
+                
+                "- Use any value for TerminalId" +
+                System.Environment.NewLine);
+            logger.WriteLine(ConsoleColor.Yellow,
+                "- Press 's' anytime after the scenario has started print all consoleSettings." +
                 System.Environment.NewLine);
             var errors = new List<string>();
             KeyPressReader.Stop();
