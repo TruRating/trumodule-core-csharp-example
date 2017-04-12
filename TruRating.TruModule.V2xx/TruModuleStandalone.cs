@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Generic;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Messages;
@@ -34,77 +33,116 @@ namespace TruRating.TruModule.V2xx
     {
         public TruModuleStandalone(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger,
             ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
-            : base(device,receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
+            : base(device, receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
         {
         }
 
         public void DoRating()
         {
-            SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
-            if (IsActivated(bypassTruServiceCache:false))
+            try
             {
-                var request = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(Settings,SessionId),  Device,ReceiptManager, Settings.Trigger);
-                DoRating(request);
+                SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
+                if (IsActivated(bypassTruServiceCache: false))
+                {
+                    var request = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(Settings, SessionId), Device, ReceiptManager, Settings.Trigger);
+                    DoRating(request);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Error in DoRating");
             }
         }
 
         public void SendTransaction(RequestTransaction requestTransaction)
         {
-            if (IsActivated(bypassTruServiceCache:false))
+            try
             {
-                var request = TruServiceMessageFactory.AssembleRequestTransaction(new RequestParams(Settings, SessionId), requestTransaction);
-                SendRequest(request);
+                if (IsActivated(bypassTruServiceCache: false))
+                {
+                    var request = TruServiceMessageFactory.AssembleRequestTransaction(new RequestParams(Settings, SessionId), requestTransaction);
+                    SendRequest(request);
+                }
             }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Error in SendTransaction");
+            }
+
         }
 
         public LookupOption[] GetLookups(LookupName lookupName)
         {
-            var request = TruServiceMessageFactory.AssembleRequestLookup(new RequestParams(Settings, SessionId), Device, ReceiptManager, lookupName);
-
-            var responseLookup = SendRequest(request);
-
-            if (responseLookup == null)
-                return null;
-
-            var responseStatus = responseLookup.Item as ResponseLookup;
-            if (responseStatus != null)
+            try
             {
-                foreach (var language in responseStatus.Language)
+                var request = TruServiceMessageFactory.AssembleRequestLookup(new RequestParams(Settings, SessionId), Device, ReceiptManager, lookupName);
+
+                var responseLookup = SendRequest(request);
+
+                if (responseLookup == null)
+                    return null;
+
+                var responseStatus = responseLookup.Item as ResponseLookup;
+                if (responseStatus != null)
                 {
-                    if (language.Rfc1766 == Device.GetCurrentLanguage())
+                    foreach (var language in responseStatus.Language)
                     {
-                        return language.Option;
+                        if (language.Rfc1766 == Device.GetCurrentLanguage())
+                        {
+                            return language.Option;
+                        }
                     }
                 }
             }
-
+            catch (Exception e)
+            {
+                Logger.Error(e, "Error in GetLookups");
+            }
             return null;
         }
-        
+
         public bool Activate(int sectorNode, string timeZone, PaymentInstant paymentInstant, string emailAddress, string password, string address, string mobileNumber, string merchantName, string businessName)
         {
-            var status =SendRequest(TruServiceMessageFactory.AssembleRequestActivate(new RequestParams(Settings, SessionId), Device, ReceiptManager, sectorNode, timeZone, PaymentInstant.PAYBEFORE,
-                        emailAddress, password, address, mobileNumber, merchantName, businessName));
-            var responseStatus = status.Item as ResponseStatus;
-            if (responseStatus != null)
+            try
             {
-                Settings.ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(responseStatus.TimeToLive);
-                Settings.IsActivated = responseStatus.IsActive;
+                var status =
+                    SendRequest(TruServiceMessageFactory.AssembleRequestActivate(
+                        new RequestParams(Settings, SessionId), Device, ReceiptManager, sectorNode, timeZone,
+                        PaymentInstant.PAYBEFORE,
+                        emailAddress, password, address, mobileNumber, merchantName, businessName));
+                var responseStatus = status.Item as ResponseStatus;
+                if (responseStatus != null)
+                {
+                    Settings.ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(responseStatus.TimeToLive);
+                    Settings.IsActivated = responseStatus.IsActive;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Error in Activate with reg form");
             }
             return Settings.IsActivated;
+
         }
         public bool Activate(string registrationCode)
         {
-            var status = SendRequest(TruServiceMessageFactory.AssembleRequestActivate(new RequestParams(Settings, SessionId), Device, ReceiptManager, registrationCode));
-            var responseStatus = status.Item as ResponseStatus;
-            if (responseStatus != null)
+            try
             {
-                Settings.ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(responseStatus.TimeToLive);
-                Settings.IsActivated = responseStatus.IsActive;
+                var status = SendRequest(TruServiceMessageFactory.AssembleRequestActivate(new RequestParams(Settings, SessionId), Device, ReceiptManager, registrationCode));
+                var responseStatus = status.Item as ResponseStatus;
+                if (responseStatus != null)
+                {
+                    Settings.ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(responseStatus.TimeToLive);
+                    Settings.IsActivated = responseStatus.IsActive;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Error in Activate with reg code");
             }
             return Settings.IsActivated;
         }
 
-        
+
     }
 }

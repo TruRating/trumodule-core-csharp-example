@@ -19,6 +19,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
+using System;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Messages;
@@ -34,11 +36,19 @@ namespace TruRating.TruModule.V2xx
         }
         public void SendBatchedPosEvents(RequestPosEventList requestPosEventList)
         {
-            if (IsActivated(bypassTruServiceCache: false))
+            try
             {
-                var request = TruServiceMessageFactory.AssembleRequestPosEventList(new RequestParams(Settings, SessionId), requestPosEventList);
-                SendRequest(request);
+                if (IsActivated(bypassTruServiceCache: false))
+                {
+                    var request = TruServiceMessageFactory.AssembleRequestPosEventList(new RequestParams(Settings, SessionId), requestPosEventList);
+                    SendRequest(request);
+                }
             }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Error in SendBatchedPosEvents");
+            }
+
         }
     }
 }

@@ -19,6 +19,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
+using System;
 using System.Diagnostics;
 using System.Threading;
 using TruRating.Dto.TruService.V220;
@@ -33,7 +35,7 @@ namespace TruRating.TruModule.V2xx
     public abstract class TruModule
     {
         private readonly AutoResetEvent _dwellTimeExtendAutoResetEvent = new AutoResetEvent(false);
-        private readonly ILogger _logger;
+        protected readonly ILogger Logger;
         private readonly ITruServiceClient _truServiceClient;
         protected readonly IDevice Device;
         protected readonly IReceiptManager ReceiptManager;
@@ -48,56 +50,69 @@ namespace TruRating.TruModule.V2xx
         {
             Device = device;
             _truServiceClient = truServiceClient;
-            _logger = logger;
+            Logger = logger;
             TruServiceMessageFactory = truServiceMessageFactory;
             Settings = settings;
             ReceiptManager = receiptManager;
             SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
-            IsActivated(bypassTruServiceCache:true);
+            IsActivated(bypassTruServiceCache: true);
         }
 
         protected string SessionId { get; set; }
 
-       
         public bool IsActivated(bool bypassTruServiceCache)
         {
-            if (Settings.ActivationRecheck > DateTimeProvider.UtcNow && !bypassTruServiceCache)
+            try
             {
-                _logger.Debug("Not querying TruService status, next check at {0}. IsActive is {1}",
-                    Settings.ActivationRecheck, Settings.IsActivated);
-                return Settings.IsActivated;
-            }
-            var status =
-                _truServiceClient.Send(TruServiceMessageFactory.AssemblyRequestQuery(new RequestParams(Settings,SessionId),  Device,ReceiptManager, bypassTruServiceCache));
+                if (Settings.ActivationRecheck > DateTimeProvider.UtcNow && !bypassTruServiceCache)
+                {
+                    Logger.Debug("Not querying TruService status, next check at {0}. IsActive is {1}",
+                        Settings.ActivationRecheck, Settings.IsActivated);
+                    return Settings.IsActivated;
+                }
+                var status =
+                    _truServiceClient.Send(TruServiceMessageFactory.AssemblyRequestQuery(new RequestParams(Settings, SessionId), Device, ReceiptManager, bypassTruServiceCache));
 
-            var responseStatus = status != null ? status.Item as ResponseStatus : null;
-            if (responseStatus != null)
+                var responseStatus = status != null ? status.Item as ResponseStatus : null;
+                if (responseStatus != null)
+                {
+                    Settings.ActivationRecheck = DateTimeProvider.UtcNow.AddSeconds(responseStatus.TimeToLive);
+                    Settings.IsActivated = responseStatus.IsActive;
+                }
+            }
+            catch (Exception e)
             {
-                Settings.ActivationRecheck = DateTimeProvider.UtcNow.AddSeconds(responseStatus.TimeToLive);
-                Settings.IsActivated = responseStatus.IsActive;
+                Logger.Error(e, "Error in IsActivated");
             }
             return Settings.IsActivated;
         }
 
         public void CancelRating()
         {
-            _isCancelled=true; //Set flag to show question has been cancelled
-            if (_isQuestionRunning)
+            try
             {
-                if (Settings.Trigger == Trigger.DWELLTIMEEXTEND)
+                _isCancelled = true; //Set flag to show question has been cancelled
+                if (_isQuestionRunning)
                 {
-                    _logger.Debug("Waiting {0} to cancel rating", _dwellTimeExtendMs);
-                    _dwellTimeExtendAutoResetEvent.WaitOne(_dwellTimeExtendMs); //Wait for dwelltime extend to finish
-                    if (_isQuestionRunning) //recheck _isQuestionRunning because customer may have provided rating
+                    if (Settings.Trigger == Trigger.DWELLTIMEEXTEND)
+                    {
+                        Logger.Debug("Waiting {0} to cancel rating", _dwellTimeExtendMs);
+                        _dwellTimeExtendAutoResetEvent.WaitOne(_dwellTimeExtendMs); //Wait for dwelltime extend to finish
+                        if (_isQuestionRunning) //recheck _isQuestionRunning because customer may have provided rating
+                        {
+                            Device.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
+                        }
+                    }
+                    else
                     {
                         Device.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
                     }
+                    Logger.Debug("Cancelled rating");
                 }
-                else
-                {
-                    Device.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
-                }
-                _logger.Debug("Cancelled rating");
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Error in CancelRating");
             }
         }
 
@@ -108,57 +123,64 @@ namespace TruRating.TruModule.V2xx
 
         protected void DoRating(Request request)
         {
-            _isCancelled=false;
-            if (!(request.Item is RequestQuestion))
+            try
             {
-                _logger.Info("Request was not a question");
-                return;
-            }
-            Settings.Trigger = ((RequestQuestion) request.Item).Trigger;
-            var response = _truServiceClient.Send(request);
-            if (response == null)
-            {
-                _logger.Info("Response was null");
-                return;
-            }
-            ResponseQuestion question;
-            ResponseReceipt[] receipts;
-            ResponseScreen[] screens;
-            var rating = new RequestRating //Have a question, construct the basic rating record
-            {
-                DateTime = DateTimeProvider.UtcNow,
-                Rfc1766 = Device.GetCurrentLanguage(),
-                Value = -4 //initial state is "cannot show question"
-            };
-            //Look through the response for a valid question
-            ResponseScreen responseScreen = null;
-            if (QuestionAvailable(response, Device.GetCurrentLanguage(), out question, out receipts, out screens))
-            {
-                var sw = new Stopwatch();
-                sw.Start();
-                var trigger = ((RequestQuestion) request.Item).Trigger; //Grab the trigger from the question request
-                var timeoutMs = question.TimeoutMs;
-                if (trigger == Trigger.DWELLTIMEEXTEND)
+                _isCancelled = false;
+                if (!(request.Item is RequestQuestion))
                 {
-                    timeoutMs = int.MaxValue;
-                    _dwellTimeExtendMs = question.TimeoutMs;
+                    Logger.Info("Request was not a question");
+                    return;
                 }
-                _isQuestionRunning=true;
-                rating.Value = Device.Display1AQ1KR(question.Value, timeoutMs);
-                //Wait for the user input for the specified period
-                _isQuestionRunning=false;
-                _dwellTimeExtendAutoResetEvent.Set();
+                Settings.Trigger = ((RequestQuestion)request.Item).Trigger;
+                var response = _truServiceClient.Send(request);
+                if (response == null)
+                {
+                    Logger.Info("Response was null");
+                    return;
+                }
+                ResponseQuestion question;
+                ResponseReceipt[] receipts;
+                ResponseScreen[] screens;
+                var rating = new RequestRating //Have a question, construct the basic rating record
+                {
+                    DateTime = DateTimeProvider.UtcNow,
+                    Rfc1766 = Device.GetCurrentLanguage(),
+                    Value = -4 //initial state is "cannot show question"
+                };
+                //Look through the response for a valid question
+                ResponseScreen responseScreen = null;
+                if (QuestionAvailable(response, Device.GetCurrentLanguage(), out question, out receipts, out screens))
+                {
+                    var sw = new Stopwatch();
+                    sw.Start();
+                    var trigger = ((RequestQuestion)request.Item).Trigger; //Grab the trigger from the question request
+                    var timeoutMs = question.TimeoutMs;
+                    if (trigger == Trigger.DWELLTIMEEXTEND)
+                    {
+                        timeoutMs = int.MaxValue;
+                        _dwellTimeExtendMs = question.TimeoutMs;
+                    }
+                    _isQuestionRunning = true;
+                    rating.Value = Device.Display1AQ1KR(question.Value, timeoutMs);
+                    //Wait for the user input for the specified period
+                    _isQuestionRunning = false;
+                    _dwellTimeExtendAutoResetEvent.Set();
                     //Signal to CancelRating that question has been answered when called in another thread.
-                sw.Stop();
-                rating.ResponseTimeMs = (int) sw.ElapsedMilliseconds; //Set the response time
-                var responseReceipt = GetResponseReceipt(receipts, rating.Value < 0 ? When.NOTRATED : When.RATED);
-                responseScreen = GetResponseScreen(screens, rating.Value < 0 ? When.NOTRATED : When.RATED);
-                ReceiptManager.AppendReceipt(responseReceipt);
+                    sw.Stop();
+                    rating.ResponseTimeMs = (int)sw.ElapsedMilliseconds; //Set the response time
+                    var responseReceipt = GetResponseReceipt(receipts, rating.Value < 0 ? When.NOTRATED : When.RATED);
+                    responseScreen = GetResponseScreen(screens, rating.Value < 0 ? When.NOTRATED : When.RATED);
+                    ReceiptManager.AppendReceipt(responseReceipt);
+                }
+                _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));
+                if (responseScreen != null && (!_isCancelled || responseScreen.Priority))
+                {
+                    Device.DisplayMessage(responseScreen.Value, responseScreen.TimeoutMs);
+                }
             }
-            _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));
-            if ( responseScreen != null && (!_isCancelled || responseScreen.Priority))
+            catch (Exception e)
             {
-                Device.DisplayMessage(responseScreen.Value, responseScreen.TimeoutMs);
+                Logger.Error(e, "Error in DoRating");
             }
         }
 
@@ -176,7 +198,7 @@ namespace TruRating.TruModule.V2xx
                 var responseDisplay = item;
                 foreach (var responseLanguage in responseDisplay.Language)
                 {
-                    if (responseLanguage.Rfc1766 == language && responseLanguage.Question!=null)
+                    if (responseLanguage.Rfc1766 == language && responseLanguage.Question != null)
                     {
                         responseQuestion = responseLanguage.Question;
                         responseReceipts = responseLanguage.Receipt;

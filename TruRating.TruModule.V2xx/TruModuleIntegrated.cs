@@ -19,6 +19,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
+using System;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.V2xx.Device;
 using TruRating.TruModule.V2xx.Messages;
@@ -32,63 +34,91 @@ namespace TruRating.TruModule.V2xx
     {
         public TruModuleIntegrated(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger,
             ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
-            : base(device,receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
+            : base(device, receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
         {
         }
 
         public void SendTransaction(PosParams posParams, RequestTransaction requestTransaction)
         {
-            if (IsActivated(bypassTruServiceCache:false))
+            try
             {
-                var request = TruServiceMessageFactory.AssembleRequestTransaction(new RequestParams(posParams), requestTransaction);
-                SendRequest(request);
+                if (IsActivated(bypassTruServiceCache: false))
+                {
+                    var request = TruServiceMessageFactory.AssembleRequestTransaction(new RequestParams(posParams), requestTransaction);
+                    SendRequest(request);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Error in SendTransaction");
             }
         }
 
         public void SendPosEvent(PosParams posParams, RequestPosEvent requestPosEvent)
         {
-            if (IsActivated(bypassTruServiceCache:false))
+            try
             {
-                TaskHelpers.BeginTask(() =>
+                if (IsActivated(bypassTruServiceCache: false))
                 {
-                    var request = TruServiceMessageFactory.AssembleRequestPosEvent(posParams, requestPosEvent);
-                    var response = SendRequest(request);
-                    var item = response != null && response.Item is ResponseEvent
-                        ? ((ResponseEvent) response.Item).Item
-                        : null;
-                    if (item is ResponseEventQuestion)
+                    TaskHelpers.BeginTask(() =>
                     {
-                        Settings.Trigger = (item as ResponseEventQuestion).Trigger;
-                        if (Settings.Trigger == Trigger.DWELLTIME || Settings.Trigger == Trigger.DWELLTIMEEXTEND)
+                        try
                         {
-                            var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(posParams), Device,ReceiptManager, Settings.Trigger);
-                            DoRating(questionRequest);
+                            var request = TruServiceMessageFactory.AssembleRequestPosEvent(posParams, requestPosEvent);
+                            var response = SendRequest(request);
+                            var item = response != null && response.Item is ResponseEvent
+                                ? ((ResponseEvent)response.Item).Item
+                                : null;
+                            if (item is ResponseEventQuestion)
+                            {
+                                Settings.Trigger = (item as ResponseEventQuestion).Trigger;
+                                if (Settings.Trigger == Trigger.DWELLTIME || Settings.Trigger == Trigger.DWELLTIMEEXTEND)
+                                {
+                                    var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(posParams), Device, ReceiptManager, Settings.Trigger);
+                                    DoRating(questionRequest);
+                                }
+                            }
+                            else if (item is ResponseEventClear)
+                            {
+                                CancelRating();
+                            }
                         }
-                    }
-                    else if (item is ResponseEventClear)
-                    {
-                        CancelRating();
-                    }
-                    return 1;
-                });
+                        catch (Exception e)
+                        {
+                            Logger.Error(e, "Error in SendPosEvent Task");
+                        }
+                        return 1;
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Error in SendPosevent");
             }
         }
 
-       
+
 
         public void InitiatePayment(PosParams posParams)
         {
-            if (IsActivated(bypassTruServiceCache:false))
+            try
             {
-                if (Settings.Trigger == Trigger.PAYMENTREQUEST)
+                if (IsActivated(bypassTruServiceCache: false))
                 {
-                    var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(posParams),  Device,ReceiptManager, Settings.Trigger);
-                    DoRating(questionRequest);
+                    if (Settings.Trigger == Trigger.PAYMENTREQUEST)
+                    {
+                        var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(posParams), Device, ReceiptManager, Settings.Trigger);
+                        DoRating(questionRequest);
+                    }
+                    else
+                    {
+                        CancelRating();
+                    }
                 }
-                else
-                {
-                    CancelRating();
-                }
+            }
+            catch(Exception e)
+            {
+                Logger.Error(e, "Error in InitiatePayment");
             }
         }
     }
