@@ -50,7 +50,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.ActivateWithMe
         [TestMethod]
         public void ActivationReCheckTimeShouldBeSet()
         {
-            Assert.AreEqual(DateTimeProvider.UtcNow.AddMinutes(ActivationReCheckTimeMinutes), Settings.ActivationRecheck);
+            Assert.AreEqual(DateTimeProvider.UtcNow.AddMinutes(ActivationReCheckTimeMinutes), Sut.ActivationRecheck);
 
         }
     }

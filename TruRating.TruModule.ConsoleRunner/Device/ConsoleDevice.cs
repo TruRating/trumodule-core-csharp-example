@@ -44,7 +44,8 @@ namespace TruRating.TruModule.ConsoleRunner.Device
             _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
         }
 
-        
+       
+
 
         public RequestPeripheral GetScreenCapabilities()
         {
@@ -113,8 +114,7 @@ namespace TruRating.TruModule.ConsoleRunner.Device
         {
             return null;
         }
-
-        public void DisplayMessage(string value, int timeoutMilliseconds)
+        public void DisplayAcknowledgement(string value, int timeoutMilliseconds, bool hasRated, MessageContext messageContext)
         {
             _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
             _logger.WriteLine(ConsoleColor.Gray, "DISPLAY: waiting {0} ms", timeoutMilliseconds);

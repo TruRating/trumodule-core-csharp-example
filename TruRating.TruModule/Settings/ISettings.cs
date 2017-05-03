@@ -19,21 +19,42 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 using TruRating.Dto.TruService.V220;
 
 namespace TruRating.TruModule.Settings
 {
+    /// <summary>
+    /// Contains the initial setting values required by TruModule to communicate with TruService
+    /// </summary>
     public interface ISettings
     {
+        /// <summary>
+        /// Identifies the Partner, specified by TruRating
+        /// </summary>
         string PartnerId { get; set; }
-        string TruServiceUrl { get; set; }
-        string TransportKey { get; set; }
-        int HttpTimeoutMs { get; }
+        /// <summary>
+        /// Identifies the physical merchant outlet, known to both the Partner and TruRating, specified by the Partner
+        /// </summary>
         string MerchantId { get; set; }
+        /// <summary>
+        /// Identifies the payment device, specified by the Partner
+        /// </summary>
         string TerminalId { get; set; }
-        DateTime ActivationRecheck { get; set; }
-        bool IsActivated { get; set; }
+        /// <summary>
+        /// Specifies the URL of TruService, in RFCXXXX format {protocol}://{uri}:{port}/api/servicemessage
+        /// </summary>
+        string TruServiceUrl { get; set; }
+        /// <summary>
+        /// Specifies the TransportKey used to generate a MAC header for authentication by TruService
+        /// </summary>
+        string TransportKey { get; set; }
+        /// <summary>
+        /// Specifies the timeout in milliseconds to wait for a response from TruService
+        /// </summary>
+        int HttpTimeoutMs { get; }
+        /// <summary>
+        /// Specifies the Trigger point for the TruRating question.  May be reconfigured dynamically by TruService.
+        /// </summary>
         Trigger Trigger { get; set; }
     }
 }

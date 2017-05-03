@@ -41,8 +41,13 @@ namespace TruRating.TruModule
         protected readonly ISettings Settings;
         protected readonly ITruServiceMessageFactory TruServiceMessageFactory;
         private int _dwellTimeExtendMs;
+        /// <summary>
+        /// Used to indicate question was programatically cancelled.
+        /// </summary>
         private volatile bool _isCancelled;
         private volatile bool _isQuestionRunning;
+        protected internal DateTime ActivationRecheck;
+        protected internal bool Activated;
 
         protected TruModule(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger,
             ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
@@ -59,15 +64,15 @@ namespace TruRating.TruModule
 
         protected string SessionId { get; set; }
 
-        public bool IsActivated(bool bypassTruServiceCache)
+        public virtual bool IsActivated(bool bypassTruServiceCache) //TODO - comment ont his
         {
             try
             {
-                if (Settings.ActivationRecheck > DateTimeProvider.UtcNow && !bypassTruServiceCache)
+                if (ActivationRecheck > DateTimeProvider.UtcNow && !bypassTruServiceCache)
                 {
                     Logger.Debug("Not querying TruService status, next check at {0}. IsActive is {1}",
-                        Settings.ActivationRecheck, Settings.IsActivated);
-                    return Settings.IsActivated;
+                        ActivationRecheck, Activated);
+                    return Activated;
                 }
                 var status =
                     _truServiceClient.Send(TruServiceMessageFactory.AssemblyRequestQuery(new RequestParams(Settings, SessionId), Device, ReceiptManager, bypassTruServiceCache));
@@ -75,15 +80,15 @@ namespace TruRating.TruModule
                 var responseStatus = status != null ? status.Item as ResponseStatus : null;
                 if (responseStatus != null)
                 {
-                    Settings.ActivationRecheck = DateTimeProvider.UtcNow.AddSeconds(responseStatus.TimeToLive);
-                    Settings.IsActivated = responseStatus.IsActive;
+                    ActivationRecheck = DateTimeProvider.UtcNow.AddSeconds(responseStatus.TimeToLive);
+                    Activated = responseStatus.IsActive;
                 }
             }
             catch (Exception e)
             {
                 Logger.Error(e, "Error in IsActivated");
             }
-            return Settings.IsActivated;
+            return Activated;
         }
 
         public void CancelRating()
@@ -148,13 +153,15 @@ namespace TruRating.TruModule
                 };
                 //Look through the response for a valid question
                 ResponseScreen responseScreen = null;
-                if (QuestionAvailable(response, Device.GetCurrentLanguage(), out question, out receipts, out screens))
+                var whenToDisplay = rating.Value < 0 ? When.NOTRATED : When.RATED;
+                var hasRated = whenToDisplay == When.RATED;
+                if (TruModuleHelpers.QuestionAvailable(response, rating.Rfc1766, out question, out receipts, out screens))
                 {
                     var sw = new Stopwatch();
                     sw.Start();
                     var trigger = ((RequestQuestion)request.Item).Trigger; //Grab the trigger from the question request
                     var timeoutMs = question.TimeoutMs;
-                    if (trigger == Trigger.DWELLTIMEEXTEND)
+                    if (trigger == Trigger.DWELLTIMEEXTEND) //TODO comments
                     {
                         timeoutMs = int.MaxValue;
                         _dwellTimeExtendMs = question.TimeoutMs;
@@ -167,14 +174,15 @@ namespace TruRating.TruModule
                     //Signal to CancelRating that question has been answered when called in another thread.
                     sw.Stop();
                     rating.ResponseTimeMs = (int)sw.ElapsedMilliseconds; //Set the response time
-                    var responseReceipt = GetResponseReceipt(receipts, rating.Value < 0 ? When.NOTRATED : When.RATED);
-                    responseScreen = GetResponseScreen(screens, rating.Value < 0 ? When.NOTRATED : When.RATED);
+                    var responseReceipt = TruModuleHelpers.GetResponseReceipt(receipts, whenToDisplay);
+                    responseScreen = TruModuleHelpers.GetResponseScreen(screens, whenToDisplay);
                     ReceiptManager.AppendReceipt(responseReceipt);
                 }
-                _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));
+                _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));//TODO wrap in task.
                 if (responseScreen != null && (!_isCancelled || responseScreen.Priority))
                 {
-                    Device.DisplayMessage(responseScreen.Value, responseScreen.TimeoutMs);
+                    var messageContext = responseScreen.Priority && hasRated ? MessageContext.PRIZE : MessageContext.NONE;
+                    Device.DisplayAcknowledgement(responseScreen.Value, responseScreen.TimeoutMs, hasRated, messageContext); //TODO
                 }
             }
             catch (Exception e)
@@ -183,60 +191,5 @@ namespace TruRating.TruModule
             }
         }
 
-
-
-        internal static bool QuestionAvailable(Response response, string language, out ResponseQuestion responseQuestion,
-            out ResponseReceipt[] responseReceipts, out ResponseScreen[] responseScreens)
-        {
-            responseQuestion = null;
-            responseReceipts = null;
-            responseScreens = null;
-            var item = response.Item as ResponseDisplay;
-            if (item != null)
-            {
-                var responseDisplay = item;
-                foreach (var responseLanguage in responseDisplay.Language)
-                {
-                    if (responseLanguage.Rfc1766 == language && responseLanguage.Question != null)
-                    {
-                        responseQuestion = responseLanguage.Question;
-                        responseReceipts = responseLanguage.Receipt;
-                        responseScreens = responseLanguage.Screen;
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            return false;
-        }
-
-        internal static string GetResponseReceipt(ResponseReceipt[] responseReceipts, When when)
-        {
-            if (responseReceipts == null)
-                return null;
-            foreach (var responseReceipt in responseReceipts)
-            {
-                if (responseReceipt.When == when)
-                {
-                    return responseReceipt.Value;
-                }
-            }
-            return null;
-        }
-
-        internal static ResponseScreen GetResponseScreen(ResponseScreen[] responseScreens, When whenToDisplay)
-        {
-            if (responseScreens == null)
-                return null;
-            foreach (var responseScreen in responseScreens)
-            {
-                if (responseScreen.When == whenToDisplay) //If this response element matches the state of the screen.
-                {
-                    return responseScreen;
-                }
-            }
-            return null;
-        }
     }
 }

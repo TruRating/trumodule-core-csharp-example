@@ -87,7 +87,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
             };
 
             Settings = MockOf<ISettings>();
-            Settings.IsActivated = true;
+            Sut.Activated = true;
             TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
             TruServiceMessageFactory.Stub(
                 x =>

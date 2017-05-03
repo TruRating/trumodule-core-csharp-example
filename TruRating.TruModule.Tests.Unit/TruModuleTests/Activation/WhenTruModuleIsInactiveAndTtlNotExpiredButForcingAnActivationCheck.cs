@@ -41,7 +41,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests.Activation
         {
             DateTimeProvider.UtcNow = new DateTime(2001, 01, 01, 11, 00,00);
             _settings = MockOf<ISettings>();
-            _settings.ActivationRecheck = new DateTime(2001, 01, 01,12,00,00);
+            Sut.ActivationRecheck = new DateTime(2001, 01, 01,12,00,00);
             _truServiceClient = MockOf<ITruServiceClient>();
             _truServiceClient.Stub(x => x.Send(Arg<Request>.Is.Anything))
                 .Return(new Response() {Item = new ResponseStatus() {TimeToLive = 36000, IsActive = true}});
@@ -57,7 +57,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests.Activation
         [TestMethod]
         public void ItShouldAdvanceTheTTL()
         {
-            Assert.IsTrue(_settings.ActivationRecheck == new DateTime(2001, 01, 01, 21, 00, 00));
+            Assert.IsTrue(Sut.ActivationRecheck == new DateTime(2001, 01, 01, 21, 00, 00));
         }
 
         [TestMethod]

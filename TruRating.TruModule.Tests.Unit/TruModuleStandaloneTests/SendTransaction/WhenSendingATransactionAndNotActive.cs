@@ -37,8 +37,8 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.SendTransactio
         [TestInitialize]
         public void Setup()
         {
-            MockOf<ISettings>().IsActivated = false;
-            MockOf<ISettings>().ActivationRecheck = DateTime.MaxValue;
+            Sut.Activated = false;
+            Sut.ActivationRecheck = DateTime.MaxValue;
             objToReturn = new Request();
             MockOf<ITruServiceMessageFactory>().Stub(x => x.AssembleRequestTransaction(Arg<RequestParams>.Is.Anything, Arg<RequestTransaction>.Is.Anything)).Return(objToReturn);
             Sut.SendTransaction(new RequestTransaction());

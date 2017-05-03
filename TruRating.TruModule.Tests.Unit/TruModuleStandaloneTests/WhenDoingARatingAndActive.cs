@@ -34,7 +34,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests
         [TestInitialize]
         public void Setup()
         {
-            MockOf<ISettings>().IsActivated = true;
+            Sut.Activated = true;
             Sut.DoRating();
         }
 

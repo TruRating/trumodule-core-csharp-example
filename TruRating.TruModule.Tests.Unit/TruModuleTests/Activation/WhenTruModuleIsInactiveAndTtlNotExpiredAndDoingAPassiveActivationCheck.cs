@@ -39,7 +39,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests.Activation
         public void Setup()
         {
             DateTimeProvider.UtcNow = new DateTime(2000,01,01);
-            MockOf<ISettings>().ActivationRecheck= new DateTime(2001, 01,01);
+            Sut.ActivationRecheck= new DateTime(2001, 01,01);
             _truServiceClient = MockOf<ITruServiceClient>();
 
             _isActivated = Sut.IsActivated(bypassTruServiceCache:false); 

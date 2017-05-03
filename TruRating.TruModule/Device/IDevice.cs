@@ -33,14 +33,17 @@ namespace TruRating.TruModule.Device
         /// </summary>
         /// <param name="value">The text to display</param>
         void DisplayMessage(string value);
+
         /// <summary>
-        /// Displays an arbitrary message on screen that should be removed after the specified timeout
+        /// Displays an arbitrary acknowledgement on screen that should be removed after the specified timeout
         /// </summary>
         /// <param name="value">The text to display</param>
         /// <param name="timeoutMilliseconds">The length of time the text should appear</param>
-        void DisplayMessage(string value, int timeoutMilliseconds);
+        /// <param name="hasRated">Indicates whether the customer rated</param>
+        /// <param name="messageContext">Indicates the context of the acknowledgement</param>
+        void DisplayAcknowledgement(string value, int timeoutMilliseconds, bool hasRated, MessageContext messageContext);
         /// <summary>
-        /// Displays a question on screen that should capture a key press and should be removed after the specified timeout
+        /// Displays an arbitrary question on screen that should capture a key press and should be removed after the specified timeout
         /// Valid pinpad values are 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
         /// -1 should be used for any other key input
         /// -2 should be used if the timeout is reached

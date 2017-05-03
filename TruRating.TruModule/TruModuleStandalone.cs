@@ -113,15 +113,15 @@ namespace TruRating.TruModule
                 var responseStatus = status.Item as ResponseStatus;
                 if (responseStatus != null)
                 {
-                    Settings.ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(responseStatus.TimeToLive);
-                    Settings.IsActivated = responseStatus.IsActive;
+                    ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(responseStatus.TimeToLive);
+                    Activated = responseStatus.IsActive;
                 }
             }
             catch (Exception e)
             {
                 Logger.Error(e, "Error in Activate with reg form");
             }
-            return Settings.IsActivated;
+            return Activated;
 
         }
         public bool Activate(string registrationCode)
@@ -132,15 +132,15 @@ namespace TruRating.TruModule
                 var responseStatus = status.Item as ResponseStatus;
                 if (responseStatus != null)
                 {
-                    Settings.ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(responseStatus.TimeToLive);
-                    Settings.IsActivated = responseStatus.IsActive;
+                    ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(responseStatus.TimeToLive);
+                    Activated = responseStatus.IsActive;
                 }
             }
             catch (Exception e)
             {
                 Logger.Error(e, "Error in Activate with reg code");
             }
-            return Settings.IsActivated;
+            return Activated;
         }
 
 

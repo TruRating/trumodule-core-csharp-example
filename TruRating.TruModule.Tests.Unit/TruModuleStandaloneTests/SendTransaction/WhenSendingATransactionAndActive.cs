@@ -34,8 +34,8 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.SendTransactio
         [TestInitialize]
         public void Setup()
         {
-            MockOf<ISettings>().IsActivated = false;
-            MockOf<ISettings>().ActivationRecheck = DateTime.MaxValue;
+            Sut.Activated = false;
+            Sut.ActivationRecheck = DateTime.MaxValue;
 
             Sut.SendTransaction(new RequestTransaction());
 
