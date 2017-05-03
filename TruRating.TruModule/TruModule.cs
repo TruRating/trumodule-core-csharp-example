@@ -49,8 +49,7 @@ namespace TruRating.TruModule
         protected internal DateTime ActivationRecheck;
         protected internal bool Activated;
 
-        protected TruModule(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger,
-            ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
+        protected TruModule(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient,ITruServiceMessageFactory truServiceMessageFactory)
         {
             Device = device;
             _truServiceClient = truServiceClient;
@@ -64,7 +63,7 @@ namespace TruRating.TruModule
 
         protected string SessionId { get; set; }
 
-        public virtual bool IsActivated(bool bypassTruServiceCache) //TODO - comment ont his
+        public bool IsActivated(bool bypassTruServiceCache)
         {
             try
             {

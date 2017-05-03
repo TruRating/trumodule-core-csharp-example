@@ -64,7 +64,7 @@ namespace TruRating.TruModule.Tests.Unit
                 return (T) _dictionary[typeof (T).FullName];
             }
 
-            var constructorInfoObj = typeof (T).GetConstructors().FirstOrDefault(x => x.IsPublic);
+            var constructorInfoObj = typeof (T).GetConstructors().OrderByDescending(x=> x.GetParameters().Length).FirstOrDefault(); //Get the constructor with the most arguments
 
             if (constructorInfoObj == null)
                 throw new Exception("No public constructor");

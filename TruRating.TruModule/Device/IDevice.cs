@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using TruRating.Dto.TruService.V220;
+using TruRating.TruModule.Util;
 
 namespace TruRating.TruModule.Device
 {

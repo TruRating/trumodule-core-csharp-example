@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Net;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.Device;
 using TruRating.TruModule.Messages;
@@ -31,10 +32,18 @@ namespace TruRating.TruModule
 {
     public class TruModuleStandalone : TruModule, ITruModuleStandalone
     {
-        public TruModuleStandalone(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger,
-            ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
-            : base(device, receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
+        /// <summary>
+        /// Create instance of TruModule with the default implementations of ITruServiceClient, ITruServiceMessageFactory and related dependencies
+        /// </summary>
+        public TruModuleStandalone(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager)
+            : this(logger, settings, device, receiptManager, TruServiceHttpClient.CreateDefault(logger, settings), Messages.TruServiceMessageFactory.CreateDefault())
         {
+        }
+
+        protected TruModuleStandalone(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager,ITruServiceClient truServiceClient, ITruServiceMessageFactory truServiceMessageFactory)
+            :base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
+        {
+            
         }
 
         public void DoRating()

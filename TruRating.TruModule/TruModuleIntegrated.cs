@@ -31,9 +31,16 @@ namespace TruRating.TruModule
 {
     public class TruModuleIntegrated : TruModule, ITruModuleIntegrated
     {
-        public TruModuleIntegrated(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger,
-            ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
-            : base(device, receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
+        /// <summary>
+        /// Create instance of TruModule with the default implementations of ITruServiceClient, ITruServiceMessageFactory and related dependencies
+        /// </summary>
+        public TruModuleIntegrated(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager)
+            : this(logger, settings, device, receiptManager, TruServiceHttpClient.CreateDefault(logger, settings), Messages.TruServiceMessageFactory.CreateDefault())
+        {
+        }
+        protected TruModuleIntegrated(ILogger logger, ISettings settings,IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient,
+            ITruServiceMessageFactory truServiceMessageFactory)
+            : base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
         {
         }
 

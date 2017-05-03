@@ -54,8 +54,8 @@
     <Compile Include="Device\ILogger.cs" />
     <Compile Include="Device\IReceiptManager.cs" />
     <Compile Include="ITruModuleSemiIntegrated.cs" />
-    <Compile Include="MessageContext.cs" />
-    <Compile Include="TruModuleHelpers.cs" />
+    <Compile Include="Device\MessageContext.cs" />
+    <Compile Include="Util\TruModuleHelpers.cs" />
     <Compile Include="TruModuleSemiIntegrated.cs" />
     <Compile Include="Util\DateTimeProvider.cs" />
     <Compile Include="Util\ExtensionMethods.cs" />

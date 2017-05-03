@@ -26,6 +26,10 @@ namespace TruRating.TruModule.Messages
 {
     public class TruServiceMessageFactory : ITruServiceMessageFactory
     {
+        internal static ITruServiceMessageFactory CreateDefault()
+        {
+            return new TruServiceMessageFactory();
+        }
         public Request AssemblyRequestQuery(RequestParams requestParams, IDevice device, IReceiptManager receiptManager,
             bool force)
         {

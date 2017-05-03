@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.ConsoleRunner.Environment;
 using TruRating.TruModule.Device;
-using TruRating.TruModule.Messages;
 using TruRating.TruModule.Network;
 using TruRating.TruModule.Security;
 using TruRating.TruModule.Util;
@@ -46,10 +45,7 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
 
         public override void Init()
         {
-            var truServiceClient = TruServiceHttpClient.CreateDefault(_consoleSettings.HttpTimeoutMs,
-                _consoleSettings.TruServiceUrl, _consoleIo,
-                new MacSignatureCalculator(_consoleSettings.TransportKey, _consoleIo));
-            _truModule = new TruModuleStandalone(Device,ReceiptManager, truServiceClient, _consoleIo, new TruServiceMessageFactory(), _consoleSettings);
+            _truModule = new TruModuleStandalone(_consoleIo, _consoleSettings, Device, ReceiptManager);
             if (!_truModule.IsActivated(bypassTruServiceCache:false))
             {
                 _consoleIo.WriteLine(ConsoleColor.Gray,"Standalone UseCase: Not activated at start-up, prompting registration");

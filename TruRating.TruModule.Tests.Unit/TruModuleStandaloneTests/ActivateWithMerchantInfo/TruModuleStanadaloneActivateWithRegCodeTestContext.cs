@@ -27,11 +27,12 @@ using TruRating.TruModule.Device;
 using TruRating.TruModule.Messages;
 using TruRating.TruModule.Network;
 using TruRating.TruModule.Settings;
+using TruRating.TruModule.Tests.Unit.TruModuleTests;
 using TruRating.TruModule.Util;
 
 namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.ActivateWithMerchantInfo
 {
-    public class TruModuleStanadaloneActivateWithMerchantInfoTestContext: MsTestsContext<TruModuleStandalone>
+    public class TruModuleStanadaloneActivateWithMerchantInfoTestContext: MsTestsContext<TestContextTruModuleStandalone>
     {
         protected ITruServiceMessageFactory TruServiceMessageFactory { get; set; }
         protected ITruServiceClient TruServiceClient { get; set; }

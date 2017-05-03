@@ -101,33 +101,21 @@ namespace TruRating.TruModule.ConsoleRunner.Environment
         }
 
         public PosIntegration PosIntegration { get; set; }
-
         [Required]
         public string PartnerId { get; set; }
-
         public int HttpTimeoutMs { get; set; }
-
         [Required]
         public string MerchantId { get; set; }
-
         [Required]
         public string TruServiceUrl { get; set; }
-
         [Required]
         public string[] Languages { get; set; }
-
         public DateTime LastQuestionDateTime { get; set; }
-
         [Required]
         public string TerminalId { get; set; }
-
         public string Version { get; set; }
-
         [Required]
         public string TransportKey { get; set; }
-
-        public DateTime ActivationRecheck { get; set; }
-        public bool IsActivated { get; set; }
         public Trigger Trigger { get; set; }
         public static string GetValues<T>()
         {

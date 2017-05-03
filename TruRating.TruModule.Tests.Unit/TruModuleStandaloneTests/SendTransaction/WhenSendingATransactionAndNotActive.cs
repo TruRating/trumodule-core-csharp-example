@@ -26,11 +26,12 @@ using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.Messages;
 using TruRating.TruModule.Network;
 using TruRating.TruModule.Settings;
+using TruRating.TruModule.Tests.Unit.TruModuleTests;
 
 namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.SendTransaction
 {
     [TestClass]
-    public class WhenSendingATransactionAndNotActive : MsTestsContext<TruModuleStandalone>
+    public class WhenSendingATransactionAndNotActive : MsTestsContext<TestContextTruModuleStandalone>
     {
         private Request objToReturn;
 

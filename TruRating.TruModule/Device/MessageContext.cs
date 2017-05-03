@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace TruRating.TruModule
+namespace TruRating.TruModule.Device
 {
     [Flags]
     public enum MessageContext
     {
-        NONE = 1,
-        PRIZE = 2,
+        NONE = 0,
+        PRIZE = 1,
     }
 }

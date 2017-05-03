@@ -23,9 +23,6 @@ using System;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.ConsoleRunner.Environment;
 using TruRating.TruModule.Device;
-using TruRating.TruModule.Messages;
-using TruRating.TruModule.Network;
-using TruRating.TruModule.Security;
 
 namespace TruRating.TruModule.ConsoleRunner.UseCase
 {
@@ -44,11 +41,7 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
 
         public override void Init()
         {
-            var truServiceClient = TruServiceHttpClient.CreateDefault(_consoleSettings.HttpTimeoutMs,
-                _consoleSettings.TruServiceUrl,_consoleIo,
-                new MacSignatureCalculator(_consoleSettings.TransportKey, _consoleIo));
-            _truModule = new TruModuleSemiIntegrated(Device, ReceiptManager,truServiceClient, _consoleIo,
-                new TruServiceMessageFactory(), _consoleSettings);
+            _truModule = new TruModuleSemiIntegrated(_consoleIo, _consoleSettings, Device, ReceiptManager);
         }
 
         public override void Example()

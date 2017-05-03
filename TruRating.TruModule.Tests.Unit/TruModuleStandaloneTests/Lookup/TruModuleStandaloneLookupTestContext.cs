@@ -23,10 +23,11 @@ using Rhino.Mocks;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.Device;
 using TruRating.TruModule.Network;
+using TruRating.TruModule.Tests.Unit.TruModuleTests;
 
 namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.Lookup
 {
-    public class TruModuleStandaloneLookupTestContext: MsTestsContext<TruModuleStandalone>
+    public class TruModuleStandaloneLookupTestContext: MsTestsContext<TestContextTruModuleStandalone>
     {
         protected IDevice Device { get; set; }
         protected ITruServiceClient TruServiceClient { get; set; }

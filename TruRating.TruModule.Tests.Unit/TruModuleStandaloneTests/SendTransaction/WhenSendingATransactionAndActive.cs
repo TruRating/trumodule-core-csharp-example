@@ -25,11 +25,12 @@ using Rhino.Mocks;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.Network;
 using TruRating.TruModule.Settings;
+using TruRating.TruModule.Tests.Unit.TruModuleTests;
 
 namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.SendTransaction
 {
     [TestClass]
-    public class WhenSendingATransactionAndActive : MsTestsContext<TruModuleStandalone>
+    public class WhenSendingATransactionAndActive : MsTestsContext<TestContextTruModuleStandalone>
     {
         [TestInitialize]
         public void Setup()

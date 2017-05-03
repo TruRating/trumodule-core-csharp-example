@@ -25,6 +25,7 @@ using System.Reflection;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.ConsoleRunner.Environment;
 using TruRating.TruModule.Device;
+using TruRating.TruModule.Util;
 
 namespace TruRating.TruModule.ConsoleRunner.Device
 {

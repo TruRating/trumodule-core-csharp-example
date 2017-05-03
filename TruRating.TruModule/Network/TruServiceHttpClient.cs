@@ -28,6 +28,7 @@ using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.Device;
 using TruRating.TruModule.Security;
 using TruRating.TruModule.Serialization;
+using TruRating.TruModule.Settings;
 
 namespace TruRating.TruModule.Network
 {
@@ -37,8 +38,7 @@ namespace TruRating.TruModule.Network
         private readonly ILogger _logger;
         private readonly IMacSignatureCalculator _macSignatureCalculator;
 
-        public TruServiceHttpClient(string endpoint, IMacSignatureCalculator macSignatureCalculator, ISerializer serializer,
-            ILogger logger, IWebClientFactory webClientFactory)
+        public TruServiceHttpClient(string endpoint, IMacSignatureCalculator macSignatureCalculator, ISerializer serializer,ILogger logger, IWebClientFactory webClientFactory)
         {
             _endpoint = endpoint;
             _macSignatureCalculator = macSignatureCalculator;
@@ -51,9 +51,13 @@ namespace TruRating.TruModule.Network
 
         internal IWebClientFactory WebClientFactory { get; private set; }
 
-        public static ITruServiceClient CreateDefault(int timeout, string endpoint, ILogger logger, IMacSignatureCalculator macSignatureCalculator)
+        public static ITruServiceClient CreateDefault(string endpoint, ILogger logger, IMacSignatureCalculator macSignatureCalculator, ISerializer serializer, IWebClientFactory webClientFactory)
         {
-            return new TruServiceHttpClient(endpoint,macSignatureCalculator,new DefaultSerializer(),logger, new SystemWebClientFactory(timeout));
+            return new TruServiceHttpClient(endpoint,macSignatureCalculator,serializer,logger, webClientFactory);
+        }
+        internal static ITruServiceClient CreateDefault(ILogger logger, ISettings settings)
+        {
+            return CreateDefault(settings.TruServiceUrl, logger, new MacSignatureCalculator(settings.TransportKey, logger), new DefaultSerializer(), new SystemWebClientFactory(settings.HttpTimeoutMs));
         }
 
         public Response Send(Request request)

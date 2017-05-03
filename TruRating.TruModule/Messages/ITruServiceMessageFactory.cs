@@ -30,7 +30,6 @@ namespace TruRating.TruModule.Messages
         Request AssembleRequestQuestion(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, Trigger trigger);
         Request AssembleRequestTransaction(RequestParams requestParams,  RequestTransaction requestTransaction);
         Request AssembleRequestPosEvent(PosParams posParams, RequestPosEvent requestPosEvent);
-
         Request AssembleRequestPosEventList(RequestParams requestParams,  RequestPosEventList requestPosEventList);
         Request AssembleRequestLookup(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, LookupName lookupName);
         Request AssembleRequestActivate(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, int sectorNode, string timeZone, PaymentInstant paybefore, string emailAddress, string password, string address, string mobileNumber, string merchantName, string businessName);

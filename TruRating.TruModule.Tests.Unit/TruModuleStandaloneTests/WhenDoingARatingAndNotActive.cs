@@ -25,11 +25,12 @@ using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.Device;
 using TruRating.TruModule.Messages;
 using TruRating.TruModule.Settings;
+using TruRating.TruModule.Tests.Unit.TruModuleTests;
 
 namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests
 {
     [TestClass]
-    public class WhenDoingARatingAndNotActive: MsTestsContext<TruModuleStandalone>
+    public class WhenDoingARatingAndNotActive: MsTestsContext<TestContextTruModuleStandalone>
     {
         [TestInitialize]
         public void Setup()

@@ -23,6 +23,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TruRating.TruModule.Device;
 using TruRating.TruModule.Network;
 using TruRating.TruModule.Security;
+using TruRating.TruModule.Serialization;
 
 namespace TruRating.TruModule.Tests.Unit.Network.TruServiceHttpClientTests
 {
@@ -32,7 +33,7 @@ namespace TruRating.TruModule.Tests.Unit.Network.TruServiceHttpClientTests
         [TestMethod]
         public void ItShouldHaveTheDefaultSerializerAndSystemWebClient()
         {
-            TruServiceHttpClient truServiceHttpClient = (TruServiceHttpClient)TruServiceHttpClient.CreateDefault(100, "", MockOf<ILogger>(),MockOf<IMacSignatureCalculator>());
+            TruServiceHttpClient truServiceHttpClient = (TruServiceHttpClient)TruServiceHttpClient.CreateDefault("", MockOf<ILogger>(),MockOf<IMacSignatureCalculator>(), new DefaultSerializer(), new SystemWebClientFactory(100));
             Assert.IsTrue(truServiceHttpClient.Serializer.GetType() == typeof(TruRating.TruModule.Serialization.DefaultSerializer));
             Assert.IsTrue(truServiceHttpClient.WebClientFactory.GetType() == typeof(SystemWebClientFactory));
         }

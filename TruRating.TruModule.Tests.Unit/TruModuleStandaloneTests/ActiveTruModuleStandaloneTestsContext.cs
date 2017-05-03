@@ -27,11 +27,12 @@ using TruRating.TruModule.Device;
 using TruRating.TruModule.Messages;
 using TruRating.TruModule.Network;
 using TruRating.TruModule.Settings;
+using TruRating.TruModule.Tests.Unit.TruModuleTests;
 using TruRating.TruModule.Util;
 
 namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests
 {
-    public abstract class ActiveTruModuleStandaloneTestsContext : MsTestsContext<TruModuleStandalone>
+    public abstract class ActiveTruModuleStandaloneTestsContext : MsTestsContext<TestContextTruModuleStandalone>
     {
         protected Request Request;
         protected Response Response;

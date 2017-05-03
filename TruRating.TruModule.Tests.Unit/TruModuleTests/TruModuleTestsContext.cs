@@ -28,11 +28,36 @@ using TruRating.TruModule.Settings;
 
 namespace TruRating.TruModule.Tests.Unit.TruModuleTests
 {
-    public class TestContextTruModule : TruModule
+    public class TestContextTruModuleSemiIntegrated : TruModuleSemiIntegrated
     {
-        public TestContextTruModule(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger, ITruServiceMessageFactory truServiceMessageFactory, ISettings settings) : base(device, receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
+        //Modify visibility for Unit Tests
+        public TestContextTruModuleSemiIntegrated(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ITruServiceMessageFactory truServiceMessageFactory) : base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
         {
         }
+    }
+    public class TestContextTruModuleIntegrated : TruModuleIntegrated
+    {
+        //Modify visibility for Unit Tests
+        public TestContextTruModuleIntegrated(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ITruServiceMessageFactory truServiceMessageFactory) : base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
+        {
+        }
+    }
+
+    public class TestContextTruModuleStandalone : TruModuleStandalone
+    {
+        //Modify visibility for Unit Tests
+        public TestContextTruModuleStandalone(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ITruServiceMessageFactory truServiceMessageFactory) : base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
+        {
+        }
+    }
+    public class TestContextTruModule : TruModule
+    {
+        public TestContextTruModule(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient,
+            ILogger logger, ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
+            : base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
+        {
+        }
+
         //Modify visibility for Unit Tests
         public new void DoRating(Request request)
         {

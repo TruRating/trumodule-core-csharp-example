@@ -30,8 +30,16 @@ namespace TruRating.TruModule
 {
     public class TruModuleSemiIntegrated : TruModuleStandalone, ITruModuleSemiIntegrated
     {
-        public TruModuleSemiIntegrated(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ILogger logger, ITruServiceMessageFactory truServiceMessageFactory, ISettings settings) : base(device, receiptManager, truServiceClient, logger, truServiceMessageFactory, settings)
+        /// <summary>
+        /// Create instance of TruModule with the default implementations of ITruServiceClient, ITruServiceMessageFactory and related dependencies
+        /// </summary>
+        public TruModuleSemiIntegrated(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager) : base(logger, settings, device, receiptManager)
         {
+        }
+        protected TruModuleSemiIntegrated(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ITruServiceMessageFactory truServiceMessageFactory)
+            : base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
+        {
+
         }
         public void SendBatchedPosEvents(RequestPosEventList requestPosEventList)
         {
