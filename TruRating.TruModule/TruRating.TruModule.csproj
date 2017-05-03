@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B16ABFEC-FEA4-42B7-B3CC-0200518DF896}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TruRating.TruModule</RootNamespace>
+    <AssemblyName>TruRating.TruModule</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Label="SlowCheetah">
+    <SlowCheetahToolsPath>$([System.IO.Path]::GetFullPath( $(MSBuildProjectDirectory)\..\packages\SlowCheetah.2.5.15\tools\))</SlowCheetahToolsPath>
+    <SlowCheetah_EnableImportFromNuGet Condition=" '$(SlowCheetah_EnableImportFromNuGet)'=='' ">true</SlowCheetah_EnableImportFromNuGet>
+    <SlowCheetah_NuGetImportPath Condition=" '$(SlowCheetah_NuGetImportPath)'=='' ">$([System.IO.Path]::GetFullPath( $(MSBuildProjectDirectory)\Properties\SlowCheetah\SlowCheetah.Transforms.targets ))</SlowCheetah_NuGetImportPath>
+    <SlowCheetahTargets Condition=" '$(SlowCheetah_EnableImportFromNuGet)'=='true' and Exists('$(SlowCheetah_NuGetImportPath)') ">$(SlowCheetah_NuGetImportPath)</SlowCheetahTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TruRating.Dto.TruService.V2xx, Version=2.2.7.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TruRating.Dto.TruService.V2xx.2.2.7.1\lib\net20\TruRating.Dto.TruService.V2xx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Device\ILogger.cs" />
+    <Compile Include="Device\IReceiptManager.cs" />
+    <Compile Include="ITruModuleSemiIntegrated.cs" />
+    <Compile Include="TruModuleSemiIntegrated.cs" />
+    <Compile Include="Util\DateTimeProvider.cs" />
+    <Compile Include="Util\ExtensionMethods.cs" />
+    <Compile Include="Util\Func.cs" />
+    <Compile Include="Util\TaskHelpers.cs" />
+    <Compile Include="Network\IWebClientFactory.cs" />
+    <Compile Include="Network\SystemWebClientFactory.cs" />
+    <Compile Include="Settings\ISettings.cs" />
+    <Compile Include="ITruModuleIntegrated.cs" />
+    <Compile Include="ITruModuleStandalone.cs" />
+    <Compile Include="Messages\ITruServiceMessageFactory.cs" />
+    <Compile Include="Network\ITruServiceClient.cs" />
+    <Compile Include="Messages\PosParams.cs" />
+    <Compile Include="Serialization\DefaultSerializer.cs" />
+    <Compile Include="Device\IDevice.cs" />
+    <Compile Include="Security\IMacSignatureCalculator.cs" />
+    <Compile Include="Serialization\ISerializer.cs" />
+    <Compile Include="Network\IWebClient.cs" />
+    <Compile Include="Security\MacSignatureCalculator.cs" />
+    <Compile Include="Network\SystemWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Network\TruServiceHttpClient.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TruModule.cs" />
+    <Compile Include="TruModuleIntegrated.cs" />
+    <Compile Include="TruModuleStandalone.cs" />
+    <Compile Include="Messages\TruServiceMessageFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="TruRating.TruModule.V2xx.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="License.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SlowCheetahTargets)" Condition="Exists('$(SlowCheetahTargets)')" Label="SlowCheetah" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
