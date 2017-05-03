@@ -33,14 +33,8 @@ namespace TruRating.TruModule.Util
             responseQuestion = null;
             responseReceipts = null;
             responseScreens = null;
-            if (response == null) //TODO check for null?
-            {
-                throw new ArgumentNullException(nameof(response));
-            }
-            if (language == null)
-            {
-                throw new ArgumentNullException(nameof(language));
-            }
+            if (response == null)
+                return false;
             var item = response.Item as ResponseDisplay;
             if (item != null)
             {
