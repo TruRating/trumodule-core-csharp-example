@@ -59,4 +59,4 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: InternalsVisibleTo("TruRating.TruModule.V2xx.Tests.Unit")]
+[assembly: InternalsVisibleTo("TruRating.TruModule.Tests.Unit")]

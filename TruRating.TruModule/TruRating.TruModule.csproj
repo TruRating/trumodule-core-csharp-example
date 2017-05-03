@@ -85,7 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="TruRating.TruModule.V2xx.nuspec" />
+    <None Include="TruRating.TruModule.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="License.txt" />

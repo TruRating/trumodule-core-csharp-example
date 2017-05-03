@@ -33,7 +33,7 @@ namespace TruRating.TruModule.Tests.Unit.Network.TruServiceHttpClientTests
         public void ItShouldHaveTheDefaultSerializerAndSystemWebClient()
         {
             TruServiceHttpClient truServiceHttpClient = (TruServiceHttpClient)TruServiceHttpClient.CreateDefault(100, "", MockOf<ILogger>(),MockOf<IMacSignatureCalculator>());
-            Assert.IsTrue(truServiceHttpClient.Serializer.GetType() == typeof(V2xx.Serialization.DefaultSerializer));
+            Assert.IsTrue(truServiceHttpClient.Serializer.GetType() == typeof(TruRating.TruModule.Serialization.DefaultSerializer));
             Assert.IsTrue(truServiceHttpClient.WebClientFactory.GetType() == typeof(SystemWebClientFactory));
         }
     }
