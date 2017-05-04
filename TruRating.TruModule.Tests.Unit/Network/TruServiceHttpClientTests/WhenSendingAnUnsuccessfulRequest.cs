@@ -78,7 +78,7 @@ namespace TruRating.TruModule.Tests.Unit.Network.TruServiceHttpClientTests
         [TestMethod]
         public void ItShouldLogTheServerResponseBody()
         {
-            MockOf<ILogger>().AssertWasCalled(x => x.Error("Server Error!"));
+            MockOf<ILogger>().AssertWasCalled(x => x.Error("TruServiceHttpClient - {0}", "Server Error!"));
         }
     }
 }

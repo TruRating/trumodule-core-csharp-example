@@ -88,7 +88,7 @@ namespace TruRating.TruModule.Tests.Unit.Network.TruServiceHttpClientTests
         [TestMethod]
         public void ItShouldLogTheDiagnosticHeader()
         {
-            MockOf<ILogger>().AssertWasCalled(x=> x.Warn("{0}", "Server Diagnostic Header"));
+            MockOf<ILogger>().AssertWasCalled(x=> x.Warn("TruServiceHttpClient - {0}", "Server Diagnostic Header"));
         }
     }
 }
