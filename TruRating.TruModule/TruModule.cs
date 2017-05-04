@@ -152,8 +152,8 @@ namespace TruRating.TruModule
                 };
                 //Look through the response for a valid question
                 ResponseScreen responseScreen = null;
-                var whenToDisplay = rating.Value < 0 ? When.NOTRATED : When.RATED;
-                var hasRated = whenToDisplay == When.RATED;
+
+                var hasRated = false;
                 if (TruModuleHelpers.QuestionAvailable(response, rating.Rfc1766, out question, out receipts, out screens))
                 {
                     var sw = new Stopwatch();
@@ -167,6 +167,8 @@ namespace TruRating.TruModule
                     }
                     _isQuestionRunning = true;
                     rating.Value = Device.Display1AQ1KR(question.Value, timeoutMs);
+                    var whenToDisplay = rating.Value < 0 ? When.NOTRATED : When.RATED;
+                    hasRated = whenToDisplay == When.RATED;
                     //Wait for the user input for the specified period
                     _isQuestionRunning = false;
                     _dwellTimeExtendAutoResetEvent.Set();
