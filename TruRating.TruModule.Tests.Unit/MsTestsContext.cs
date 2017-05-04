@@ -23,48 +23,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TruRating.TruModule.Tests.Unit
 {
-    public abstract class MsTestsContext
-    {
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            InitContainer();
-        }
-
-        [TestCleanup]
-        public void TestCleanup()
-        {
-            DisposeMockContainer();
-        }
-
-        protected static RhinoMockingContainer Container;
-
-        protected static void InitContainer()
-        {
-            Container = new RhinoMockingContainer();
-        }
-
-        protected static TMock MockOf<TMock>()
-        {
-            return Container.MockOf<TMock>();
-        }
-
-        protected static TMock CreateWithMocks<TMock>() where TMock : class
-        {
-            return Container.Create<TMock>();
-        }
-
-        protected static void RegisterFake<TMock>(TMock instance) where TMock : class
-        {
-            Container.Register(instance);
-        }
-
-        protected static void DisposeMockContainer()
-        {
-            Container.Dispose();
-            Container = null;
-        }
-    }
     public abstract class MsTestsContext<T> where T : class
     {
         private static T _sut;

@@ -26,19 +26,12 @@ using TruRating.TruModule.Network;
 namespace TruRating.TruModule.Tests.Unit.Network.SystemWebClientTests
 {
     [TestClass]
-    public class WhenCreatingAWebRequest : MsTestsContext
+    public class WhenCreatingAWebRequest
     {
-        private SystemWebClient _sut;
-
-        [TestInitialize]
-        public void Setup()
-        {
-            _sut = new SystemWebClient(1000);
-        }
-
         [TestMethod]
         public void ItShouldHaveTheTimeoutSet()
         {
+            var _sut = new SystemWebClient(1000);
             var webRequest = _sut.GetWebRequestTimeout(new Uri("http://localhost"));
             Assert.IsTrue(webRequest.Timeout == 1000);
         }
