@@ -66,6 +66,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Messages\TruServiceMessageFactoryTests.cs" />
     <Compile Include="Network\FakeWebClient.cs" />
     <Compile Include="Network\HttpHelpers.cs" />
     <Compile Include="Network\SystemWebClientFactoryTests\WhenCreatingAWebClientUsingSystemWebClientFactory.cs" />
@@ -78,7 +79,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\MacSignatureCalculatorTests\WhenTestingCalculatorWithInvalidTransportKey.cs" />
     <Compile Include="Serialization\DefaultSerializerTests\DefaultSerializerTests.cs" />
-    <Compile Include="Messages\TruServiceMessageFactoryTests.cs" />
     <Compile Include="TruModuleStandaloneTests\ActivateWithMerchantInfo\TruModuleStanadaloneActivateWithRegCodeTestContext.cs" />
     <Compile Include="TruModuleStandaloneTests\ActivateWithMerchantInfo\WhenActivatingWithRegisgrationCodeAndRecievesFailedResponse.cs" />
     <Compile Include="TruModuleStandaloneTests\ActivateWithMerchantInfo\WhenActivatingWithRegisgrationCodeAndRecievesSuccessResponse.cs" />
@@ -112,6 +112,7 @@
   <ItemGroup>
     <Content Include="License.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
