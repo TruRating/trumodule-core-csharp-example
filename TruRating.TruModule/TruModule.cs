@@ -179,11 +179,14 @@ namespace TruRating.TruModule
                     responseScreen = TruModuleHelpers.GetResponseScreen(screens, whenToDisplay);
                     ReceiptManager.AppendReceipt(responseReceipt);
                 }
-                _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));//TODO wrap in task.
+                TaskHelpers.BeginTask(() =>
+                {
+                    return _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));
+                });
                 if (responseScreen != null && (!_isCancelled || responseScreen.Priority))
                 {
-                    var messageContext = responseScreen.Priority && hasRated ? MessageContext.PRIZE : MessageContext.NONE;
-                    Device.DisplayAcknowledgement(responseScreen.Value, responseScreen.TimeoutMs, hasRated, messageContext); //TODO
+                    var ratingContext = responseScreen.Priority && hasRated ? RatingContext.PRIZE : RatingContext.NONE;
+                    Device.DisplayAcknowledgement(responseScreen.Value, responseScreen.TimeoutMs, hasRated, ratingContext);
                 }
             }
             catch (Exception e)

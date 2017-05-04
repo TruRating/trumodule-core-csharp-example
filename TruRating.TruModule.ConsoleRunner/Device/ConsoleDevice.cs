@@ -115,7 +115,7 @@ namespace TruRating.TruModule.ConsoleRunner.Device
         {
             return null;
         }
-        public void DisplayAcknowledgement(string value, int timeoutMilliseconds, bool hasRated, MessageContext messageContext)
+        public void DisplayAcknowledgement(string value, int timeoutMilliseconds, bool hasRated, RatingContext ratingContext)
         {
             _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
             _logger.WriteLine(ConsoleColor.Gray, "DISPLAY: waiting {0} ms", timeoutMilliseconds);

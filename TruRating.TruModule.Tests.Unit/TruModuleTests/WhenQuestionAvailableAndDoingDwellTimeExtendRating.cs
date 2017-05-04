@@ -23,6 +23,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 using TruRating.Dto.TruService.V220;
+using TruRating.TruModule.Device;
 
 namespace TruRating.TruModule.Tests.Unit.TruModuleTests
 {
@@ -55,11 +56,21 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
         }
 
         [TestMethod]
-        public void ItShouldSedndARating()
+        public void ItShouldSendARating()
         {
             var arguments = TruServiceMessageFactory.GetArgumentsForCallsMadeOn(
                 x => x.AssembleRequestRating(Arg<Request>.Is.Anything, Arg<RequestRating>.Is.Anything))[0];
             Assert.IsTrue(((RequestRating)arguments[1]).Value == 2);
+        }
+        [TestMethod]
+        public void ItShouldCallDisplayAcknowledgement()
+        {
+            var arguments =
+                Device.GetArgumentsForCallsMadeOn(
+                    x =>
+                        x.DisplayAcknowledgement(Arg<string>.Is.Anything, Arg<int>.Is.Anything, Arg<bool>.Is.Anything,
+                            Arg<RatingContext>.Is.Anything))[0];
+            Assert.IsTrue((bool)arguments[2] == true);
         }
      
     }

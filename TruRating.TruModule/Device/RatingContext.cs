@@ -3,7 +3,7 @@
 namespace TruRating.TruModule.Device
 {
     [Flags]
-    public enum MessageContext
+    public enum RatingContext
     {
         NONE = 0,
         PRIZE = 1,
