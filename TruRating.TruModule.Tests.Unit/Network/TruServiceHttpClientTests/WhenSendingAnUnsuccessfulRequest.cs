@@ -72,7 +72,7 @@ namespace TruRating.TruModule.Tests.Unit.Network.TruServiceHttpClientTests
         [TestMethod]
         public void ItShouldLogTheWebException()
         {
-            MockOf<ILogger>().AssertWasCalled(x=> x.Error(_webException, "Error in TruService Client"));
+            MockOf<ILogger>().AssertWasCalled(x=> x.Error(_webException, "TruServiceHttpClient - Error in TruService Client"));
         }
 
         [TestMethod]

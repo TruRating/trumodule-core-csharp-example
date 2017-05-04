@@ -51,12 +51,15 @@ namespace TruRating.TruModule
                 if (IsActivated(bypassTruServiceCache: false))
                 {
                     var request = TruServiceMessageFactory.AssembleRequestTransaction(new RequestParams(posParams), requestTransaction);
-                    SendRequest(request);
+                    TaskHelpers.BeginTask(() =>
+                    {
+                        return SendRequest(request);
+                    });
                 }
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error in SendTransaction");
+                Logger.Error(e, "TruModuleIntegrated - Error in SendTransaction");
             }
         }
 
@@ -91,7 +94,7 @@ namespace TruRating.TruModule
                         }
                         catch (Exception e)
                         {
-                            Logger.Error(e, "Error in SendPosEvent Task");
+                            Logger.Error(e, "TruModuleIntegrated - Error in SendPosEvent Task");
                         }
                         return 1;
                     });
@@ -99,7 +102,7 @@ namespace TruRating.TruModule
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error in SendPosevent");
+                Logger.Error(e, "TruModuleIntegrated - Error in SendPosevent");
             }
         }
 
@@ -124,7 +127,7 @@ namespace TruRating.TruModule
             }
             catch(Exception e)
             {
-                Logger.Error(e, "Error in InitiatePayment");
+                Logger.Error(e, "TruModuleIntegrated - Error in InitiatePayment");
             }
         }
     }

@@ -55,7 +55,7 @@ namespace TruRating.TruModule.Security
             }
             catch (Exception e)
             {
-                _logger.Error(e, "Error during MAC calculation");
+                _logger.Error(e, "MacSignatureCalculator - Error during MAC calculation");
                 return null;
             }
         }
