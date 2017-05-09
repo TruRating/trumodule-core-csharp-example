@@ -74,12 +74,12 @@ namespace TruRating.TruModule.Network
                 webClient.Headers.Set("x-tru-api-encryption-scheme", _macSignatureCalculator.EncryptionScheme);
                 var requestBody = Serializer.Serialize(request);
                 webClient.Headers.Set("x-tru-api-mac", _macSignatureCalculator.Calculate(requestBody));
-                Trace.TraceInformation("POST {0} HTTP/1.1", _endpoint);
+                _logger.Debug("TruServiceHttpClient - POST {0} HTTP/1.1", _endpoint);
                 foreach (var header in webClient.Headers)
                 {
                     _logger.Debug("{0} : {1}", header, webClient.Headers[header.ToString()]);
                 }
-                _logger.Debug("Request Body\n{0}", Encoding.UTF8.GetString(requestBody));
+                _logger.Debug("TruServiceHttpClient - Request Body\n{0}", Encoding.UTF8.GetString(requestBody));
                 byte[] responseBody;
                 try
                 {
@@ -91,21 +91,21 @@ namespace TruRating.TruModule.Network
                         using (var reader = new StreamReader(e.Response.GetResponseStream()))
                         {
                             var result = reader.ReadToEnd();
-                            _logger.Error(result);
+                            _logger.Error("TruServiceHttpClient - {0}", result);
                         }
                     throw;
                 }
                 if (webClient.ResponseHeaders != null && webClient.ResponseHeaders.Get("x-tru-api-diagnostic") != null)
                 {
-                    _logger.Warn("{0}",webClient.ResponseHeaders.Get("x-tru-api-diagnostic"));
+                    _logger.Warn("TruServiceHttpClient - {0}", webClient.ResponseHeaders.Get("x-tru-api-diagnostic"));
                 }
-                _logger.Debug("Response Body\n{0}", Encoding.UTF8.GetString(responseBody));
+                _logger.Debug("TruServiceHttpClient - Response Body\n{0}", Encoding.UTF8.GetString(responseBody));
                 deserialize = Serializer.Deserialize<Response>(responseBody);
                 return deserialize;
             }
             catch (Exception e)
             {
-                _logger.Error(e, "Error in TruService Client");
+                _logger.Error(e, "TruServiceHttpClient - Error in TruService Client");
             }
             return deserialize;
         }

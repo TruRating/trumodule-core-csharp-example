@@ -137,9 +137,9 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
                 while (string.IsNullOrEmpty(mobileNumber))
                     mobileNumber = ConsoleIo.ReadLine("Enter your mobile number, e.g. +44 (1234) 787123");
                 while (string.IsNullOrEmpty(businessName))
-                    businessName = ConsoleIo.ReadLine("Enter your business name, e.g. McDonalds");
+                    businessName = ConsoleIo.ReadLine("Enter your business name, e.g. Speedy Food");
                 while (string.IsNullOrEmpty(merchantName))
-                    merchantName = ConsoleIo.ReadLine("Enter your outlet name, e.g. McDonalds Fleet Street");
+                    merchantName = ConsoleIo.ReadLine("Enter your outlet name, e.g. Speedy Food Fleet Street");
                 _truModule.Activate(sectorNode, timeZone, PaymentInstant.PAYBEFORE,
                         emailAddress, password, address, mobileNumber, merchantName, businessName);
             }

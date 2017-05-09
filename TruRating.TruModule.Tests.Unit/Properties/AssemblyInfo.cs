@@ -1,4 +1,4 @@
-﻿// The MIT License
+// The MIT License
 // 
 // Copyright (c) 2017 TruRating Ltd. https://www.trurating.com
 // 
@@ -31,7 +31,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TruRating.TruModule.Tests.Unit")]
-[assembly: AssemblyCopyright("Copyright TruRating ©  2017")]
+[assembly: AssemblyCopyright("Copyright TruRating �  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -20,20 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TruRating.TruModule.Network;
 
-namespace TruRating.TruModule.Tests.Unit.Network.SystemWebClientTests
+namespace TruRating.TruModule.Device
 {
-    [TestClass]
-    public class WhenCreatingAWebRequest
+    [Flags]
+    public enum RatingContext
     {
-        [TestMethod]
-        public void ItShouldHaveTheTimeoutSet()
-        {
-            var _sut = new SystemWebClient(1000);
-            var webRequest = _sut.GetWebRequestTimeout(new Uri("http://localhost"));
-            Assert.IsTrue(webRequest.Timeout == 1000);
-        }
+        NONE = 0,
+        PRIZE = 1,
     }
 }

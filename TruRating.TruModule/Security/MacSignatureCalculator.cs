@@ -42,20 +42,29 @@ namespace TruRating.TruModule.Security
         {
             try
             {
-                var payloadStream = new MemoryStream(payload) {Position = 0};
-                //makr sure stream is at start
-                //generate sugnature
-                var des = TripleDES.Create();
-                des.Key = Encoding.UTF8.GetBytes(_transportKey);
-                des.Mode = CipherMode.ECB;
-                var encryptor = des.CreateEncryptor();
-                var hash = SHA256.Create().ComputeHash(payloadStream);
-                var encryptedHash = encryptor.TransformFinalBlock(hash, 0, hash.Length);
-                return BitConverter.ToString(encryptedHash).Replace("-", string.Empty);
+                using (var payloadStream = new MemoryStream(payload) {Position = 0})
+                {
+                    using (var des = TripleDES.Create())
+                    {
+                        des.Key = Encoding.UTF8.GetBytes(_transportKey);
+                        des.Mode = CipherMode.ECB;
+                        using (var encryptor = des.CreateEncryptor())
+                        {
+                            using (var hash = SHA256.Create())
+                            {
+                                var computeHash = hash.ComputeHash(payloadStream);
+                                hash.Clear();
+                                var encryptedHash = encryptor.TransformFinalBlock(computeHash, 0, computeHash.Length);
+                                des.Clear();
+                                return BitConverter.ToString(encryptedHash).Replace("-", string.Empty);
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {
-                _logger.Error(e, "Error during MAC calculation");
+                _logger.Error(e, "MacSignatureCalculator - Error during MAC calculation");
                 return null;
             }
         }

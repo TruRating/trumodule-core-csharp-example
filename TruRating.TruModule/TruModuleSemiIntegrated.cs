@@ -25,6 +25,7 @@ using TruRating.TruModule.Device;
 using TruRating.TruModule.Messages;
 using TruRating.TruModule.Network;
 using TruRating.TruModule.Settings;
+using TruRating.TruModule.Util;
 
 namespace TruRating.TruModule
 {
@@ -48,12 +49,15 @@ namespace TruRating.TruModule
                 if (IsActivated(bypassTruServiceCache: false))
                 {
                     var request = TruServiceMessageFactory.AssembleRequestPosEventList(new RequestParams(Settings, SessionId), requestPosEventList);
-                    SendRequest(request);
+                    TaskHelpers.BeginTask(() =>
+                    {
+                        return SendRequest(request);
+                    });
                 }
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error in SendBatchedPosEvents");
+                Logger.Error(e, "TruModuleSemiIntegrated - Error in SendBatchedPosEvents");
             }
 
         }

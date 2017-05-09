@@ -59,7 +59,7 @@ namespace TruRating.TruModule
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error in DoRating");
+                Logger.Error(e, "TruModuleStandalone - Error in DoRating");
             }
         }
 
@@ -70,12 +70,15 @@ namespace TruRating.TruModule
                 if (IsActivated(bypassTruServiceCache: false))
                 {
                     var request = TruServiceMessageFactory.AssembleRequestTransaction(new RequestParams(Settings, SessionId), requestTransaction);
-                    SendRequest(request);
+                    TaskHelpers.BeginTask(() =>
+                    {
+                        return SendRequest(request);
+                    });
                 }
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error in SendTransaction");
+                Logger.Error(e, "TruModuleStandalone - Error in SendTransaction");
             }
 
         }
@@ -105,7 +108,7 @@ namespace TruRating.TruModule
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error in GetLookups");
+                Logger.Error(e, "TruModuleStandalone - Error in GetLookups");
             }
             return null;
         }
@@ -128,7 +131,7 @@ namespace TruRating.TruModule
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error in Activate with reg form");
+                Logger.Error(e, "TruModuleStandalone - Error in Activate with reg form");
             }
             return Activated;
 
@@ -147,7 +150,7 @@ namespace TruRating.TruModule
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error in Activate with reg code");
+                Logger.Error(e, "TruModuleStandalone - Error in Activate with reg code");
             }
             return Activated;
         }

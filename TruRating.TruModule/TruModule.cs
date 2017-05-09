@@ -69,7 +69,7 @@ namespace TruRating.TruModule
             {
                 if (ActivationRecheck > DateTimeProvider.UtcNow && !bypassTruServiceCache)
                 {
-                    Logger.Debug("Not querying TruService status, next check at {0}. IsActive is {1}",
+                    Logger.Debug("TruModule - Not querying TruService status, next check at {0}. IsActive is {1}",
                         ActivationRecheck, Activated);
                     return Activated;
                 }
@@ -85,7 +85,7 @@ namespace TruRating.TruModule
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error in IsActivated");
+                Logger.Error(e, "TruModule - Error in IsActivated");
             }
             return Activated;
         }
@@ -99,23 +99,28 @@ namespace TruRating.TruModule
                 {
                     if (Settings.Trigger == Trigger.DWELLTIMEEXTEND)
                     {
-                        Logger.Debug("Waiting {0} to cancel rating", _dwellTimeExtendMs);
+                        Logger.Info("TruModule - Waiting {0}ms to call IDevice.ResetDisplay", _dwellTimeExtendMs);
                         _dwellTimeExtendAutoResetEvent.WaitOne(_dwellTimeExtendMs); //Wait for dwelltime extend to finish
                         if (_isQuestionRunning) //recheck _isQuestionRunning because customer may have provided rating
                         {
                             Device.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
+                            Logger.Info("TruModule - Called IDevice.ResetDisplay");
+                        }
+                        else
+                        {
+                            Logger.Info("TruModule - Question not running");
                         }
                     }
                     else
                     {
                         Device.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
+                        Logger.Info("TruModule - Called IDevice.ResetDisplay");
                     }
-                    Logger.Debug("Cancelled rating");
                 }
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error in CancelRating");
+                Logger.Error(e, "TruModule - Error in CancelRating");
             }
         }
 
@@ -131,14 +136,14 @@ namespace TruRating.TruModule
                 _isCancelled = false;
                 if (!(request.Item is RequestQuestion))
                 {
-                    Logger.Info("Request was not a question");
+                    Logger.Error("TruModule - Request was not a question");
                     return;
                 }
                 Settings.Trigger = ((RequestQuestion)request.Item).Trigger;
                 var response = _truServiceClient.Send(request);
                 if (response == null)
                 {
-                    Logger.Info("Response was null");
+                    Logger.Warn("TruModule - Response was null, exiting");
                     return;
                 }
                 ResponseQuestion question;
@@ -152,8 +157,8 @@ namespace TruRating.TruModule
                 };
                 //Look through the response for a valid question
                 ResponseScreen responseScreen = null;
-                var whenToDisplay = rating.Value < 0 ? When.NOTRATED : When.RATED;
-                var hasRated = whenToDisplay == When.RATED;
+
+                var hasRated = false;
                 if (TruModuleHelpers.QuestionAvailable(response, rating.Rfc1766, out question, out receipts, out screens))
                 {
                     var sw = new Stopwatch();
@@ -166,27 +171,36 @@ namespace TruRating.TruModule
                         _dwellTimeExtendMs = question.TimeoutMs;
                     }
                     _isQuestionRunning = true;
+                    Logger.Info("TruModule - Calling IDevice.Display1AQ1KR");
                     rating.Value = Device.Display1AQ1KR(question.Value, timeoutMs);
+                    var whenToDisplay = rating.Value < 0 ? When.NOTRATED : When.RATED;
+                    hasRated = whenToDisplay == When.RATED;
                     //Wait for the user input for the specified period
                     _isQuestionRunning = false;
                     _dwellTimeExtendAutoResetEvent.Set();
                     //Signal to CancelRating that question has been answered when called in another thread.
                     sw.Stop();
                     rating.ResponseTimeMs = (int)sw.ElapsedMilliseconds; //Set the response time
+                    Logger.Info("TruModule - Rated = {0} in {1}ms", hasRated, rating.ResponseTimeMs);
                     var responseReceipt = TruModuleHelpers.GetResponseReceipt(receipts, whenToDisplay);
                     responseScreen = TruModuleHelpers.GetResponseScreen(screens, whenToDisplay);
+                    Logger.Info("TruModule - Calling IReceiptManager.AppendReceipt");
                     ReceiptManager.AppendReceipt(responseReceipt);
                 }
-                _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));//TODO wrap in task.
+                TaskHelpers.BeginTask(() =>
+                {
+                    return _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));
+                });
                 if (responseScreen != null && (!_isCancelled || responseScreen.Priority))
                 {
-                    var messageContext = responseScreen.Priority && hasRated ? MessageContext.PRIZE : MessageContext.NONE;
-                    Device.DisplayAcknowledgement(responseScreen.Value, responseScreen.TimeoutMs, hasRated, messageContext); //TODO
+                    var ratingContext = responseScreen.Priority && hasRated ? RatingContext.PRIZE : RatingContext.NONE;
+                    Logger.Info("TruModule - Calling IDevice.DisplayAcknowledgement");
+                    Device.DisplayAcknowledgement(responseScreen.Value, responseScreen.TimeoutMs, hasRated, ratingContext);
                 }
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error in DoRating");
+                Logger.Error(e, "TruModule - Error in DoRating");
             }
         }
 

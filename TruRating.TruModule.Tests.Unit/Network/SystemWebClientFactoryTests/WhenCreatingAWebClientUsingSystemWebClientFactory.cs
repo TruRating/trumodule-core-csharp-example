@@ -28,20 +28,12 @@ namespace TruRating.TruModule.Tests.Unit.Network.SystemWebClientFactoryTests
     [TestClass]
     public class WhenCreatingAWebClientUsingSystemWebClientFactory
     {
-        private SystemWebClientFactory _sut;
-        private int _httpTimeoutMs = 1000;
-
-        [TestInitialize]
-        public void Setup()
-        {
-            _sut = new SystemWebClientFactory(_httpTimeoutMs);
-        }
-
         [TestMethod]
         public void ItShouldSetTheTimeout()
         {
+            var _sut = new SystemWebClientFactory(1000);
             var systemWebClient = ((SystemWebClient)_sut.Create());
-            Assert.IsTrue(systemWebClient.HttpTimeoutMs == _httpTimeoutMs);
+            Assert.IsTrue(systemWebClient.HttpTimeoutMs == 1000);
             Assert.IsTrue(systemWebClient.Encoding.Equals(Encoding.UTF8));
         }
     }

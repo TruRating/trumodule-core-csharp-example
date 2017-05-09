@@ -72,13 +72,13 @@ namespace TruRating.TruModule.Tests.Unit.Network.TruServiceHttpClientTests
         [TestMethod]
         public void ItShouldLogTheWebException()
         {
-            MockOf<ILogger>().AssertWasCalled(x=> x.Error(_webException, "Error in TruService Client"));
+            MockOf<ILogger>().AssertWasCalled(x=> x.Error(_webException, "TruServiceHttpClient - Error in TruService Client"));
         }
 
         [TestMethod]
         public void ItShouldLogTheServerResponseBody()
         {
-            MockOf<ILogger>().AssertWasCalled(x => x.Error("Server Error!"));
+            MockOf<ILogger>().AssertWasCalled(x => x.Error("TruServiceHttpClient - {0}", "Server Error!"));
         }
     }
 }
