@@ -39,5 +39,11 @@ namespace TruRating.TruModule
         /// <param name="posParams"></param>
         /// <param name="requestTransaction"></param>
         void SendTransaction(PosParams posParams, RequestTransaction requestTransaction);
+
+        /// <summary>
+        /// Indicate to TruModule that a payment is being requested, causing either a question to be presented or the question to be cancelled
+        /// </summary>
+        /// <param name="posParams"></param>
+        void InitiatePayment(PosParams posParams);
     }
 }
