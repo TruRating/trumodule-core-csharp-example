@@ -20,18 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System.Collections.Generic;
+using TruRating.TruModule.ConsoleRunner.Device;
 using TruRating.TruModule.ConsoleRunner.Environment;
+using TruRating.TruModule.ConsoleRunner.Settings;
 using TruRating.TruModule.Device;
 
 namespace TruRating.TruModule.ConsoleRunner.UseCase
 {
     public class UseCaseFactory
     {
-        internal static List<IUseCase> Get(IConsoleIo consoleIo, ConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
+        internal static List<IUseCase> Get(IConsoleLogger consoleLogger, ConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
         {
-            var standaloneUseCase = new StandaloneUseCase(consoleIo, consoleSettings, device, receiptManager);
-            var integratedPosEventUseCase = new IntegratedUseCase(consoleIo, consoleSettings, device, receiptManager);
-            var integratedPosEventListUseCase = new SemiIntegratedUseCase(consoleIo, consoleSettings, device, receiptManager);
+            var standaloneUseCase = new StandaloneUseCase(consoleLogger, consoleSettings, device, receiptManager);
+            var integratedPosEventUseCase = new IntegratedUseCase(consoleLogger, consoleSettings, device, receiptManager);
+            var integratedPosEventListUseCase = new SemiIntegratedUseCase(consoleLogger, consoleSettings, device, receiptManager);
 
             var modules = new List<IUseCase>
             {

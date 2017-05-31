@@ -25,29 +25,24 @@ using System.Reflection;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.ConsoleRunner.Environment;
 using TruRating.TruModule.Device;
-using TruRating.TruModule.Util;
 
 namespace TruRating.TruModule.ConsoleRunner.Device
 {
-    public class ConsoleDevice : IDevice, IReceiptManager
+    public class ConsoleDevice : IDevice
     {
-        private readonly IConsoleSettings _consoleSettings;
-        private readonly IConsoleIo _logger;
+        private readonly string[] _languages;
+        private readonly IConsoleLogger _consoleLogger;
 
-        public ConsoleDevice(IConsoleIo logger, IConsoleSettings consoleSettings)
+        public ConsoleDevice(IConsoleLogger consoleLogger, string[] languages)
         {
-            _logger = logger;
-            _consoleSettings = consoleSettings;
+            _consoleLogger = consoleLogger;
+            _languages = languages;
         }
 
         public void DisplayMessage(string value)
         {
-            _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
+            _consoleLogger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
         }
-
-       
-
-
         public RequestPeripheral GetScreenCapabilities()
         {
             return new RequestPeripheral
@@ -78,19 +73,6 @@ namespace TruRating.TruModule.ConsoleRunner.Device
             return Assembly.GetExecutingAssembly().FullName;
         }
 
-        public RequestPeripheral GetReceiptCapabilities()
-        {
-            return new RequestPeripheral
-            {
-                Format = Format.TEXT,
-                Separator = System.Environment.NewLine,
-                Font = Font.MONOSPACED,
-                Unit = UnitDimension.LINE,
-                Width = 40,
-                WidthSpecified = true
-            };
-        }
-
         public void ResetDisplay()
         {
             KeyPressReader.Cancel();
@@ -99,7 +81,7 @@ namespace TruRating.TruModule.ConsoleRunner.Device
         public RequestLanguage[] GetLanguages()
         {
             var result = new List<RequestLanguage>();
-            foreach (var language in _consoleSettings.Languages)
+            foreach (var language in _languages)
             {
                 result.Add(new RequestLanguage {Rfc1766 = language});
             }
@@ -117,8 +99,8 @@ namespace TruRating.TruModule.ConsoleRunner.Device
         }
         public void DisplayAcknowledgement(string value, int timeoutMilliseconds, bool hasRated, RatingContext ratingContext)
         {
-            _logger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
-            _logger.WriteLine(ConsoleColor.Gray, "DISPLAY: waiting {0} ms", timeoutMilliseconds);
+            _consoleLogger.WriteLine(ConsoleColor.White, "DISPLAY: " + value);
+            _consoleLogger.WriteLine(ConsoleColor.Gray, "DISPLAY: waiting {0} ms", timeoutMilliseconds);
             try
             {
                 KeyPressReader.ReadKey(timeoutMilliseconds, true);
@@ -133,9 +115,9 @@ namespace TruRating.TruModule.ConsoleRunner.Device
         {
             try
             {
-                _logger.WriteLine(ConsoleColor.Cyan, "1AQ1KR : " + value);
-                _logger.WriteLine(ConsoleColor.Gray, "1AQ1KR : waiting {0} ms", timeoutMilliseconds);
-                _logger.Write(ConsoleColor.Cyan, "1AQ1KR : ");
+                _consoleLogger.WriteLine(ConsoleColor.Cyan, "1AQ1KR : " + value);
+                _consoleLogger.WriteLine(ConsoleColor.Gray, "1AQ1KR : waiting {0} ms", timeoutMilliseconds);
+                _consoleLogger.Write(ConsoleColor.Cyan, "1AQ1KR : ");
                 short result;
                 if (short.TryParse(KeyPressReader.ReadKey(timeoutMilliseconds, false).KeyChar.ToString(), out result))
                 {
@@ -152,10 +134,6 @@ namespace TruRating.TruModule.ConsoleRunner.Device
                 return -4; // Couldn't ask a question or capture the response
             }
         }
-
-        public void AppendReceipt(string value)
-        {
-            _logger.WriteLine(ConsoleColor.Magenta, "RECEIPT: " + value);
-        }
+     
     }
 }

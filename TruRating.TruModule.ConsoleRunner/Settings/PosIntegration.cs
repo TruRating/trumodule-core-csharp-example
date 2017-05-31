@@ -19,12 +19,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace TruRating.TruModule.Util
+namespace TruRating.TruModule.ConsoleRunner.Settings
 {
-    /// <summary>
-    /// Provide Func<T> support for .NET 2.0
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public delegate T Func<T>();
+    public enum PosIntegration
+    {
+        None = 0,
+        Integrated = 1,
+        Semi = 2
+    }
 }

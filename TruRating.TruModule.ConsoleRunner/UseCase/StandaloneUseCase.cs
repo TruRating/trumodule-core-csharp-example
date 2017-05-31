@@ -22,33 +22,33 @@
 using System;
 using System.Collections.Generic;
 using TruRating.Dto.TruService.V220;
+using TruRating.TruModule.ConsoleRunner.Device;
 using TruRating.TruModule.ConsoleRunner.Environment;
+using TruRating.TruModule.ConsoleRunner.Settings;
 using TruRating.TruModule.Device;
-using TruRating.TruModule.Network;
-using TruRating.TruModule.Security;
 using TruRating.TruModule.Util;
 
 namespace TruRating.TruModule.ConsoleRunner.UseCase
 {
     public class StandaloneUseCase : UseCaseBase
     {
-        private readonly IConsoleSettings _consoleSettings;
-        private readonly IConsoleIo _consoleIo;
+        private readonly ConsoleSettings _consoleSettings;
+        private readonly IConsoleLogger _consoleLogger;
         private ITruModuleStandalone _truModule;
 
-        public StandaloneUseCase(IConsoleIo consoleIo, IConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
-            : base(consoleIo, consoleSettings, device,receiptManager)
+        public StandaloneUseCase(IConsoleLogger consoleLogger, ConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
+            : base(consoleLogger, consoleSettings, device,receiptManager)
         {
-            _consoleIo = consoleIo;
+            _consoleLogger = consoleLogger;
             _consoleSettings = consoleSettings;
         }
 
         public override void Init()
         {
-            _truModule = new TruModuleStandalone(_consoleIo, _consoleSettings, Device, ReceiptManager);
+            _truModule = new TruModuleStandalone(_consoleLogger, _consoleSettings.TruModuleSettings, Device, ReceiptManager);
             if (!_truModule.IsActivated(bypassTruServiceCache:false))
             {
-                _consoleIo.WriteLine(ConsoleColor.Gray,"Standalone UseCase: Not activated at start-up, prompting registration");
+                _consoleLogger.WriteLine(ConsoleColor.Gray,"Standalone UseCase: Not activated at start-up, prompting registration");
                 Activate();
             }
         }
@@ -61,7 +61,7 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
 
             while (true)
             {
-                var selectedOption = ConsoleIo.ReadLine("Please pick a numbered " + lookupName);
+                var selectedOption = ConsoleLogger.ReadLine("Please pick a numbered " + lookupName);
                 int selectedOptionNumber;
                 if (int.TryParse(selectedOption, out selectedOptionNumber))
                 {
@@ -115,7 +115,7 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
                 return;
             Device.DisplayMessage("This device is not registered!");
             var registrationCode =
-                ConsoleIo.ReadLine(
+                ConsoleLogger.ReadLine(
                     "Type your registration code, Press ENTER to register via form input or type SKIP to skip registration");
             if (string.IsNullOrEmpty(registrationCode))
             {
@@ -129,17 +129,17 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
                 string merchantName = null;
 
                 while (string.IsNullOrEmpty(emailAddress))
-                    emailAddress = ConsoleIo.ReadLine("Enter your email address (required)");
+                    emailAddress = ConsoleLogger.ReadLine("Enter your email address (required)");
                 while (string.IsNullOrEmpty(password))
-                    password = ConsoleIo.ReadLine("Enter a password (required)");
+                    password = ConsoleLogger.ReadLine("Enter a password (required)");
                 while (string.IsNullOrEmpty(address))
-                    address = ConsoleIo.ReadLine("Enter your postal address");
+                    address = ConsoleLogger.ReadLine("Enter your postal address");
                 while (string.IsNullOrEmpty(mobileNumber))
-                    mobileNumber = ConsoleIo.ReadLine("Enter your mobile number, e.g. +44 (1234) 787123");
+                    mobileNumber = ConsoleLogger.ReadLine("Enter your mobile number, e.g. +44 (1234) 787123");
                 while (string.IsNullOrEmpty(businessName))
-                    businessName = ConsoleIo.ReadLine("Enter your business name, e.g. Speedy Food");
+                    businessName = ConsoleLogger.ReadLine("Enter your business name, e.g. Speedy Food");
                 while (string.IsNullOrEmpty(merchantName))
-                    merchantName = ConsoleIo.ReadLine("Enter your outlet name, e.g. Speedy Food Fleet Street");
+                    merchantName = ConsoleLogger.ReadLine("Enter your outlet name, e.g. Speedy Food Fleet Street");
                 _truModule.Activate(sectorNode, timeZone, PaymentInstant.PAYBEFORE,
                         emailAddress, password, address, mobileNumber, merchantName, businessName);
             }
@@ -163,9 +163,9 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
         }
         public override void Example()
         {
-            _consoleIo.WriteLine(ConsoleColor.Gray, "Payment Application: About to make a payment");
+            _consoleLogger.WriteLine(ConsoleColor.Gray, "Payment Application: About to make a payment");
             _truModule.DoRating();
-            _consoleIo.WriteLine(ConsoleColor.Gray, "Payment Application: Sending Transaction");
+            _consoleLogger.WriteLine(ConsoleColor.Gray, "Payment Application: Sending Transaction");
             _truModule.SendTransaction(new RequestTransaction
             {
                 Amount = Rand.Next(1000, 2000),

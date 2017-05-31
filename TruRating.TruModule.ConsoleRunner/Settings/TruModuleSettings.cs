@@ -19,12 +19,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace TruRating.TruModule.ConsoleRunner.Environment
+using TruRating.Dto.TruService.V220;
+using TruRating.TruModule.Settings;
+
+namespace TruRating.TruModule.ConsoleRunner.Settings
 {
-    public enum PosIntegration
+    public class TruModuleSettings : ISettings
     {
-        None = 0,
-        Integrated = 1,
-        Semi = 2
+        [Required]
+        public string PartnerId { get; set; }
+        [Required]
+        public string MerchantId { get; set; }
+        [Required]
+        public string TerminalId { get; set; }
+        [Required]
+        public string TruServiceUrl { get; set; }
+        [Required]
+        public string TransportKey { get; set; }
+        [Required]
+        public int HttpTimeoutMs { get; set; }
+        public Trigger Trigger { get; set; }
     }
 }

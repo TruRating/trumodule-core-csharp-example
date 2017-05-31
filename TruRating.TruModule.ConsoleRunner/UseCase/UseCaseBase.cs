@@ -21,7 +21,9 @@
 // THE SOFTWARE.
 using System;
 using System.Threading;
+using TruRating.TruModule.ConsoleRunner.Device;
 using TruRating.TruModule.ConsoleRunner.Environment;
+using TruRating.TruModule.ConsoleRunner.Settings;
 using TruRating.TruModule.Device;
 
 namespace TruRating.TruModule.ConsoleRunner.UseCase
@@ -29,13 +31,13 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
     public abstract class UseCaseBase : IUseCase
     {
         protected static readonly Random Rand = new Random();
-        protected readonly IConsoleSettings ConsoleSettings;
-        protected readonly IConsoleIo ConsoleIo;
+        protected readonly ConsoleSettings ConsoleSettings;
+        protected readonly IConsoleLogger ConsoleLogger;
         protected readonly IDevice Device;
         protected readonly IReceiptManager ReceiptManager;
-        protected UseCaseBase(IConsoleIo consoleIo, IConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
+        protected UseCaseBase(IConsoleLogger consoleLogger, ConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
         {
-            ConsoleIo = consoleIo;
+            ConsoleLogger = consoleLogger;
             ConsoleSettings = consoleSettings;
             Device = device;
             ReceiptManager = receiptManager;
@@ -43,7 +45,7 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
 
         public void MainLoop()
         {
-            ConsoleIo.WriteLine(ConsoleColor.Red, "Press any key to start");
+            ConsoleLogger.WriteLine(ConsoleColor.Red, "Press any key to start");
             KeyPressReader.ReadKey();
             Init();
             while (true) //Endless loop
@@ -54,17 +56,17 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
                 }
                 catch (Exception e)
                 {
-                    ConsoleIo.WriteLine(ConsoleColor.DarkYellow, "Error {0}", e);
+                    ConsoleLogger.WriteLine(ConsoleColor.DarkYellow, "Error {0}", e);
                 }
                 finally
                 {
-                    ConsoleIo.WriteLine(ConsoleColor.DarkGray, "");
-                    ConsoleIo.WriteLine(ConsoleColor.DarkGray, "Waiting 1 second to finish");
+                    ConsoleLogger.WriteLine(ConsoleColor.DarkGray, "");
+                    ConsoleLogger.WriteLine(ConsoleColor.DarkGray, "Waiting 1 second to finish");
                     Thread.Sleep(1000); //Wait for threads to join in TruModule
                     var endOfRunPressAKeyToReset = " End of run. Press a key to reset. ";
-                    ConsoleIo.WriteLine(ConsoleColor.DarkGray,
+                    ConsoleLogger.WriteLine(ConsoleColor.DarkGray,
                         endOfRunPressAKeyToReset.PadLeft(Console.WindowWidth - 1, '='));
-                    ConsoleIo.WriteLine(ConsoleColor.DarkGray, "");
+                    ConsoleLogger.WriteLine(ConsoleColor.DarkGray, "");
                     KeyPressReader.ReadKey();
                 }
             }

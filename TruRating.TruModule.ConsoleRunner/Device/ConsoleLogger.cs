@@ -20,18 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using TruRating.TruModule.ConsoleRunner.Environment;
 using TruRating.TruModule.Device;
 
-namespace TruRating.TruModule.ConsoleRunner.Environment
+namespace TruRating.TruModule.ConsoleRunner.Device
 {
-    public interface IConsoleIo : ILogger
+    public interface IConsoleLogger : ILogger
     {
         void Write(ConsoleColor color, string value, params object[] vars);
         void WriteLine(ConsoleColor color, string value, params object[] vars);
         string ReadLine(string value);
     }
-
-    public class ConsoleIo : IConsoleIo
+    public class ConsoleLogger : IConsoleLogger
     {
         private readonly object _consoleLock = new object();
         public string ReadLine(string value)

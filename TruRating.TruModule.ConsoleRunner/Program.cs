@@ -22,6 +22,7 @@
 using System;
 using TruRating.TruModule.ConsoleRunner.Device;
 using TruRating.TruModule.ConsoleRunner.Environment;
+using TruRating.TruModule.ConsoleRunner.Settings;
 using TruRating.TruModule.ConsoleRunner.UseCase;
 
 namespace TruRating.TruModule.ConsoleRunner
@@ -30,14 +31,14 @@ namespace TruRating.TruModule.ConsoleRunner
     {
         private static void Main(string[] args)
         {
-            var logger = new ConsoleIo();
+            var consoleLogger = new ConsoleLogger();
             try
             {
-                var settings = new ConsoleSettings(logger);
-                var consoleDevice = new ConsoleDevice(logger, settings);
-
+                var settings = new ConsoleSettings(consoleLogger);
+                var consoleDevice = new ConsoleDevice(consoleLogger, settings.Languages);
+                var consoleReceiptManager = new ConsoleReceiptManager(consoleLogger);
                 IUseCase module = null;
-                foreach (var truModule in UseCaseFactory.Get(logger, settings, consoleDevice, consoleDevice))
+                foreach (var truModule in UseCaseFactory.Get(consoleLogger, settings, consoleDevice, consoleReceiptManager))
                 {
                     if (truModule.IsApplicable())
                     {
@@ -56,8 +57,8 @@ namespace TruRating.TruModule.ConsoleRunner
             }
             catch (Exception e)
             {
-                logger.WriteLine(ConsoleColor.Red, e.Message);
-                logger.WriteLine(ConsoleColor.Red, "Press enter to exit");
+                consoleLogger.WriteLine(ConsoleColor.Red, e.Message);
+                consoleLogger.WriteLine(ConsoleColor.Red, "Press enter to exit");
                 KeyPressReader.ReadKey();
             }
         }

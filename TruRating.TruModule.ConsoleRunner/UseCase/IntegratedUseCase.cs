@@ -23,7 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using TruRating.Dto.TruService.V220;
+using TruRating.TruModule.ConsoleRunner.Device;
 using TruRating.TruModule.ConsoleRunner.Environment;
+using TruRating.TruModule.ConsoleRunner.Settings;
 using TruRating.TruModule.Device;
 using TruRating.TruModule.Messages;
 
@@ -31,34 +33,34 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
 {
     public class IntegratedUseCase : UseCaseBase
     {
-        private readonly IConsoleSettings _consoleSettings;
-        private readonly IConsoleIo _consoleIo;
+        private readonly ConsoleSettings _consoleSettings;
+        private readonly IConsoleLogger _consoleLogger;
         private TruModuleIntegrated _truModule;
 
-        public IntegratedUseCase(IConsoleIo consoleIo, IConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
-            : base(consoleIo, consoleSettings, device, receiptManager)
+        public IntegratedUseCase(IConsoleLogger consoleLogger, ConsoleSettings consoleSettings, IDevice device, IReceiptManager receiptManager)
+            : base(consoleLogger, consoleSettings, device, receiptManager)
         {
-            _consoleIo = consoleIo;
+            _consoleLogger = consoleLogger;
             _consoleSettings = consoleSettings;
         }
 
         public override void Init()
         {
-            _truModule = new TruModuleIntegrated(_consoleIo,_consoleSettings, Device, ReceiptManager);
+            _truModule = new TruModuleIntegrated(_consoleLogger,_consoleSettings.TruModuleSettings, Device, ReceiptManager);
         }
 
         public override void Example()
         {
             var log = new List<Type>();
             var sessionId = Guid.NewGuid().ToString();
-            _consoleIo.WriteLine(ConsoleColor.Gray, "Pos Application: starting tilling");
+            _consoleLogger.WriteLine(ConsoleColor.Gray, "Pos Application: starting tilling");
             var posParams = new PosParams
             {
                 SessionId = sessionId,
-                PartnerId = _consoleSettings.PartnerId,
-                MerchantId = _consoleSettings.MerchantId,
-                TerminalId = _consoleSettings.TerminalId,
-                Url = _consoleSettings.TruServiceUrl
+                PartnerId = _consoleSettings.TruModuleSettings.PartnerId,
+                MerchantId = _consoleSettings.TruModuleSettings.MerchantId,
+                TerminalId = _consoleSettings.TruModuleSettings.TerminalId,
+                Url = _consoleSettings.TruModuleSettings.TruServiceUrl
             };
             while (true) //Send all pos events
             {
@@ -70,11 +72,11 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
                 _truModule.SendPosEvent(posParams, posEvent);
                 Thread.Sleep(250); //Wait a short length of time before continuing
             }
-            _consoleIo.WriteLine(ConsoleColor.Gray, "Pos Application: About to make a payment");
+            _consoleLogger.WriteLine(ConsoleColor.Gray, "Pos Application: About to make a payment");
             _truModule.InitiatePayment(posParams);
-            _consoleIo.WriteLine(ConsoleColor.Gray, "Pos Application: customer made payment");
+            _consoleLogger.WriteLine(ConsoleColor.Gray, "Pos Application: customer made payment");
             Thread.Sleep(250); //Wait a short length of time between Making a payment and transation
-            _consoleIo.WriteLine(ConsoleColor.Gray, "Pos Application: Payment complete");
+            _consoleLogger.WriteLine(ConsoleColor.Gray, "Pos Application: Payment complete");
             _truModule.SendTransaction(posParams, new RequestTransaction
             {
                 Amount = Rand.Next(1000, 2000),

@@ -51,7 +51,7 @@ namespace TruRating.TruModule.Settings
         /// <summary>
         /// Specifies the timeout in milliseconds to wait for a response from TruService
         /// </summary>
-        int HttpTimeoutMs { get; }
+        int HttpTimeoutMs { get; set; }
         /// <summary>
         /// Specifies the Trigger point for the TruRating question.  May be reconfigured dynamically by TruService.
         /// </summary>

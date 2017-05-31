@@ -21,36 +21,38 @@
 // THE SOFTWARE.
 using System;
 using TruRating.Dto.TruService.V220;
+using TruRating.TruModule.ConsoleRunner.Device;
 using TruRating.TruModule.ConsoleRunner.Environment;
+using TruRating.TruModule.ConsoleRunner.Settings;
 using TruRating.TruModule.Device;
 
 namespace TruRating.TruModule.ConsoleRunner.UseCase
 {
     public class SemiIntegratedUseCase : UseCaseBase
     {
-        private readonly IConsoleSettings _consoleSettings;
-        private readonly IConsoleIo _consoleIo;
+        private readonly ConsoleSettings _consoleSettings;
+        private readonly IConsoleLogger _consoleLogger;
         private ITruModuleSemiIntegrated _truModule;
 
-        public SemiIntegratedUseCase(IConsoleIo consoleIo, IConsoleSettings consoleSettings,
-            IDevice device, IReceiptManager receiptManager) : base(consoleIo, consoleSettings, device, receiptManager)
+        public SemiIntegratedUseCase(IConsoleLogger consoleLogger, ConsoleSettings consoleSettings,
+            IDevice device, IReceiptManager receiptManager) : base(consoleLogger, consoleSettings, device, receiptManager)
         {
-            _consoleIo = consoleIo;
+            _consoleLogger = consoleLogger;
             _consoleSettings = consoleSettings;
         }
 
         public override void Init()
         {
-            _truModule = new TruModuleSemiIntegrated(_consoleIo, _consoleSettings, Device, ReceiptManager);
+            _truModule = new TruModuleSemiIntegrated(_consoleLogger, _consoleSettings.TruModuleSettings, Device, ReceiptManager);
         }
 
         public override void Example()
         {
-            _consoleIo.WriteLine(ConsoleColor.Gray, "Payment Application: About to make a payment");
+            _consoleLogger.WriteLine(ConsoleColor.Gray, "Payment Application: About to make a payment");
             _truModule.DoRating();
             var posEvent = CreateRequestPosEventList();
             _truModule.SendBatchedPosEvents(posEvent);
-            _consoleIo.WriteLine(ConsoleColor.Gray, "Payment Application: Sending Transaction");
+            _consoleLogger.WriteLine(ConsoleColor.Gray, "Payment Application: Sending Transaction");
             _truModule.SendTransaction(new RequestTransaction
             {
                 Amount = Rand.Next(1000, 2000),

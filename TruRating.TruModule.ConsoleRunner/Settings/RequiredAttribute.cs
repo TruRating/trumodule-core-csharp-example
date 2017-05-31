@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 using System;
 
-namespace TruRating.TruModule.ConsoleRunner.Environment
+namespace TruRating.TruModule.ConsoleRunner.Settings
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter)]
     public class RequiredAttribute : Attribute

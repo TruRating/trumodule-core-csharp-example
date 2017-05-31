@@ -20,15 +20,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using TruRating.TruModule.Settings;
+using TruRating.Dto.TruService.V220;
+using TruRating.TruModule.ConsoleRunner.Environment;
+using TruRating.TruModule.Device;
 
-namespace TruRating.TruModule.ConsoleRunner.Environment
+namespace TruRating.TruModule.ConsoleRunner.Device
 {
-    public interface IConsoleSettings : ISettings
+    public class ConsoleReceiptManager :IReceiptManager
     {
-        PosIntegration PosIntegration { get; set; }
-        string[] Languages { get; set; }
-        DateTime LastQuestionDateTime { get; set; }
-        string Version { get; set; }
+        private readonly IConsoleLogger _consoleLogger;
+        public ConsoleReceiptManager(IConsoleLogger consoleLogger)
+        {
+            _consoleLogger = consoleLogger;
+        }
+
+        public RequestPeripheral GetReceiptCapabilities()
+        {
+            return new RequestPeripheral
+            {
+                Format = Format.TEXT,
+                Separator = System.Environment.NewLine,
+                Font = Font.MONOSPACED,
+                Unit = UnitDimension.LINE,
+                Width = 40,
+                WidthSpecified = true
+            };
+        }
+
+        public void AppendReceipt(string value)
+        {
+            _consoleLogger.WriteLine(ConsoleColor.Magenta, "RECEIPT: " + value);
+        }
     }
 }

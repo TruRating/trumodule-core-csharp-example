@@ -45,12 +45,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Device\ConsoleDevice.cs" />
-    <Compile Include="Environment\IConsoleSettings.cs" />
+    <Compile Include="Device\ConsoleReceiptManager.cs" />
+    <Compile Include="Settings\ConsoleSettings.cs" />
     <Compile Include="Environment\KeyPressReader.cs" />
-    <Compile Include="Environment\ConsoleWriter.cs" />
-    <Compile Include="Environment\PosIntegration.cs" />
-    <Compile Include="Environment\RequiredAttribute.cs" />
-    <Compile Include="Environment\Settings.cs" />
+    <Compile Include="Device\ConsoleLogger.cs" />
+    <Compile Include="Settings\PosIntegration.cs" />
+    <Compile Include="Settings\RequiredAttribute.cs" />
+    <Compile Include="Settings\SettingsHelpers.cs" />
+    <Compile Include="Settings\TruModuleSettings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UseCase\SemiIntegratedUseCase.cs" />
