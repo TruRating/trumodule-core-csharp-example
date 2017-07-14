@@ -183,17 +183,22 @@ namespace TruRating.TruModule
                     rating.ResponseTimeMs = (int)sw.ElapsedMilliseconds; //Set the response time
                     Logger.Info("TruModule - Rated = {0} in {1}ms", hasRated, rating.ResponseTimeMs);
                     _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));
-                    var responseReceipt = TruModuleHelpers.GetResponseReceipt(receipts, whenToDisplay);
-                    responseScreen = TruModuleHelpers.GetResponseScreen(screens, whenToDisplay);
-                    Logger.Info("TruModule - Calling IReceiptManager.AppendReceipt");
-                    ReceiptManager.AppendReceipt(responseReceipt);
+                    if (rating.Value >= -2) //Show the receipt ack if the user skips, times out or rates but not if the question is regulated or could not be displayed
+                    {
+                        var responseReceipt = TruModuleHelpers.GetResponseReceipt(receipts, whenToDisplay);
+                        responseScreen = TruModuleHelpers.GetResponseScreen(screens, whenToDisplay);
+                        Logger.Info("TruModule - Calling IReceiptManager.AppendReceipt");
+                        ReceiptManager.AppendReceipt(responseReceipt);
+                    }
                 }
-               
                 if (responseScreen != null && (!_isCancelled || responseScreen.Priority))
                 {
-                    var ratingContext = responseScreen.Priority && hasRated ? RatingContext.PRIZE : RatingContext.NONE;
-                    Logger.Info("TruModule - Calling IDevice.DisplayAcknowledgement");
-                    Device.DisplayAcknowledgement(responseScreen.Value, responseScreen.TimeoutMs, hasRated, ratingContext);
+                    if (rating.Value >= -2) //Show the display ack if the user skips, times out or rates but not if the question is regulated or could not be displayed
+                    {
+                        var ratingContext = responseScreen.Priority && hasRated ? RatingContext.PRIZE : RatingContext.NONE;
+                        Logger.Info("TruModule - Calling IDevice.DisplayAcknowledgement");
+                        Device.DisplayAcknowledgement(responseScreen.Value, responseScreen.TimeoutMs, hasRated, ratingContext);
+                    }
                 }
             }
             catch (Exception e)
