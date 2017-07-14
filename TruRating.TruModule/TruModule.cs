@@ -182,15 +182,13 @@ namespace TruRating.TruModule
                     sw.Stop();
                     rating.ResponseTimeMs = (int)sw.ElapsedMilliseconds; //Set the response time
                     Logger.Info("TruModule - Rated = {0} in {1}ms", hasRated, rating.ResponseTimeMs);
+                    _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));
                     var responseReceipt = TruModuleHelpers.GetResponseReceipt(receipts, whenToDisplay);
                     responseScreen = TruModuleHelpers.GetResponseScreen(screens, whenToDisplay);
                     Logger.Info("TruModule - Calling IReceiptManager.AppendReceipt");
                     ReceiptManager.AppendReceipt(responseReceipt);
                 }
-                TaskHelpers.BeginTask(() =>
-                {
-                    return _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));
-                });
+               
                 if (responseScreen != null && (!_isCancelled || responseScreen.Priority))
                 {
                     var ratingContext = responseScreen.Priority && hasRated ? RatingContext.PRIZE : RatingContext.NONE;
