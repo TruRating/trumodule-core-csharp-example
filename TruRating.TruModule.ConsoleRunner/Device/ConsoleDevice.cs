@@ -73,7 +73,7 @@ namespace TruRating.TruModule.ConsoleRunner.Device
             return Assembly.GetExecutingAssembly().FullName;
         }
 
-        public void ResetDisplay()
+        public void CancelQuestion()
         {
             KeyPressReader.Cancel();
         }

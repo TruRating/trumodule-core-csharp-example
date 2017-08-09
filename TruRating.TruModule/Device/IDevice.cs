@@ -57,7 +57,7 @@ namespace TruRating.TruModule.Device
         /// <summary>
         /// Remove any message on screen and cancel any 1AQ1KR routine and reset to default state.
         /// </summary>
-        void ResetDisplay();
+        void CancelQuestion();
         /// <summary>
         /// Returns the capabilites of the Screen
         /// </summary>

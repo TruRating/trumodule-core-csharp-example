@@ -103,7 +103,7 @@ namespace TruRating.TruModule
                         _dwellTimeExtendAutoResetEvent.WaitOne(_dwellTimeExtendMs); //Wait for dwelltime extend to finish
                         if (_isQuestionRunning) //recheck _isQuestionRunning because customer may have provided rating
                         {
-                            Device.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
+                            Device.CancelQuestion(); //Force the 1AQ1KR loop to exit and release control of the PED
                             Logger.Info("TruModule - Called IDevice.ResetDisplay");
                         }
                         else
@@ -113,7 +113,7 @@ namespace TruRating.TruModule
                     }
                     else
                     {
-                        Device.ResetDisplay(); //Force the 1AQ1KR loop to exit and release control of the PED
+                        Device.CancelQuestion(); //Force the 1AQ1KR loop to exit and release control of the PED
                         Logger.Info("TruModule - Called IDevice.ResetDisplay");
                     }
                 }
