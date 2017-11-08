@@ -52,12 +52,9 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.ActivateWithRe
             {
                 Item = new ResponseStatus()
             };
-
-            TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
-            TruServiceMessageFactory.Stub(
-                x =>
-                    x.AssembleRequestQuestion(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,Arg<Trigger>.Is.Anything)).Return(Request);
-
+            TruServiceMessageFactory = new TruServiceMessageFactory();
+            RegisterFake(TruServiceMessageFactory);
+            
             TruServiceClient = MockOf<ITruServiceClient>();
             TruServiceClient.Stub(t => t.Send(Arg<Request>.Is.Anything)).Return(Response);
 

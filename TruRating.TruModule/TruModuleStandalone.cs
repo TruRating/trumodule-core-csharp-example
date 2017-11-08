@@ -46,7 +46,7 @@ namespace TruRating.TruModule
             GetQuestion();
         }
 
-        public void DoRating()
+        public new void DoRating()
         {
             try
             {

@@ -46,7 +46,7 @@ namespace TruRating.TruModule
         /// </summary>
         private volatile bool _isCancelled;
         private volatile bool _isQuestionRunning;
-        protected internal Response _questionResponse;
+        protected internal Response QuestionResponse;
         protected internal DateTime ActivationRecheck;
         protected internal bool Activated;
 
@@ -142,7 +142,7 @@ namespace TruRating.TruModule
                 {
                     Logger.Warn("TruModule - Response was null, exiting");
                 }
-                _questionResponse = response;
+                QuestionResponse = response;
                 return response;
             }
             return null;
@@ -151,7 +151,7 @@ namespace TruRating.TruModule
         {
             try
             {
-                if (_questionResponse == null)
+                if (QuestionResponse == null)
                 {
                     Logger.Warn("TruModule - Response was null, exiting");
                     return;
@@ -170,7 +170,7 @@ namespace TruRating.TruModule
                 ResponseScreen responseScreen = null;
 
                 var hasRated = false;
-                if (TruModuleHelpers.QuestionAvailable(_questionResponse, rating.Rfc1766, out question, out receipts, out screens))
+                if (TruModuleHelpers.QuestionAvailable(QuestionResponse, rating.Rfc1766, out question, out receipts, out screens))
                 {
                     var sw = new Stopwatch();
                     sw.Start();
