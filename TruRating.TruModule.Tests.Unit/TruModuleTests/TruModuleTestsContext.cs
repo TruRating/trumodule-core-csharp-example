@@ -25,6 +25,7 @@ using TruRating.TruModule.Device;
 using TruRating.TruModule.Messages;
 using TruRating.TruModule.Network;
 using TruRating.TruModule.Settings;
+using TruRating.TruModule.Util;
 
 namespace TruRating.TruModule.Tests.Unit.TruModuleTests
 {
@@ -59,9 +60,10 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
         }
 
         //Modify visibility for Unit Tests
-        public new void DoRating(Request request)
+        public new void DoRating()
         {
-            base.DoRating(request);
+            base.GetQuestion();
+            base.DoRating();
         }
     }
 
@@ -113,6 +115,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
 
             Settings = MockOf<ISettings>();
             Sut.Activated = true;
+            Sut.ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(60);
             TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
             TruServiceMessageFactory.Stub(
                 x =>

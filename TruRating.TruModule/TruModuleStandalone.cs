@@ -37,24 +37,22 @@ namespace TruRating.TruModule
         /// </summary>
         public TruModuleStandalone(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager)
             : this(logger, settings, device, receiptManager, TruServiceHttpClient.CreateDefault(logger, settings), Messages.TruServiceMessageFactory.CreateDefault())
-        {
+        { 
         }
 
         protected TruModuleStandalone(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager,ITruServiceClient truServiceClient, ITruServiceMessageFactory truServiceMessageFactory)
             :base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
         {
-            
+            GetQuestion();
         }
 
         public void DoRating()
         {
             try
             {
-                SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
                 if (IsActivated(bypassTruServiceCache: false))
                 {
-                    var request = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(Settings, SessionId), Device, ReceiptManager, Settings.Trigger);
-                    DoRating(request);
+                    base.DoRating();
                 }
             }
             catch (Exception e)
@@ -72,8 +70,11 @@ namespace TruRating.TruModule
                     var request = TruServiceMessageFactory.AssembleRequestTransaction(new RequestParams(Settings, SessionId), requestTransaction);
                     TaskHelpers.BeginTask(() =>
                     {
-                        return SendRequest(request);
+                        SendRequest(request);
+                        return GetQuestion();
                     });
+
+                    
                 }
             }
             catch (Exception e)

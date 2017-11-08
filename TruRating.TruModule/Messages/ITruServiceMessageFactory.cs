@@ -34,6 +34,6 @@ namespace TruRating.TruModule.Messages
         Request AssembleRequestLookup(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, LookupName lookupName);
         Request AssembleRequestActivate(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, int sectorNode, string timeZone, PaymentInstant paybefore, string emailAddress, string password, string address, string mobileNumber, string merchantName, string businessName);
         Request AssembleRequestActivate(RequestParams requestParams, IDevice device, IReceiptManager receiptManager, string registrationCode);
-        Request AssembleRequestRating(Request request, RequestRating rating);
+        Request AssembleRequestRating(RequestParams requestParams, RequestRating rating);
     }
 }

@@ -83,8 +83,8 @@ namespace TruRating.TruModule
                                 Settings.Trigger = (item as ResponseEventQuestion).Trigger;
                                 if (Settings.Trigger == Trigger.DWELLTIME || Settings.Trigger == Trigger.DWELLTIMEEXTEND)
                                 {
-                                    var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(posParams), Device, ReceiptManager, Settings.Trigger);
-                                    DoRating(questionRequest);
+                                    GetQuestion();
+                                    DoRating();
                                 }
                             }
                             else if (item is ResponseEventClear)
@@ -116,8 +116,8 @@ namespace TruRating.TruModule
                 {
                     if (Settings.Trigger == Trigger.PAYMENTREQUEST)
                     {
-                        var questionRequest = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(posParams), Device, ReceiptManager, Settings.Trigger);
-                        DoRating(questionRequest);
+                        GetQuestion();
+                        DoRating();
                     }
                     else
                     {

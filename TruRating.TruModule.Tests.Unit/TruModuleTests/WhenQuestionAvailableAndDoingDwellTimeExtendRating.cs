@@ -24,6 +24,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.Device;
+using TruRating.TruModule.Messages;
 
 namespace TruRating.TruModule.Tests.Unit.TruModuleTests
 {
@@ -39,7 +40,8 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
             {
                 Thread.Sleep(250);
             }).Return(2);
-            Sut.DoRating(Request);
+
+            Sut.DoRating();
         }
        
         [TestMethod]
@@ -59,7 +61,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
         public void ItShouldSendARating()
         {
             var arguments = TruServiceMessageFactory.GetArgumentsForCallsMadeOn(
-                x => x.AssembleRequestRating(Arg<Request>.Is.Anything, Arg<RequestRating>.Is.Anything))[0];
+                x => x.AssembleRequestRating(Arg<RequestParams>.Is.Anything, Arg<RequestRating>.Is.Anything))[0];
             Assert.IsTrue(((RequestRating)arguments[1]).Value == 2);
         }
         [TestMethod]
