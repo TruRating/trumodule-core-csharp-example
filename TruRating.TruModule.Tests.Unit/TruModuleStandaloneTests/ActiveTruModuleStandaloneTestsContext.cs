@@ -95,10 +95,6 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests
             Sut.Activated = true;
             DateTimeProvider.UtcNow = new DateTime(2000, 01, 01);
             Sut.ActivationRecheck = new DateTime(2001, 01, 01);
-            //TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
-            //TruServiceMessageFactory.Stub(
-            //    x =>
-            //        x.AssembleRequestQuestion(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything, Arg<Trigger>.Is.Anything)).Return(Request);
             
             Device = MockOf<IDevice>();
             

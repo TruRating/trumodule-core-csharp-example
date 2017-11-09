@@ -49,7 +49,7 @@ namespace TruRating.TruModule
             }
         }
 
-        public void DoRating()
+        public new void DoRating()
         {
             try
             {

@@ -24,6 +24,7 @@ using Rhino.Mocks;
 using TruRating.Dto.TruService.V220;
 using TruRating.TruModule.Device;
 using TruRating.TruModule.Messages;
+using TruRating.TruModule.Network;
 using TruRating.TruModule.Settings;
 using TruRating.TruModule.Tests.Unit.TruModuleTests;
 
@@ -39,9 +40,10 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests
             Sut.DoRating();
         }
         [TestMethod]
-        public void ItShouldNotAssembleRequestQuestion()
+        public void ItShouldNotSendRequestQuestion()
         {
-            MockOf<ITruServiceMessageFactory>().AssertWasNotCalled(x=> x.AssembleRequestQuestion(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,Arg<Trigger>.Is.Anything));
+         
+            MockOf<ITruServiceClient>().AssertWasNotCalled(x=> x.Send(Arg<Request>.Matches(r=>r.Item is RequestQuestion)));
         }
     }
 }
