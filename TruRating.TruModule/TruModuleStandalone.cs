@@ -43,7 +43,10 @@ namespace TruRating.TruModule
         protected TruModuleStandalone(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager,ITruServiceClient truServiceClient, ITruServiceMessageFactory truServiceMessageFactory)
             :base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
         {
-            GetQuestion();
+            if (settings.UsePrefetch)
+            {
+                GetQuestion();
+            }
         }
 
         public void DoRating()
@@ -52,6 +55,10 @@ namespace TruRating.TruModule
             {
                 if (IsActivated(bypassTruServiceCache: false))
                 {
+                    if(!Settings.UsePrefetch)
+                    {
+                        GetQuestion();
+                    }
                     base.DoRating();
                 }
             }
@@ -70,8 +77,12 @@ namespace TruRating.TruModule
                     var request = TruServiceMessageFactory.AssembleRequestTransaction(new RequestParams(Settings, SessionId), requestTransaction);
                     TaskHelpers.BeginTask(() =>
                     {
-                        SendRequest(request);
-                        return GetQuestion();
+                        var response = SendRequest(request);
+                        if (Settings.UsePrefetch)
+                        {
+                            return GetQuestion();
+                        }
+                        return response;
                     });
 
                     

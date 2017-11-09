@@ -39,5 +39,6 @@ namespace TruRating.TruModule.ConsoleRunner.Settings
         [Required]
         public int HttpTimeoutMs { get; set; }
         public Trigger Trigger { get; set; }
+        public bool UsePrefetch { get; set; }
     }
 }

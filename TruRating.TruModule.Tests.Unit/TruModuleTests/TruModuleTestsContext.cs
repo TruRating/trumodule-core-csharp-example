@@ -47,15 +47,15 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
     public class TestContextTruModuleStandalone : TruModuleStandalone
     {
         //Modify visibility for Unit Tests
-        public TestContextTruModuleStandalone(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient, ITruServiceMessageFactory truServiceMessageFactory) : base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
+        public TestContextTruModuleStandalone(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient) : base(logger, settings, device, receiptManager, truServiceClient, new TruServiceMessageFactory())
         {
         }
     }
     public class TestContextTruModule : TruModule
     {
         public TestContextTruModule(IDevice device, IReceiptManager receiptManager, ITruServiceClient truServiceClient,
-            ILogger logger, ITruServiceMessageFactory truServiceMessageFactory, ISettings settings)
-            : base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
+            ILogger logger, ISettings settings)
+            : base(logger, settings, device, receiptManager, truServiceClient, new TruServiceMessageFactory())
         {
         }
 
@@ -71,7 +71,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
     {
         protected Request Request;
         protected Response Response;
-        protected ITruServiceMessageFactory TruServiceMessageFactory;
+     //   protected ITruServiceMessageFactory TruServiceMessageFactory;
         protected ISettings Settings;
         protected IDevice Device;
         protected ITruServiceClient TruServiceClient;
@@ -116,10 +116,10 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
             Settings = MockOf<ISettings>();
             Sut.Activated = true;
             Sut.ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(60);
-            TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
-            TruServiceMessageFactory.Stub(
-                x =>
-                    x.AssembleRequestQuestion(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,Arg<Trigger>.Is.Anything)).Return(Request);
+            //TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
+            //TruServiceMessageFactory.Stub(
+            //    x =>
+            //        x.AssembleRequestQuestion(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,Arg<Trigger>.Is.Anything)).Return(Request);
 
             Device = MockOf<IDevice>();
 

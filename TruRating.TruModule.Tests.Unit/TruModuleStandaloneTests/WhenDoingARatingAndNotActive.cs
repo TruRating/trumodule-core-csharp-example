@@ -35,7 +35,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests
         [TestInitialize]
         public void Setup()
         {
-            Sut.Activated = false;  
+            Sut.Activated = false;
             Sut.DoRating();
         }
         [TestMethod]

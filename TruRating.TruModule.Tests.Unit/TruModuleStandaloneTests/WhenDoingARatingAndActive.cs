@@ -35,13 +35,14 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests
         public void Setup()
         {
             Sut.Activated = true;
+            Settings.UsePrefetch = false;
             Sut.DoRating();
         }
 
         [TestMethod]
         public void ItShouldAssembleRequestQuestion()
         {
-            TruServiceMessageFactory.AssertWasCalled(x=> x.AssembleRequestQuestion(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything, Arg<Trigger>.Is.Anything));
+            TruServiceClient.AssertWasCalled(x => x.Send(Arg<Request>.Matches(r=>r.Item is RequestQuestion)));
         }
 
         public WhenDoingARatingAndActive() : base(Trigger.DWELLTIMEEXTEND)

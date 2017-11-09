@@ -56,5 +56,9 @@ namespace TruRating.TruModule.Settings
         /// Specifies the Trigger point for the TruRating question.  May be reconfigured dynamically by TruService.
         /// </summary>
         Trigger Trigger { get; set; }
+        /// <summary>
+        /// Specifies the whether or not to use prefetch in the standalone module
+        /// </summary>
+        bool UsePrefetch { get; set; }
     }
 }

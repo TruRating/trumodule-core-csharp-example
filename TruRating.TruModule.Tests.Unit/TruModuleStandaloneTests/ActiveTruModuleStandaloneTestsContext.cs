@@ -36,7 +36,8 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests
     {
         protected Request Request;
         protected Response Response;
-        protected ITruServiceMessageFactory TruServiceMessageFactory;
+        protected Response QueryResponse;
+        //     protected ITruServiceMessageFactory TruServiceMessageFactory;
         protected ISettings Settings;
         protected IDevice Device;
         protected ITruServiceClient TruServiceClient;
@@ -51,6 +52,14 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests
                 Item = new RequestQuestion
                 {
                     Trigger = trigger,
+                }
+            };
+            QueryResponse = new Response
+            {
+                Item = new ResponseStatus
+                {
+                    IsActive = true,
+                    TimeToLive = 60
                 }
             };
             Response = new Response
@@ -86,15 +95,16 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests
             Sut.Activated = true;
             DateTimeProvider.UtcNow = new DateTime(2000, 01, 01);
             Sut.ActivationRecheck = new DateTime(2001, 01, 01);
-            TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
-            TruServiceMessageFactory.Stub(
-                x =>
-                    x.AssembleRequestQuestion(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything, Arg<Trigger>.Is.Anything)).Return(Request);
+            //TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
+            //TruServiceMessageFactory.Stub(
+            //    x =>
+            //        x.AssembleRequestQuestion(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything, Arg<Trigger>.Is.Anything)).Return(Request);
             
             Device = MockOf<IDevice>();
             
             Device.Stub(x => x.GetCurrentLanguage()).Return("en-GB");
             TruServiceClient = MockOf<ITruServiceClient>();
+            TruServiceClient.Stub(x => x.Send(Arg<Request>.Matches(r=>r.Item is RequestQuery))).Return(QueryResponse);
             TruServiceClient.Stub(x => x.Send(Arg<Request>.Is.Anything)).Return(Response);
         }
     }

@@ -60,9 +60,10 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
         [TestMethod]
         public void ItShouldSendARating()
         {
-            var arguments = TruServiceMessageFactory.GetArgumentsForCallsMadeOn(
-                x => x.AssembleRequestRating(Arg<RequestParams>.Is.Anything, Arg<RequestRating>.Is.Anything))[0];
-            Assert.IsTrue(((RequestRating)arguments[1]).Value == 2);
+            TruServiceClient.AssertWasCalled(x => x.Send(Arg<Request>.Matches(r => r.Item is RequestRating)));
+            //not sure why we are getting all the calls back here, but we want the last one.
+            var arguments = TruServiceClient.GetArgumentsForCallsMadeOn(x => x.Send(Arg<Request>.Matches(r => r.Item is RequestRating)))[2];
+            Assert.AreEqual((((Request)arguments[0]).Item as RequestRating).Value , 2);
         }
         [TestMethod]
         public void ItShouldCallDisplayAcknowledgement()
