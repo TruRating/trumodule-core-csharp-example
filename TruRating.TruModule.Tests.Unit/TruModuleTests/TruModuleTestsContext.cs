@@ -62,6 +62,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
         //Modify visibility for Unit Tests
         public new void DoRating()
         {
+            //the module implementations will all call get question where necessary so add it here.
             base.GetQuestion();
             base.DoRating();
         }
@@ -114,6 +115,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleTests
             };
 
             Settings = MockOf<ISettings>();
+            Settings.Trigger = trigger;
             Sut.Activated = true;
             Sut.ActivationRecheck = DateTimeProvider.UtcNow.AddMinutes(60);
 

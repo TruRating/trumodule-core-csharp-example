@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TruRating.Dto.TruService.V220;
 using Rhino.Mocks;
+using System.Threading;
 
 namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.Prefetch
 {
@@ -25,6 +26,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.Prefetch
         public void QuestionFetchedAfterTransactionSent()
         {
             Sut.SendTransaction(new RequestTransaction());
+            Thread.Sleep(500);//wait for the background send.
             TruServiceClient.AssertWasCalled(x => x.Send(Arg<Request>.Matches(r => r.Item is RequestQuestion)));
         }
 
