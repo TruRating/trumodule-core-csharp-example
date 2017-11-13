@@ -46,6 +46,7 @@ namespace TruRating.TruModule
         /// </summary>
         private volatile bool _isCancelled;
         private volatile bool _isQuestionRunning;
+        protected internal Response QuestionResponse;
         protected internal DateTime ActivationRecheck;
         protected internal bool Activated;
 
@@ -128,24 +129,34 @@ namespace TruRating.TruModule
         {
             return _truServiceClient.Send(request);
         }
-
-        protected void DoRating(Request request)
+        
+        protected Response GetQuestion()
         {
-            try
+            if (IsActivated(bypassTruServiceCache: false))
             {
-                _isCancelled = false;
-                if (!(request.Item is RequestQuestion))
-                {
-                    Logger.Error("TruModule - Request was not a question");
-                    return;
-                }
+                SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
+                var request = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(Settings, SessionId), Device, ReceiptManager, Settings.Trigger);
                 Settings.Trigger = ((RequestQuestion)request.Item).Trigger;
                 var response = _truServiceClient.Send(request);
                 if (response == null)
                 {
                     Logger.Warn("TruModule - Response was null, exiting");
+                }
+                QuestionResponse = response;
+                return response;
+            }
+            return null;
+        }
+        protected void DoRating()
+        {
+            try
+            {
+                if (QuestionResponse == null)
+                {
+                    Logger.Warn("TruModule - Response was null, exiting");
                     return;
                 }
+
                 ResponseQuestion question;
                 ResponseReceipt[] receipts;
                 ResponseScreen[] screens;
@@ -159,11 +170,11 @@ namespace TruRating.TruModule
                 ResponseScreen responseScreen = null;
 
                 var hasRated = false;
-                if (TruModuleHelpers.QuestionAvailable(response, rating.Rfc1766, out question, out receipts, out screens))
+                if (TruModuleHelpers.QuestionAvailable(QuestionResponse, rating.Rfc1766, out question, out receipts, out screens))
                 {
                     var sw = new Stopwatch();
                     sw.Start();
-                    var trigger = ((RequestQuestion)request.Item).Trigger; //Grab the trigger from the question request
+                    var trigger = Settings.Trigger; //Grab the trigger
                     var timeoutMs = question.TimeoutMs;
                     if (trigger == Trigger.DWELLTIMEEXTEND) //TODO comments
                     {
@@ -182,7 +193,7 @@ namespace TruRating.TruModule
                     sw.Stop();
                     rating.ResponseTimeMs = (int)sw.ElapsedMilliseconds; //Set the response time
                     Logger.Info("TruModule - Rated = {0} in {1}ms", hasRated, rating.ResponseTimeMs);
-                    _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(request, rating));
+                    _truServiceClient.Send(TruServiceMessageFactory.AssembleRequestRating(new RequestParams(Settings, SessionId), rating));
                     if (rating.Value >= -2) //Show the receipt ack if the user skips, times out or rates but not if the question is regulated or could not be displayed
                     {
                         var responseReceipt = TruModuleHelpers.GetResponseReceipt(receipts, whenToDisplay);

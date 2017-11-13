@@ -37,24 +37,29 @@ namespace TruRating.TruModule
         /// </summary>
         public TruModuleStandalone(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager)
             : this(logger, settings, device, receiptManager, TruServiceHttpClient.CreateDefault(logger, settings), Messages.TruServiceMessageFactory.CreateDefault())
-        {
+        { 
         }
 
         protected TruModuleStandalone(ILogger logger, ISettings settings, IDevice device, IReceiptManager receiptManager,ITruServiceClient truServiceClient, ITruServiceMessageFactory truServiceMessageFactory)
             :base(logger, settings, device, receiptManager, truServiceClient, truServiceMessageFactory)
         {
-            
+            if (settings.UsePrefetch)
+            {
+                GetQuestion();
+            }
         }
 
-        public void DoRating()
+        public new void DoRating()
         {
             try
             {
-                SessionId = DateTimeProvider.UtcNow.Ticks.ToString();
                 if (IsActivated(bypassTruServiceCache: false))
                 {
-                    var request = TruServiceMessageFactory.AssembleRequestQuestion(new RequestParams(Settings, SessionId), Device, ReceiptManager, Settings.Trigger);
-                    DoRating(request);
+                    if(!Settings.UsePrefetch)
+                    {
+                        GetQuestion();
+                    }
+                    base.DoRating();
                 }
             }
             catch (Exception e)
@@ -72,8 +77,15 @@ namespace TruRating.TruModule
                     var request = TruServiceMessageFactory.AssembleRequestTransaction(new RequestParams(Settings, SessionId), requestTransaction);
                     TaskHelpers.BeginTask(() =>
                     {
-                        return SendRequest(request);
+                        var response = SendRequest(request);
+                        if (Settings.UsePrefetch)
+                        {
+                            return GetQuestion();
+                        }
+                        return response;
                     });
+
+                    
                 }
             }
             catch (Exception e)

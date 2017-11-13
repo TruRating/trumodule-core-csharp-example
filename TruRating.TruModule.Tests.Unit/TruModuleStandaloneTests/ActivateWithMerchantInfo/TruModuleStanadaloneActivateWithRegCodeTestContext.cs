@@ -34,7 +34,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.ActivateWithMe
 {
     public class TruModuleStanadaloneActivateWithMerchantInfoTestContext: MsTestsContext<TestContextTruModuleStandalone>
     {
-        protected ITruServiceMessageFactory TruServiceMessageFactory { get; set; }
+        //protected ITruServiceMessageFactory TruServiceMessageFactory { get; set; }
         protected ITruServiceClient TruServiceClient { get; set; }
         protected ISettings Settings { get; set; }
 
@@ -51,15 +51,6 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.ActivateWithMe
             {
                 Item = new ResponseStatus()
             };
-
-            TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
-            TruServiceMessageFactory.Stub(
-                x =>
-                    x.AssembleRequestActivate(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,
-                        Arg<int>.Is.Anything, Arg<string>.Is.Anything,
-                        Arg<PaymentInstant>.Is.Anything,Arg<string>.Is.Anything, Arg<string>.Is.Anything, 
-                        Arg<string>.Is.Anything, Arg<string>.Is.Anything, Arg<string>.Is.Anything, 
-                        Arg<string>.Is.Anything)).Return(Request);
             
             TruServiceClient = MockOf<ITruServiceClient>();
             TruServiceClient.Stub(t => t.Send(Arg<Request>.Is.Anything)).Return(Response);

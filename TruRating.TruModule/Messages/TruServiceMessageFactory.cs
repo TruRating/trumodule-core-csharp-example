@@ -59,14 +59,14 @@ namespace TruRating.TruModule.Messages
             return result;
         }
 
-        public Request AssembleRequestRating(Request request, RequestRating rating)
+        public Request AssembleRequestRating(RequestParams requestParams, RequestRating rating)
         {
             var result = new Request
             {
-                PartnerId = request.PartnerId,
-                MerchantId = request.MerchantId,
-                TerminalId = request.TerminalId,
-                SessionId = request.SessionId,
+                PartnerId = requestParams.PartnerId,
+                MerchantId = requestParams.MerchantId,
+                TerminalId = requestParams.TerminalId,
+                SessionId = requestParams.SessionId,
                 Item = rating
             };
             return result;

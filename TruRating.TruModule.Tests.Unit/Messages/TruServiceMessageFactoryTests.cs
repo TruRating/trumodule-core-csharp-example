@@ -32,7 +32,7 @@ namespace TruRating.TruModule.Tests.Unit.Messages
         [TestMethod]
         public void ItShouldAssembleRequestRating()
         {
-            Assert.IsNotNull(Sut.AssembleRequestRating(new Request(), new RequestRating()));
+            Assert.IsNotNull(Sut.AssembleRequestRating(MockOf<RequestParams>(), new RequestRating()));
         }
         [TestMethod]
         public void ItShouldAssembleRequestQuery()

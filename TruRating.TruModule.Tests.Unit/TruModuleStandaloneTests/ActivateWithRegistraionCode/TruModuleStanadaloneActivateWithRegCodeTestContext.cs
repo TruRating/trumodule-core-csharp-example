@@ -34,7 +34,7 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.ActivateWithRe
 {
     public class TruModuleStanadaloneActivateWithRegCodeTestContext: MsTestsContext<TestContextTruModuleStandalone>
     {
-        protected ITruServiceMessageFactory TruServiceMessageFactory { get; set; }
+    //    protected ITruServiceMessageFactory TruServiceMessageFactory { get; set; }
         protected ITruServiceClient TruServiceClient { get; set; }
         protected ISettings Settings { get; set; }
 
@@ -52,11 +52,6 @@ namespace TruRating.TruModule.Tests.Unit.TruModuleStandaloneTests.ActivateWithRe
             {
                 Item = new ResponseStatus()
             };
-
-            TruServiceMessageFactory = MockOf<ITruServiceMessageFactory>();
-            TruServiceMessageFactory.Stub(
-                x =>
-                    x.AssembleRequestQuestion(Arg<RequestParams>.Is.Anything, Arg<IDevice>.Is.Anything, Arg<IReceiptManager>.Is.Anything,Arg<Trigger>.Is.Anything)).Return(Request);
 
             TruServiceClient = MockOf<ITruServiceClient>();
             TruServiceClient.Stub(t => t.Send(Arg<Request>.Is.Anything)).Return(Response);
