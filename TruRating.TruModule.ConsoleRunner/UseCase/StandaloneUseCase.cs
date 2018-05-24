@@ -80,7 +80,7 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
             var optionNumber = 0;
             foreach (var lookupOption in lookups)
             {
-                result.AddRange(RecurseLookupOptions(lookupOption, 1, optionNumber));
+                result.AddRange(RecurseLookupOptions(lookupOption, 1,ref optionNumber));
             }
 
             var options = ExtensionMethods.ToDictionary(result, x => x.Key, x => x.Value);
@@ -88,7 +88,7 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
         }
 
 
-        private IEnumerable<KeyValuePair<int, string>> RecurseLookupOptions(LookupOption lookupOption, int depth, int optionNumber)
+        private IEnumerable<KeyValuePair<int, string>> RecurseLookupOptions(LookupOption lookupOption, int depth, ref int optionNumber)
         {
             var result = new List<KeyValuePair<int, string>>();
 
@@ -103,7 +103,7 @@ namespace TruRating.TruModule.ConsoleRunner.UseCase
             {
                 foreach (var option in lookupOption.Option)
                 {
-                    result.AddRange(RecurseLookupOptions(option, depth + 1, optionNumber));
+                    result.AddRange(RecurseLookupOptions(option, depth + 1, ref optionNumber));
                 }
             }
             return result;
